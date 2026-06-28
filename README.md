@@ -1,7 +1,7 @@
 # Causal ML for Organic Photovoltaic Molecular Design
 
 **Author:** Samuel Bizimana | JUNIA ISEN  
-**Supervisor:** Dr. Kekel N'KNOUN  
+**Supervisor:** Prof Kekel N'KNOUN  
 **Target Journal:** Nature Machine Intelligence
 
 ## What this project does
@@ -19,9 +19,10 @@ power conversion efficiency (PCE). Confirmed statistically (p = 0.010).
 - Causal Forests, 4000 trees (Wager & Athey, 2018)
 
 ## Progress
-- Phase 0 ✅ Reproducible environment (R 4.6.0 + Python 3.10)
-- Phase 1 ✅ Dataset — 12,138 OPV molecules
-- Phase 2 ✅ Causal inference + CATE maps
+- Phase 0  Reproducible environment (R 4.6.0 + Python 3.10)
+- Phase 1  Dataset — 12,138 OPV molecules
+- Phase 2  Causal inference + CATE maps
+Next: 
 - Phase 3 🔄 Counterfactual molecular design (in progress)
 - Phase 4 ⏳ Manuscript submission
 
