@@ -1,0 +1,15 @@
+data/moldata.csv
+data/raw/moldata.csv
+results/models/
+renv/library/
+*.rds
+*.mp4
+*.tar
+*.gz
+.keras/
+.vscode/
+Desktop/
+.conda/
+__pycache__/
+*.pyc
+~$*
