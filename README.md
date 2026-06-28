@@ -22,6 +22,7 @@ power conversion efficiency (PCE). Confirmed statistically (p = 0.010).
 - Phase 0  Reproducible environment (R 4.6.0 + Python 3.10)
 - Phase 1  Dataset — 12,138 OPV molecules
 - Phase 2  Causal inference + CATE maps
+
 Next: 
 - Phase 3 🔄 Counterfactual molecular design (in progress)
 - Phase 4 ⏳ Manuscript submission
