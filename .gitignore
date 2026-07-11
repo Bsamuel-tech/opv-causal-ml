@@ -13,3 +13,4 @@ Desktop/
 __pycache__/
 *.pyc
 ~$*
+.Rproj.user
