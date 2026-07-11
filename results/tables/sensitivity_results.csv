@@ -1,7 +1,0 @@
-metric,value
-OLS_coefficient,6.4729
-OLS_std_error,0.0912
-t_value,70.943
-partial_R2,0.2932
-robustness_value,0.4692
-robustness_value_alpha05,0.4601

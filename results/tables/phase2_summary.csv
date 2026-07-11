@@ -1,9 +1,0 @@
-step,value
-DML_HOMO,0.643
-DML_gap,1.895
-Sensitivity_RV,0.469
-CATE_mean,6.663
-CATE_min,-9.61
-CATE_max,60.53
-Calibration_mean_p,0.0006267
-Calibration_het_p,0.0099556
