@@ -14,3 +14,8 @@ __pycache__/
 *.pyc
 ~$*
 .Rproj.user
+data/Data_Merged_with_SMILES.xlsx
+data/corrected_pipeline/
+Project guidance/
+Reports/
+.Rhistory
