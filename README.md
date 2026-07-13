@@ -30,10 +30,15 @@ Outcomes: HOMO energy, LUMO energy, optical bandgap.
 ## Project structure
 
 scripts/phase1_data/    — dataset construction and scaffold split
+
 scripts/phase2_causal/  — DML, IV, sensitivity, causal forest
+
 scripts/phase3_design/  — counterfactual generator (coming)
+
 data/processed/         — master_acceptor_dataset.csv (15,529 molecules)
+
 results/figures/        — all publication figures
+
 results/tables/         — all results tables
 
 
