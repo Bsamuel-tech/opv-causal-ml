@@ -1,0 +1,4 @@
+diagnostic,statistic,p_value,threshold,result
+Weak instruments F-stat,304.139,< 2e-16,F > 10,PASS
+Wu-Hausman,9.885,0.00175,p < 0.05 = IV needed,PASS - IV necessary
+Sargan,1.782,0.18188,p > 0.05 = valid,PASS - instruments exogenous
