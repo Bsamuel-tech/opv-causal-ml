@@ -1,0 +1,5 @@
+n_cyano_added,smiles,ewg_weighted,mol_weight,sascore,sa_pass,original_smiles,original_homo
+1,CCC1(CC)c2cc(-c3ccc(C=C(C#N)C#N)c4nsnc34)ccc2-c2cccc(C#N)c21,1.98,457.5620000000002,3.3950407276331678,True,CCC1(CC)c2ccccc2-c2ccc(-c3ccc(C=C(C#N)C#N)c4nsnc34)cc21,-6.2
+2,CCC1(CC)c2c(C#N)cccc2-c2ccc(-c3ccc(C=C(C#N)C#N)c4nsnc34)c(C#N)c21,2.64,482.57200000000023,3.644397380956514,True,CCC1(CC)c2ccccc2-c2ccc(-c3ccc(C=C(C#N)C#N)c4nsnc34)cc21,-6.2
+3,CCC1(CC)c2c(ccc(C#N)c2C#N)-c2ccc(-c3ccc(C=C(C#N)C#N)c4nsnc34)c(C#N)c21,3.3000000000000003,507.5820000000002,3.7846532925518126,True,CCC1(CC)c2ccccc2-c2ccc(-c3ccc(C=C(C#N)C#N)c4nsnc34)cc21,-6.2
+4,CCC1(CC)c2c(ccc(-c3ccc(C=C(C#N)C#N)c4nsnc34)c2C#N)-c2c(C#N)cc(C#N)c(C#N)c21,3.96,532.5920000000002,3.968908799817253,True,CCC1(CC)c2ccccc2-c2ccc(-c3ccc(C=C(C#N)C#N)c4nsnc34)cc21,-6.2
