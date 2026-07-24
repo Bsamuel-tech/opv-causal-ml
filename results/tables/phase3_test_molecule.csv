@@ -1,0 +1,2 @@
+smiles,homo_ev,ewg_weighted,cate,target_shift,required_ewg,cyano_needed
+CCCCCCc1ccc(C2(c3ccc(CCCCCC)cc3)Cc3cc4c(cc3-c3sc5cc(C=C6C(=O)c7ccccc7C6=C(C#N)C#N)sc5c32)C(c2ccc(CCCCCC)cc2)(c2ccc(CCCCCC)cc2)C2=C4SC3CC(C=C4C(=O)c5ccccc5C4=C(C#N)C#N)SC23)cc1,-5.69,3.64,-0.0278650867154122,-0.2,7.17744043083778,10.8749097436936
