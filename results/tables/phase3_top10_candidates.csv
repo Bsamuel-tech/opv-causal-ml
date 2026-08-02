@@ -1,0 +1,11 @@
+original_smiles,modified_smiles,original_homo,original_ewg,new_ewg,sascore,mol_weight,n_cyano_added
+CCN1C(=O)c2ccc3c4c(-c5ccccc5C)c5c6cccc7cccc(c5c(-c5ccccc5C)c4c4ccc(c2c34)C1=O)c76,CCN1C(=O)c2ccc3c4c(-c5ccccc5C)c5c6cccc7ccc(C#N)c(c5c(-c5ccccc5C)c4c4ccc(c2c34)C1=O)c76,-5.99,1.0,1.6600000000000001,3.16,628.731,1
+CCN1C(=O)c2ccc3c4c(-c5ccccc5C)c5c6cccc7cccc(c5c(-c5ccccc5C)c4c4ccc(c2c34)C1=O)c76,CCN1C(=O)c2ccc3c4c(-c5ccccc5C)c5c6cccc7cccc(c5c(-c5cccc(C#N)c5C)c4c4ccc(c2c34)C1=O)c76,-5.99,1.0,1.6600000000000001,3.166,628.731,1
+CCN1C(=O)c2ccc3c4c(-c5ccccc5C)c5c6cccc7cccc(c5c(-c5ccccc5C)c4c4ccc(c2c34)C1=O)c76,CCN1C(=O)c2ccc3c4c(-c5ccccc5C)c5c6cccc7cccc(c5c(-c5ccccc5C)c4c4cc(C#N)c(c2c34)C1=O)c76,-5.99,1.0,1.6600000000000001,3.2,628.731,1
+CCN1C(=O)c2c(c(-c3cccs3)c3c(c2-c2cccs2)-c2cccc4c(C#N)ccc-3c24)C1=O,CCN1C(=O)c2c(c(-c3cccs3)c3c(c2-c2cccs2)-c2ccc(C#N)c4cc(C#N)cc-3c24)C1=O,-5.65,1.66,2.3200000000000003,3.241,513.603,1
+CCN1C(=O)c2c(c(-c3cccs3)c3c(c2-c2cccs2)-c2cccc4c(C#N)ccc-3c24)C1=O,CCN1C(=O)c2c(c(-c3sccc3C#N)c3c(c2-c2cccs2)-c2cccc4c(C#N)ccc-3c24)C1=O,-5.65,1.66,2.3200000000000003,3.25,513.603,1
+CCN1C(=O)c2c(c(-c3cccs3)c3c(c2-c2cccs2)-c2cccc4c(C#N)ccc-3c24)C1=O,CCN1C(=O)c2c(c(-c3sccc3C#N)c3c(c2-c2cccs2)-c2ccc(C#N)c4cccc-3c24)C1=O,-5.65,1.66,2.3200000000000003,3.25,513.603,1
+CCC1(CC)c2ccccc2-c2ccc(-c3ccc(C=C(C#N)C#N)c4nsnc34)cc21,CCC1(CC)c2cc(C#N)ccc2-c2ccc(-c3ccc(C=C(C#N)C#N)c4nsnc34)cc21,-6.2,1.32,1.98,3.277,457.562,1
+CCN1C(=O)c2cc(-c3ccc(-c4ccc(C)s4)s3)c3c4c(cc(C)c(c24)C1=O)C(=O)N(CC)C3=O,CCN1C(=O)c2cc(-c3ccc(-c4cc(C#N)c(C)s4)s3)c3c4c(cc(C)c(c24)C1=O)C(=O)N(CC)C3=O,-5.65,2.0,2.66,3.344,539.638,1
+CCC1(CC)c2ccccc2-c2ccc(-c3ccc(C=C(C#N)C#N)c4nsnc34)cc21,CCC1(CC)c2ccccc2-c2cc(C#N)c(-c3ccc(C=C(C#N)C#N)c4nsnc34)cc21,-6.2,1.32,1.98,3.361,457.562,1
+CCN1C(=O)c2cc(-c3ccc(-c4ccc(C)s4)s3)c3c4c(cc(C)c(c24)C1=O)C(=O)N(CC)C3=O,CCN1C(=O)c2cc(-c3ccc(-c4sc(C)cc4C#N)s3)c3c4c(cc(C)c(c24)C1=O)C(=O)N(CC)C3=O,-5.65,2.0,2.66,3.361,539.638,1
