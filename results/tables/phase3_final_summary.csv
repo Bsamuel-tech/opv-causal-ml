@@ -1,0 +1,12 @@
+phase3_step,result
+Step 1 — CATE computation,CATE = -0.028 eV per unit EWG score for test molecule
+Step 2 — SMARTS cyano addition,5 candidates generated via SMARTS [cH]>>[c]C#N reaction
+Step 3 — SAScore filtering,4 of 5 candidates pass SAScore < 4.0 threshold
+Step 4 — xTB validation,"xTB GFN2 calibrated against 8 experimental molecules, offset = 4.62 eV"
+Candidate +1 cyano,MAE = 0.092 eV — PASSED 0.25 eV threshold
+Candidate +2 cyano,MAE = 0.236 eV — PASSED 0.25 eV threshold
+Candidate +3 cyano,MAE = 0.459 eV — FAILED threshold
+Candidate +4 cyano,MAE = 0.582 eV — FAILED threshold
+Overall MAE,0.342 eV — exceeds 0.25 eV target
+Direction confirmed,All 4 candidates show decreasing HOMO with increasing EWG score
+Limitation identified,CATE underestimates quantum chemical response at high EWG loadings
