@@ -1,0 +1,64 @@
+section,item,detail
+S1 — Data Cleaning Protocol,Source 1,599 experimental acceptor molecules from OPV literature
+S1 — Data Cleaning Protocol,Source 2,"14,930 CEP DFT molecules (Harvard Clean Energy Project)"
+S1 — Data Cleaning Protocol,SMILES validation,RDKit MolFromSmiles — 2 invalid SMILES dropped
+S1 — Data Cleaning Protocol,Deduplication,"Canonical SMILES deduplication — 1,573 to 599 unique acceptors"
+S1 — Data Cleaning Protocol,Physical range filter,HOMO: -8 to -3 eV | LUMO: -6 to -1 eV | Bandgap: 0.5 to 4.0 eV
+S1 — Data Cleaning Protocol,Random split R2,0.533
+S1 — Data Cleaning Protocol,Scaffold split R2,0.483
+S1 — Data Cleaning Protocol,Generalisation gap,0.050
+S1 — Data Cleaning Protocol,Leakage threshold,0.15 (brief specification)
+S1 — Data Cleaning Protocol,Conclusion,Gap 0.050 < 0.15 — no meaningful data leakage detected
+S2 — DoubleML Results,Treatment,Hammett-weighted EWG score
+S2 — DoubleML Results,Confounders,"mol_weight, n_arom_rings, conj_length, halogen_count, meas_num"
+S2 — DoubleML Results,Learner,Random Forest ranger 500 trees min.node.size=5
+S2 — DoubleML Results,Cross-fitting folds,5
+S2 — DoubleML Results,EWG->HOMO ATE,-0.01201265 eV
+S2 — DoubleML Results,EWG->HOMO SE,0.007618604
+S2 — DoubleML Results,EWG->HOMO p,0.115
+S2 — DoubleML Results,EWG->LUMO ATE,-0.02480654 eV
+S2 — DoubleML Results,EWG->LUMO SE,0.007396180
+S2 — DoubleML Results,EWG->LUMO p,0.0008***
+S2 — DoubleML Results,EWG->Bandgap ATE,-0.01784393 eV
+S2 — DoubleML Results,EWG->Bandgap SE,0.009511319
+S2 — DoubleML Results,EWG->Bandgap p,0.061
+S2 — DoubleML Results,EconML vs DoubleML HOMO,Difference=0.0002 eV PASS within 0.005 eV threshold
+S2 — DoubleML Results,EconML vs DoubleML LUMO,Difference=0.006 eV directionally consistent beyond threshold
+S2 — DoubleML Results,EconML vs DoubleML Bandgap,Difference=0.007 eV directionally consistent beyond threshold
+S3 — IV Diagnostics,Instrument 1,Halogen count F Cl Br I
+S3 — IV Diagnostics,Instrument 2,Non-aromatic C=C bond count
+S3 — IV Diagnostics,F-statistic,304.139
+S3 — IV Diagnostics,F-threshold,> 10 Staiger-Stock rule
+S3 — IV Diagnostics,Sargan p-value,0.182
+S3 — IV Diagnostics,Sargan threshold,> 0.05 instruments exogenous
+S3 — IV Diagnostics,Wu-Hausman p-value,0.00175**
+S3 — IV Diagnostics,Wu-Hausman interpretation,OLS inconsistent IV necessary
+S3 — IV Diagnostics,IV coef HOMO,-0.060 eV
+S3 — IV Diagnostics,IV coef LUMO,-0.077 eV
+S3 — IV Diagnostics,Direction agreement,Both methods negative direction confirmed
+S4 — Sensemakr Sensitivity,OLS coefficient,-0.039 eV
+S4 — Sensemakr Sensitivity,t-value,-5.97
+S4 — Sensemakr Sensitivity,Partial R2,0.0567
+S4 — Sensemakr Sensitivity,Robustness Value,0.217
+S4 — Sensemakr Sensitivity,RV alpha=0.05,0.1515
+S4 — Sensemakr Sensitivity,Benchmark covariate,Molecular weight
+S4 — Sensemakr Sensitivity,Interpretation,Confounder needs >21.7% variance in both EWG and HOMO to nullify
+S5 — CATE Distribution,Method,Causal forest grf R
+S5 — CATE Distribution,Trees,4000
+S5 — CATE Distribution,Mean CATE,-0.022 eV
+S5 — CATE Distribution,Min CATE,-0.045 eV
+S5 — CATE Distribution,Max CATE,+0.033 eV
+S5 — CATE Distribution,Std Dev,0.008 eV
+S5 — CATE Distribution,Calibration p,0.0004*** well calibrated
+S5 — CATE Distribution,Heterogeneity p,0.295 not confirmed at this sample size
+S5 — CATE Distribution,Interpretation,Mean effect confirmed heterogeneity present but not significant
+S6 — xTB Validation,Candidate 1,SA=3.160 ML=-5.9979 xTB=-5.9140 Error=0.084 PASS
+S6 — xTB Validation,Candidate 2,SA=3.166 ML=-5.9979 xTB=-5.8769 Error=0.121 PASS
+S6 — xTB Validation,Candidate 3,SA=3.200 ML=-5.9979 xTB=-5.8950 Error=0.103 PASS
+S6 — xTB Validation,Candidate 4,SA=3.241 ML=-5.6579 xTB=-6.0962 Error=0.438 FAIL
+S6 — xTB Validation,Candidate 5,SA=3.250 ML=-5.6579 xTB=-6.0508 Error=0.393 FAIL
+S6 — xTB Validation,Candidate 6,SA=3.250 ML=-5.6579 xTB=-6.0591 Error=0.401 FAIL
+S6 — xTB Validation,Candidate 7,SA=3.277 ML=-6.2079 xTB=-6.1618 Error=0.046 PASS
+S6 — xTB Validation,Candidate 8,SA=3.344 ML=-5.6579 xTB=-5.6840 Error=0.026 PASS
+S6 — xTB Validation,Candidate 9,SA=3.361 ML=-6.2079 xTB=-6.1395 Error=0.068 PASS
+S6 — xTB Validation,Candidate 10,SA=3.361 ML=-5.6579 xTB=-5.7618 Error=0.104 PASS
