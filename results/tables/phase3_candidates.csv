@@ -1,6 +1,0 @@
-step,smiles,n_cyano_added,mol_weight,n_arom_rings,original_homo
-1,CCCCCCc1ccc(C2(c3ccc(CCCCCC)c(C#N)c3)Cc3cc4c(cc3-c3sc5cc(C=C6C(=O)c7ccccc7C6=C(C#N)C#N)sc5c32)C(c2ccc(CCCCCC)cc2)(c2ccc(CCCCCC)cc2)C2=C4SC3CC(C=C4C(=O)c5ccccc5C4=C(C#N)C#N)SC23)cc1,1,1471.0529999999992,9.0,-5.69
-2,CCCCCCc1ccc(C2(c3ccc(CCCCCC)cc3)C3=C(SC4CC(C=C5C(=O)c6ccccc6C5=C(C#N)C#N)SC34)c3cc4c(cc32)-c2sc3cc(C=C5C(=O)c6ccccc6C5=C(C#N)C#N)sc3c2C(c2ccc(CCCCCC)c(C#N)c2)(c2ccc(CCCCCC)c(C#N)c2)C4)cc1,2,1496.0629999999994,9.0,-5.69
-3,CCCCCCc1ccc(C2(c3ccc(CCCCCC)c(C#N)c3)C3=C(SC4CC(C=C5C(=O)c6ccccc6C5=C(C#N)C#N)SC34)c3cc4c(cc32)-c2sc3cc(C=C5C(=O)c6ccccc6C5=C(C#N)C#N)sc3c2C(c2ccc(CCCCCC)c(C#N)c2)(c2ccc(CCCCCC)c(C#N)c2)C4)cc1,3,1521.0729999999996,9.0,-5.69
-4,CCCCCCc1ccc(C2(c3ccc(CCCCCC)c(C#N)c3)Cc3cc4c(cc3-c3sc5cc(C=C6C(=O)c7ccccc7C6=C(C#N)C#N)sc5c32)C(c2ccc(CCCCCC)c(C#N)c2)(c2ccc(CCCCCC)c(C#N)c2)C2=C4SC3CC(C=C4C(=O)c5ccccc5C4=C(C#N)C#N)SC23)cc1C#N,4,1546.0829999999994,9.0,-5.69
-5,CCCCCCc1ccc(C2(c3cc(C#N)c(CCCCCC)c(C#N)c3)Cc3cc4c(cc3-c3sc5cc(C=C6C(=O)c7ccccc7C6=C(C#N)C#N)sc5c32)C(c2ccc(CCCCCC)c(C#N)c2)(c2ccc(CCCCCC)c(C#N)c2)C2=C4SC3CC(C=C4C(=O)c5ccccc5C4=C(C#N)C#N)SC23)cc1C#N,5,1571.0929999999994,9.0,-5.69
