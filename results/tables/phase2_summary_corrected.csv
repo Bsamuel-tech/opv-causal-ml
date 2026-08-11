@@ -1,11 +1,11 @@
-step,value,interpretation
-DML_EWG_HOMO,-0.02308018,EWG causally lowers HOMO (p=0.0015)**
-DML_EWG_LUMO,-0.0295877,EWG causally lowers LUMO (p<0.0001)***
-DML_EWG_Bandgap,-0.02475147,EWG causally narrows bandgap (p=0.006)**
-Sensitivity_RV,0.217,Confounder needs 21.7% variance to nullify
-Sensitivity_RV_alpha05,0.1515,Threshold for stat significance
-CATE_mean,-0.0215,Average EWG effect on HOMO across molecules
-CATE_min,-0.0448,Molecule with strongest EWG-HOMO response
-CATE_max,0.0325,Molecule where EWG slightly raises HOMO
-Calibration_mean_p,0.0004063,Forest mean effect confirmed (p=0.0004)***
-Calibration_het_p,0.2954489,Heterogeneity not confirmed at this sample size
+step,value,p_value,interpretation
+DML_EWG_HOMO,-0.012012652,0.114852508,EWG -> HOMO not significant after full confounder control (p=0.115)
+DML_EWG_LUMO,-0.024806537,0.000796621,EWG causally lowers LUMO (p=0.0008)***
+DML_EWG_Bandgap,-0.017843933,0.060645187,EWG -> Bandgap borderline (p=0.061)
+Sensitivity_RV,0.217,,Confounder needs 21.7% variance in both EWG and HOMO to nullify
+Sensitivity_RV_alpha05,0.1515,,Threshold for statistical significance at alpha=0.05
+CATE_mean,-0.0215,,Average EWG causal effect on HOMO across molecules
+CATE_min,-0.0448,,Molecule with strongest negative EWG-HOMO response
+CATE_max,0.0325,,Molecule where EWG slightly raises HOMO
+Calibration_mean_p,0.0004063,,Forest mean effect confirmed (p=0.0004)***
+Calibration_het_p,0.2954489,,Heterogeneity not confirmed at this sample size (p=0.295)
