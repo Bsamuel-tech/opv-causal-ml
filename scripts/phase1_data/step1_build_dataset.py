@@ -79,7 +79,11 @@ def compute_ewg_features(smi):
         # Structural confounders
         mol_weight   = Descriptors.MolWt(mol)
         n_arom_rings = rdMolDescriptors.CalcNumAromaticRings(mol)
-        conj_length  = rdMolDescriptors.CalcNumRotatableBonds(mol)
+        conj_bonds = 0
+        for bond in mol.GetBonds():
+            if bond.GetIsConjugated():
+                conj_bonds += 1
+        conj_length = conj_bonds
         logp         = Descriptors.MolLogP(mol)
 
         return ewg_count, ewg_weighted, mol_weight, n_arom_rings, conj_length, logp
