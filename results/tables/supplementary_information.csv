@@ -52,13 +52,13 @@ S5 — CATE Distribution,Std Dev,0.008 eV
 S5 — CATE Distribution,Calibration p,0.0004*** well calibrated
 S5 — CATE Distribution,Heterogeneity p,0.295 not confirmed at this sample size
 S5 — CATE Distribution,Interpretation,Mean effect confirmed heterogeneity present but not significant
-S6 — xTB Validation,Candidate 1,SA=3.160 ML=-5.9979 xTB=-5.9140 Error=0.084 PASS
-S6 — xTB Validation,Candidate 2,SA=3.166 ML=-5.9979 xTB=-5.8769 Error=0.121 PASS
-S6 — xTB Validation,Candidate 3,SA=3.200 ML=-5.9979 xTB=-5.8950 Error=0.103 PASS
-S6 — xTB Validation,Candidate 4,SA=3.241 ML=-5.6579 xTB=-6.0962 Error=0.438 FAIL
-S6 — xTB Validation,Candidate 5,SA=3.250 ML=-5.6579 xTB=-6.0508 Error=0.393 FAIL
-S6 — xTB Validation,Candidate 6,SA=3.250 ML=-5.6579 xTB=-6.0591 Error=0.401 FAIL
-S6 — xTB Validation,Candidate 7,SA=3.277 ML=-6.2079 xTB=-6.1618 Error=0.046 PASS
-S6 — xTB Validation,Candidate 8,SA=3.344 ML=-5.6579 xTB=-5.6840 Error=0.026 PASS
-S6 — xTB Validation,Candidate 9,SA=3.361 ML=-6.2079 xTB=-6.1395 Error=0.068 PASS
-S6 — xTB Validation,Candidate 10,SA=3.361 ML=-5.6579 xTB=-5.7618 Error=0.104 PASS
+S6 — xTB Validation,Candidate 1,SAScore=3.125 | ML_HOMO=-5.9719 | xTB_HOMO=-5.8796 | Error=0.0923 | PctDiff=1.57% | SYNTHESIZE - ML and xTB agree within threshold
+S6 — xTB Validation,Candidate 2,SAScore=3.16 | ML_HOMO=-5.9719 | xTB_HOMO=-5.914 | Error=0.0579 | PctDiff=0.98% | SYNTHESIZE - ML and xTB agree within threshold
+S6 — xTB Validation,Candidate 3,SAScore=3.2 | ML_HOMO=-5.9719 | xTB_HOMO=-5.8949 | Error=0.077 | PctDiff=1.31% | SYNTHESIZE - ML and xTB agree within threshold
+S6 — xTB Validation,Candidate 4,SAScore=3.239 | ML_HOMO=-5.6331 | xTB_HOMO=-6.1266 | Error=0.4935 | PctDiff=8.05% | VALIDATE FURTHER - ML-xTB discrepancy exceeds 0.25 eV
+S6 — xTB Validation,Candidate 5,SAScore=3.241 | ML_HOMO=-5.6331 | xTB_HOMO=-6.0983 | Error=0.4652 | PctDiff=7.63% | VALIDATE FURTHER - ML-xTB discrepancy exceeds 0.25 eV
+S6 — xTB Validation,Candidate 6,SAScore=3.264 | ML_HOMO=-5.6331 | xTB_HOMO=-6.1346 | Error=0.5015 | PctDiff=8.17% | VALIDATE FURTHER - ML-xTB discrepancy exceeds 0.25 eV
+S6 — xTB Validation,Candidate 7,SAScore=3.338 | ML_HOMO=-6.1831 | xTB_HOMO=-5.9269 | Error=0.2562 | PctDiff=4.32% | VALIDATE FURTHER - ML-xTB discrepancy exceeds 0.25 eV
+S6 — xTB Validation,Candidate 8,SAScore=3.344 | ML_HOMO=-5.6331 | xTB_HOMO=-5.6874 | Error=0.0543 | PctDiff=0.95% | SYNTHESIZE - ML and xTB agree within threshold
+S6 — xTB Validation,Candidate 9,SAScore=3.361 | ML_HOMO=-6.1831 | xTB_HOMO=-6.1366 | Error=0.0465 | PctDiff=0.76% | SYNTHESIZE - ML and xTB agree within threshold
+S6 — xTB Validation,Candidate 10,SAScore=3.361 | ML_HOMO=-5.6331 | xTB_HOMO=-5.7435 | Error=0.1104 | PctDiff=1.92% | SYNTHESIZE - ML and xTB agree within threshold
