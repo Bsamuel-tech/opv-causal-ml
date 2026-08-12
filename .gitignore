@@ -22,3 +22,5 @@ Reports/
 .RData
 0].copy()
 .RDataTmp
+acceptor_base.csv
+master_acceptor_dataset.csv
