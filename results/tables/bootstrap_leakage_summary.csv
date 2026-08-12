@@ -1,0 +1,12 @@
+metric,value
+random_split_r2,0.5326
+scaffold_r2_mean,0.5343
+scaffold_r2_std,0.0224
+scaffold_r2_ci_lower,0.4885
+scaffold_r2_ci_upper,0.5786
+gap_mean,-0.0017
+gap_std,0.0224
+gap_ci_lower,-0.046
+gap_ci_upper,0.0441
+leakage_threshold,0.15
+all_below_threshold,True
