@@ -1,4 +1,13 @@
 section,item,detail
+S0 — Analysis Restrictions and Estimand,EWG filter applied,"df[ewg_count > 0] applied in dml_analysis.R, iv_analysis.R, econml_comparison.py"
+S0 — Analysis Restrictions and Estimand,Molecules before filter,"15,529 total molecules in master dataset"
+S0 — Analysis Restrictions and Estimand,Molecules after filter,598 molecules used in all causal models
+S0 — Analysis Restrictions and Estimand,Molecules excluded,"14,931 molecules excluded (14,930 CEP + 1 experimental)"
+S0 — Analysis Restrictions and Estimand,Percent excluded,96.15% of dataset excluded by this filter
+S0 — Analysis Restrictions and Estimand,Source of excluded molecules,"14,930 CEP molecules have ewg_count=0 by SMARTS definition; 1 experimental molecule also excluded"
+S0 — Analysis Restrictions and Estimand,Estimand,ATE among organic acceptor molecules with at least one electron-withdrawing group
+S0 — Analysis Restrictions and Estimand,Justification,Molecules with zero EWGs provide no treatment variation and cannot contribute to causal estimation
+S0 — Analysis Restrictions and Estimand,Implication,"Results should not be interpreted as population ATE across all 15,529 molecules"
 S1 — Data Cleaning Protocol,Source 1,599 experimental acceptor molecules from OPV literature
 S1 — Data Cleaning Protocol,Source 2,"14,930 CEP DFT molecules (Harvard Clean Energy Project)"
 S1 — Data Cleaning Protocol,SMILES validation,RDKit MolFromSmiles — 2 invalid SMILES dropped
