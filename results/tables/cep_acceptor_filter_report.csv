@@ -1,0 +1,4 @@
+filter,description,molecules_passing
+LUMO < -2.0 eV,Low-lying LUMO confirms electron-accepting character,14925
+Bandgap < 3.5 eV,Excludes wide-gap insulators not relevant to OPV,14930
+HOMO < -4.5 eV,Deep HOMO confirms acceptor not donor character,14830
