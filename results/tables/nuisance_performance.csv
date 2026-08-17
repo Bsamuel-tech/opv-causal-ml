@@ -1,3 +1,3 @@
-model,r2_cv,interpretation
-ml_l: HOMO ~ confounders,0.181,ADEQUATE - confounders explain HOMO variation
-ml_m: EWG score ~ confounders,0.7126,MODERATE - adequate treatment variation remains
+model,r2_cv,rmse,interpretation
+ml_l: HOMO ~ confounders,0.181,0.1326,Low but positive - DML estimates valid with higher uncertainty than ideal
+ml_m: EWG score ~ confounders,0.713,0.7122,Moderate - adequate treatment variation remains after confounder control
