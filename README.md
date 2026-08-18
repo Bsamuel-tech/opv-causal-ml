@@ -7,8 +7,7 @@
 ## What This Project Does
 
 Applies causal machine learning to 15,529 organic acceptor molecules to
-identify what structurally causes changes in HOMO energy, LUMO energy,
-and optical bandgap. Treatment variable is the Hammett-weighted EWG score.
+identify what structurally causes changes in HOMO energy. Treatment variable is the Hammett-weighted EWG score.
 The pipeline runs from dataset construction to quantum chemistry validation
 in a fully reproducible workflow.
 
