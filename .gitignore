@@ -24,3 +24,4 @@ Reports/
 .RDataTmp
 acceptor_base.csv
 master_acceptor_dataset.csv
+results/models/causal_forest.rds
