@@ -26,3 +26,12 @@
 - Saved: data/processed/master_acceptor_dataset.csv
 - measurement_type column distinguishes experimental from DFT_B3LYP
 
+
+## Model Files
+
+results/models/causal_forest_ewg_homo.rds — trained causal forest (4,000 trees, 5MB)
+This file is committed to GitHub and can be loaded directly.
+
+causal_forest.rds (115MB) was a duplicate model file generated during development.
+It has been deleted. To retrain from scratch run scripts/phase2_causal/causal_forest.R.
+Training takes approximately 2 minutes on a standard laptop.
