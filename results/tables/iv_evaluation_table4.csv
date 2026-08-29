@@ -1,0 +1,3 @@
+candidate_instrument,reason_for_rejection,wu_hausman_p,f_statistic,sargan,conclusion
+Halogen count,Algebraically a component of ewg_weighted — cannot satisfy exclusion restriction by construction,0.433,216.614,Not applicable — just identified,OLS likely consistent — IV correction unnecessary
+Non-aromatic C=C bond count,Directly affects conjugation length which determines frontier orbital energies — exclusion restriction violated,0.433,216.614,Not applicable — just identified,OLS likely consistent — IV correction unnecessary

@@ -1,3 +1,0 @@
-outcome,instrument,IV_coef,F_stat,wu_hausman_p,sargan,note
-homo_ev,nonarom_cc,-0.04863178,216.614,0.433,not applicable - just identified,Wu-Hausman p=0.433: cannot reject OLS consistency with nonarom_cc only
-lumo_ev,nonarom_cc,-0.06070355,216.614,,not applicable - just identified,Wu-Hausman p=0.433: cannot reject OLS consistency with nonarom_cc only
