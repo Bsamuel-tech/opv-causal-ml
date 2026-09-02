@@ -1,0 +1,3 @@
+subset,experimental,CEP,total,note
+Full dataset,599,14930,15529,All molecules used for nuisance model training
+Causal subset (ewg_count > 0),598,0,598,Only experimental molecules — CEP excluded by ewg_count filter
