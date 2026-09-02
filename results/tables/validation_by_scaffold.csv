@@ -1,0 +1,4 @@
+scaffold,n_candidates,n_pass,n_fail,mean_error,original_homo,scaffold_pass
+Scaffold_2,3,3,0,0.0757,-5.99,TRUE
+Scaffold_3,5,2,3,0.3249,-5.65,TRUE
+Scaffold_1,2,1,1,0.1514,-6.2,TRUE
