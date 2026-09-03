@@ -1,4 +1,4 @@
-treatment,outcome,ATE,SE,p_value
-ewg_weighted,homo_ev,-0.012012652,0.007618604,0.114852508
-ewg_weighted,lumo_ev,-0.024806537,0.00739618,0.000796621
-ewg_weighted,bandgap_ev,-0.017843933,0.009511319,0.060645187
+treatment,outcome,ATE,SE,p_value,p_bonferroni,significant_bonferroni,significant_nominal
+ewg_weighted,homo_ev,-0.012012652,0.007618604,0.114852508,0.344557524,FALSE,FALSE
+ewg_weighted,lumo_ev,-0.024806537,0.00739618,0.000796621,0.002389863,TRUE,TRUE
+ewg_weighted,bandgap_ev,-0.017843933,0.009511319,0.060645187,0.181935561,FALSE,FALSE

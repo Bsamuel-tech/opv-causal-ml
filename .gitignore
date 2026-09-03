@@ -25,3 +25,6 @@ Reports/
 acceptor_base.csv
 master_acceptor_dataset.csv
 results/models/causal_forest.rds
+results/tables/dml_ewg_corrected.pdf
+results/tables/iv_results_diagnostics.csv
+Manuscript Guidance/

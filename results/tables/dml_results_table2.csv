@@ -1,0 +1,4 @@
+Outcome,ATE_eV,SE,P_value_nominal,P_value_Bonferroni,OLS_baseline_eV,Significant_Bonferroni,Interpretation
+HOMO energy,-0.012,0.0076,0.115,0.345,-0.029,No,Not significant after full confounder control
+LUMO energy,-0.025,0.0074,8e-04,0.0024,-0.024,Yes,Significant after Bonferroni correction
+Optical bandgap,-0.018,0.0095,0.061,0.182,,No,Not significant after Bonferroni correction

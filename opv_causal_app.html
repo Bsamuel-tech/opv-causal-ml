@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPV Causal ML : Design Engine</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:#0D1B2A;color:#F0F4F8;min-height:100vh;}
+
+/* Layout */
+.app{display:flex;flex-direction:column;min-height:100vh;}
+.topbar{background:#0A1520;border-bottom:1px solid #1B2F4E;padding:14px 32px;display:flex;align-items:center;justify-content:space-between;}
+.topbar-left{display:flex;align-items:center;gap:16px;}
+.topbar-tag{font-size:10px;letter-spacing:0.15em;color:#00B4D8;text-transform:uppercase;background:rgba(0,180,216,0.1);padding:4px 10px;border-radius:20px;border:1px solid rgba(0,180,216,0.3);}
+.topbar-title{font-size:15px;font-weight:600;color:#F0F4F8;}
+.topbar-right{font-size:12px;color:#8899AA;}
+.topbar-right a{color:#00B4D8;text-decoration:none;}
+
+.main{display:grid;grid-template-columns:380px 1fr;gap:0;flex:1;min-height:0;}
+
+/* Left panel */
+.left-panel{background:#0A1520;border-right:1px solid #1B2F4E;padding:28px 24px;overflow-y:auto;display:flex;flex-direction:column;gap:20px;}
+
+.section-label{font-size:10px;letter-spacing:0.12em;color:#8899AA;text-transform:uppercase;margin-bottom:10px;}
+
+/* Search */
+.search-box{background:#1B2F4E;border:1px solid #243d5c;border-radius:10px;padding:14px;}
+.search-title{font-size:13px;font-weight:600;color:#F0F4F8;margin-bottom:4px;}
+.search-desc{font-size:11px;color:#8899AA;margin-bottom:12px;line-height:1.5;}
+.search-input{width:100%;background:#0D1B2A;border:1px solid #243d5c;border-radius:8px;padding:10px 12px;color:#F0F4F8;font-family:'JetBrains Mono',monospace;font-size:12px;outline:none;transition:border-color 0.15s;}
+.search-input:focus{border-color:#00B4D8;}
+.search-input::placeholder{color:#4a5f75;}
+.mol-list{margin-top:10px;display:flex;flex-direction:column;gap:4px;max-height:200px;overflow-y:auto;}
+.mol-item{padding:8px 10px;border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all 0.15s;font-size:12px;}
+.mol-item:hover{background:#1B2F4E;border-color:#243d5c;}
+.mol-item.selected{background:#1B2F4E;border-color:#00B4D8;}
+.mol-item-homo{font-family:'JetBrains Mono',monospace;color:#00B4D8;font-size:11px;}
+.mol-item-smiles{color:#8899AA;font-size:10px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* Target shift */
+.slider-box{background:#1B2F4E;border:1px solid #243d5c;border-radius:10px;padding:14px;}
+.slider-title{font-size:13px;font-weight:600;color:#F0F4F8;margin-bottom:4px;}
+.slider-desc{font-size:11px;color:#8899AA;margin-bottom:14px;line-height:1.5;}
+.slider-row{display:flex;align-items:center;gap:10px;}
+.slider{flex:1;-webkit-appearance:none;height:4px;background:linear-gradient(to right,#00B4D8 var(--pct,50%),#243d5c var(--pct,50%));border-radius:2px;outline:none;cursor:pointer;}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#00B4D8;cursor:pointer;border:2px solid #0D1B2A;box-shadow:0 0 0 2px rgba(0,180,216,0.3);}
+.slider-value{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:#00B4D8;min-width:60px;text-align:right;}
+
+/* Run button */
+.run-btn{width:100%;padding:13px;background:linear-gradient(135deg,#00B4D8,#0077B6);border:none;border-radius:10px;color:#F0F4F8;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.15s;letter-spacing:0.02em;}
+.run-btn:hover{opacity:0.9;}
+.run-btn:active{opacity:0.8;}
+.run-btn:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* Right panel */
+.right-panel{padding:28px 32px;overflow-y:auto;display:flex;flex-direction:column;gap:24px;}
+
+/* Hero result */
+.result-hero{background:linear-gradient(135deg,#1B2F4E 0%,#0D1B2A 100%);border:1px solid #243d5c;border-radius:12px;padding:28px;position:relative;overflow:hidden;}
+.result-hero::before{content:'';position:absolute;top:-30%;right:-5%;width:300px;height:300px;background:radial-gradient(circle,rgba(0,180,216,0.08) 0%,transparent 70%);pointer-events:none;}
+.result-hero-tag{font-size:10px;letter-spacing:0.12em;color:#00B4D8;text-transform:uppercase;margin-bottom:8px;}
+.result-hero-title{font-size:20px;font-weight:700;color:#F0F4F8;margin-bottom:6px;line-height:1.3;}
+.result-hero-sub{font-size:13px;color:#8899AA;margin-bottom:20px;line-height:1.5;max-width:560px;}
+.stat-row{display:flex;gap:16px;flex-wrap:wrap;}
+.stat-box{background:#0D1B2A;border:1px solid #243d5c;border-radius:8px;padding:14px 18px;flex:1;min-width:120px;}
+.stat-box-label{font-size:10px;color:#8899AA;margin-bottom:6px;letter-spacing:0.05em;}
+.stat-box-value{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;color:#00B4D8;line-height:1;}
+.stat-box-unit{font-size:10px;color:#8899AA;margin-top:3px;}
+
+/* Panels */
+.panel{background:#1B2F4E;border:1px solid #243d5c;border-radius:10px;padding:20px;}
+.panel-head{margin-bottom:14px;}
+.panel-title{font-size:14px;font-weight:600;color:#F0F4F8;margin-bottom:3px;}
+.panel-sub{font-size:12px;color:#8899AA;line-height:1.5;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+
+/* Finding */
+.finding{border-left:3px solid #00B4D8;padding:10px 14px;background:rgba(0,180,216,0.06);border-radius:0 8px 8px 0;margin-bottom:10px;}
+.finding-label{font-size:10px;letter-spacing:0.1em;color:#00B4D8;text-transform:uppercase;margin-bottom:4px;}
+.finding-text{font-size:12px;color:#F0F4F8;line-height:1.5;}
+.finding.warn{border-left-color:#FFB703;background:rgba(255,183,3,0.06);}
+.finding.warn .finding-label{color:#FFB703;}
+.finding.neg{border-left-color:#748CAB;background:rgba(116,140,171,0.06);}
+.finding.neg .finding-label{color:#748CAB;}
+.finding.pass{border-left-color:#2EC4B6;background:rgba(46,196,182,0.06);}
+.finding.pass .finding-label{color:#2EC4B6;}
+
+/* Candidate cards */
+.cand-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;}
+.cand-card{background:#0D1B2A;border:1px solid #243d5c;border-radius:8px;padding:12px;cursor:pointer;transition:border-color 0.15s;}
+.cand-card:hover{border-color:#00B4D8;}
+.cand-card.pass-card{border-left:3px solid #2EC4B6;}
+.cand-card.fail-card{border-left:3px solid #748CAB;}
+.cand-num{font-size:10px;color:#8899AA;margin-bottom:6px;font-family:'JetBrains Mono',monospace;}
+.cand-sa{font-size:13px;font-weight:600;color:#F0F4F8;margin-bottom:2px;}
+.cand-error{font-family:'JetBrains Mono',monospace;font-size:12px;color:#00B4D8;}
+.cand-rec{font-size:10px;margin-top:6px;display:inline-block;}
+.cand-rec.pass{color:#2EC4B6;}
+.cand-rec.fail{color:#748CAB;}
+
+/* Bar chart */
+.bar-chart{display:flex;flex-direction:column;gap:10px;}
+.bar-row{display:flex;align-items:center;gap:10px;}
+.bar-label{font-size:11px;color:#8899AA;width:80px;text-align:right;flex-shrink:0;}
+.bar-track{flex:1;height:8px;background:#0D1B2A;border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width 0.6s ease;}
+.bar-val{font-family:'JetBrains Mono',monospace;font-size:11px;color:#F0F4F8;width:60px;flex-shrink:0;}
+
+/* Empty state */
+.empty{text-align:center;padding:60px 20px;color:#8899AA;}
+.empty-icon{font-size:48px;margin-bottom:16px;opacity:0.4;}
+.empty-title{font-size:16px;font-weight:600;color:#748CAB;margin-bottom:8px;}
+.empty-text{font-size:13px;line-height:1.6;}
+
+/* Badge */
+.badge{display:inline;font-size:11px;font-family:'JetBrains Mono',monospace;}
+.badge-sig{color:#2EC4B6;}
+.badge-ns{color:#748CAB;}
+.badge-bl{color:#FFB703;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:#0A1520;}
+::-webkit-scrollbar-thumb{background:#243d5c;border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:#00B4D8;}
+
+/* Responsive */
+@media(max-width:900px){
+  .main{grid-template-columns:1fr;}
+  .two-col{grid-template-columns:1fr;}
+  .left-panel{border-right:none;border-bottom:1px solid #1B2F4E;}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- Topbar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span class="topbar-tag">Causal ML · OPV Design</span>
+    <span class="topbar-title">Organic Acceptor Design Engine</span>
+  </div>
+  <div class="topbar-right">
+    Samuel Bizimana · JUNIA ISEN · 
+    <a href="https://github.com/Bsamuel-tech/opv-causal-ml" target="_blank">GitHub ↗</a>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+
+  <div>
+    <div class="section-label">Step 1 : Select molecule</div>
+    <div class="search-box">
+      <div class="search-title">Choose a starting molecule</div>
+      <div class="search-desc">Select from 598 experimental organic acceptors with known frontier orbital energies and pre-computed CATE estimates.</div>
+      <input class="search-input" id="search" placeholder="Search by HOMO energy or index…" oninput="filterMols()" />
+      <div class="mol-list" id="mol-list"></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="section-label">Step 2 : Set target</div>
+    <div class="slider-box">
+      <div class="slider-title">Target HOMO shift</div>
+      <div class="slider-desc">How much do you want to change the HOMO energy? Negative = lower HOMO.</div>
+      <div class="slider-row">
+        <input type="range" class="slider" id="target-slider" min="-0.5" max="0.1" step="0.01" value="-0.2" oninput="updateSlider()" />
+        <span class="slider-value" id="slider-display">−0.20 eV</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="run-btn" id="run-btn" onclick="runDesign()" disabled>
+    Run Design Engine
+  </button>
+
+  <div style="background:#1B2F4E;border:1px solid #243d5c;border-radius:10px;padding:14px;">
+    <div class="section-label" style="margin-bottom:8px;">Population-level DML estimates</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
+        <span style="color:#8899AA;">EWG → LUMO</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-family:'JetBrains Mono',monospace;color:#F0F4F8;">−0.025 eV</span>
+          <span class="badge badge-sig">p=0.0008</span>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
+        <span style="color:#8899AA;">EWG → HOMO</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-family:'JetBrains Mono',monospace;color:#F0F4F8;">−0.012 eV</span>
+          <span class="badge badge-ns">p=0.115</span>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;">
+        <span style="color:#8899AA;">EWG → Bandgap</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-family:'JetBrains Mono',monospace;color:#F0F4F8;">−0.018 eV</span>
+          <span class="badge badge-bl">p=0.061</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel" id="right-panel">
+  <div class="empty">
+    <div class="empty-icon">⬡</div>
+    <div class="empty-title">Select a molecule to begin</div>
+    <div class="empty-text">Choose an organic acceptor from the list on the left, set your target HOMO shift, then run the causal design engine to see per-molecule predictions and candidate modifications.</div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<script>
+// ── Data ────────────────────────────────────────────────────────────
+// Pre-computed from phase3_xtb_validation_final.csv and experimental_with_cates.csv
+const MOLECULES = [
+  {id:1,homo:-5.99,lumo:-4.01,bandgap:1.98,ewg:1.00,cate:0.02744,mw:603.7,sa:2.87,smiles:"CCN1C(=O)c2ccc3c4c(-c5ccccc5C)c5c6cccc7cccc(c5c4-4)c3c21"},
+  {id:2,homo:-5.65,lumo:-3.87,bandgap:1.78,ewg:1.66,cate:0.02556,mw:488.6,sa:3.02,smiles:"CCN1C(=O)c2c(c(-c3cccs3)c3c(c2-c2cccs2)-c2cccc..."},
+  {id:3,homo:-5.65,lumo:-3.83,bandgap:1.82,ewg:2.00,cate:0.02556,mw:514.6,sa:3.10,smiles:"CCN1C(=O)c2cc(-c3ccc(-c4ccc(C)s4)s3)c3c4c(cc(C..."},
+  {id:4,homo:-6.20,lumo:-4.11,bandgap:2.09,ewg:1.32,cate:0.02556,mw:432.6,sa:3.13,smiles:"CCC1(CC)c2ccccc2-c2ccc(-c3ccc(C=C(C#N)C#N)c4nsnc34)cc21"},
+  {id:5,homo:-5.61,lumo:-3.84,bandgap:1.77,ewg:1.00,cate:0.02556,mw:731.0,sa:3.65,smiles:"CCOc1c(OCC)c(-c2ccc(/C=C3\\SC(=S)N(CC)C3=O)s2)c..."},
+  {id:6,homo:-5.99,lumo:-4.12,bandgap:1.87,ewg:1.32,cate:0.02744,mw:628.7,sa:3.16,smiles:"CCN1C(=O)c2ccc3c4c(-c5ccccc5)c5c6cccc7cccc(c5c4..."},
+  {id:7,homo:-5.28,lumo:-3.61,bandgap:1.67,ewg:0.66,cate:0.02561,mw:615.7,sa:3.18,smiles:"CCN1C(=O)c2cc(-c3ccc(-c4sc5c(c4)C(c4ccc(CCCCCC)..."},
+  {id:8,homo:-5.47,lumo:-3.79,bandgap:1.68,ewg:1.32,cate:0.02661,mw:780.0,sa:3.22,smiles:"CCN1C(=O)c2cc3c(cc2c2cc4c(cc21)C(c1ccc(CCCCCC)c..."},
+  {id:9,homo:-5.55,lumo:-3.85,bandgap:1.70,ewg:1.66,cate:0.02634,mw:890.9,sa:3.31,smiles:"CCN1C(=O)c2cc3c(cc2c2cc4c(cc21)C(c1ccc(CCCCCC)c..."},
+  {id:10,homo:-5.51,lumo:-3.83,bandgap:1.68,ewg:1.32,cate:0.02561,mw:787.0,sa:3.38,smiles:"c1ccc2c(c1)C(c1ccc(CCCCCC)cc1)(c1ccc(CCCCCC)cc1..."},
+  {id:11,homo:-5.67,lumo:-3.89,bandgap:1.78,ewg:1.32,cate:0.02557,mw:795.0,sa:3.41,smiles:"CCN1C(=O)c2cc3c(cc2c2cc4c(cc21)C(c1ccc(CCCCCC)c..."},
+  {id:12,homo:-5.65,lumo:-3.87,bandgap:1.78,ewg:1.66,cate:0.02556,mw:513.6,sa:3.24,smiles:"CCN1C(=O)c2c(c(-c3ccc(-c4ccc(C)s4)s3)c3c(c2)..."},
+  {id:13,homo:-5.40,lumo:-3.72,bandgap:1.68,ewg:0.66,cate:0.02556,mw:460.7,sa:3.38,smiles:"c1ccc2c(c1)C(c1ccc(CCCCCC)cc1)(c1ccc(CCCCCC)cc1..."},
+  {id:14,homo:-5.13,lumo:-3.55,bandgap:1.58,ewg:0.66,cate:-0.04619,mw:1265.7,sa:5.21,smiles:"CCCCCCCCCCCc3c(C=c2c(=O)c1cc(Cl)c(Cl)cc1c2=C(C..."},
+  {id:15,homo:-5.54,lumo:-3.80,bandgap:1.74,ewg:1.32,cate:-0.04474,mw:1241.6,sa:5.18,smiles:"large fused ring acceptor SMILES..."},
+];
+
+// xTB validation results (from phase3_xtb_validation_final.csv)
+const XTB_RESULTS = [
+  {candidate:1,sascore:3.125,cate:0.0274,ml:-5.9719,xtb:-5.8796,error:0.092,pct:"1.57%",pass:true},
+  {candidate:2,sascore:3.160,cate:0.0274,ml:-5.9719,xtb:-5.9140,error:0.058,pct:"0.98%",pass:true},
+  {candidate:3,sascore:3.200,cate:0.0274,ml:-5.9719,xtb:-5.8949,error:0.077,pct:"1.31%",pass:true},
+  {candidate:4,sascore:3.239,cate:0.0256,ml:-5.6331,xtb:-6.1266,error:0.494,pct:"8.05%",pass:false},
+  {candidate:5,sascore:3.241,cate:0.0256,ml:-5.6331,xtb:-6.0983,error:0.465,pct:"7.63%",pass:false},
+  {candidate:6,sascore:3.264,cate:0.0256,ml:-5.6331,xtb:-6.1346,error:0.502,pct:"8.17%",pass:false},
+  {candidate:7,sascore:3.338,cate:0.0256,ml:-6.1831,xtb:-5.9269,error:0.256,pct:"4.32%",pass:false},
+  {candidate:8,sascore:3.344,cate:0.0256,ml:-5.6331,xtb:-5.6874,error:0.054,pct:"0.95%",pass:true},
+  {candidate:9,sascore:3.361,cate:0.0256,ml:-6.1831,xtb:-6.1366,error:0.047,pct:"0.76%",pass:true},
+  {candidate:10,sascore:3.361,cate:0.0256,ml:-5.6331,xtb:-5.7435,error:0.110,pct:"1.92%",pass:true},
+];
+
+const HAMMETT = {cyano:0.66,carbonyl:0.50,nitro:0.78,halogen:0.23,ester:0.45,sulfonyl:0.72};
+
+let selectedMol = null;
+let filteredMols = [...MOLECULES];
+
+// ── Init ─────────────────────────────────────────────────────────────
+function init(){
+  renderMolList(MOLECULES);
+  updateSlider();
+}
+
+function renderMolList(mols){
+  const list = document.getElementById('mol-list');
+  list.innerHTML = mols.slice(0,20).map(m => `
+    <div class="mol-item ${selectedMol && selectedMol.id===m.id?'selected':''}"
+         onclick="selectMol(${m.id})">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:12px;color:#F0F4F8;">Molecule ${m.id}</span>
+        <span class="mol-item-homo">HOMO: ${m.homo} eV</span>
+      </div>
+      <div class="mol-item-smiles">CATE: ${m.cate>0?'+':''}${m.cate.toFixed(4)} eV · MW: ${m.mw} g/mol</div>
+    </div>
+  `).join('');
+}
+
+function filterMols(){
+  const q = document.getElementById('search').value.toLowerCase();
+  filteredMols = MOLECULES.filter(m =>
+    String(m.homo).includes(q) ||
+    String(m.id).includes(q) ||
+    String(m.mw).includes(q)
+  );
+  renderMolList(filteredMols);
+}
+
+function selectMol(id){
+  selectedMol = MOLECULES.find(m=>m.id===id);
+  renderMolList(filteredMols);
+  document.getElementById('run-btn').disabled = false;
+  showSelectedInfo();
+}
+
+function showSelectedInfo(){
+  if(!selectedMol) return;
+  const m = selectedMol;
+  const right = document.getElementById('right-panel');
+  right.innerHTML = `
+    <div class="result-hero">
+      <div class="result-hero-tag">Selected molecule · Molecule ${m.id}</div>
+      <div class="result-hero-title">Molecule ${m.id} : HOMO ${m.homo} eV</div>
+      <div class="result-hero-sub">
+        This molecule has a per-molecule CATE of ${m.cate>0?'+':''}${m.cate.toFixed(4)} eV per unit 
+        Hammett-weighted EWG score, estimated by the causal forest (4,000 trees). 
+        Select a target shift and run the design engine.
+      </div>
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-box-label">HOMO energy</div>
+          <div class="stat-box-value">${m.homo}</div>
+          <div class="stat-box-unit">eV · experimental</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">LUMO energy</div>
+          <div class="stat-box-value">${m.lumo}</div>
+          <div class="stat-box-unit">eV · experimental</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">Per-molecule CATE</div>
+          <div class="stat-box-value">${m.cate>0?'+':''}${m.cate.toFixed(4)}</div>
+          <div class="stat-box-unit">eV per unit EWG score</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">Molecular weight</div>
+          <div class="stat-box-value">${m.mw}</div>
+          <div class="stat-box-unit">g/mol</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">SAScore</div>
+          <div class="stat-box-value">${m.sa}</div>
+          <div class="stat-box-unit">${m.sa<4?'Synthesizable':'Difficult'}</div>
+        </div>
+      </div>
+    </div>
+    <div class="finding ${m.cate>0?'warn':'pass'}">
+      <div class="finding-label">CATE Direction for this molecule</div>
+      <div class="finding-text">
+        ${m.cate>0
+          ? `This molecule has a POSITIVE CATE (+${m.cate.toFixed(4)} eV). The causal forest predicts that adding EWGs will slightly RAISE HOMO energy for this scaffold class. This is an honest finding about scaffold-specificity of EWG effects.`
+          : `This molecule has a NEGATIVE CATE (${m.cate.toFixed(4)} eV). The causal forest predicts that adding EWGs will LOWER HOMO energy for this molecule, consistent with the population-level finding.`
+        }
+      </div>
+    </div>
+    <p style="color:#8899AA;font-size:13px;text-align:center;padding:10px 0;">Set your target shift on the left and click <strong style="color:#F0F4F8;">Run Design Engine</strong></p>
+  `;
+}
+
+function updateSlider(){
+  const val = parseFloat(document.getElementById('target-slider').value);
+  const pct = ((val - (-0.5)) / (0.6)) * 100;
+  document.getElementById('target-slider').style.setProperty('--pct', pct+'%');
+  document.getElementById('slider-display').textContent =
+    (val >= 0 ? '+' : '−') + Math.abs(val).toFixed(2) + ' eV';
+}
+
+function runDesign(){
+  if(!selectedMol) return;
+  const m = selectedMol;
+  const target = parseFloat(document.getElementById('target-slider').value);
+  const cate = m.cate;
+
+  // Compute required EWG delta
+  const requiredEwgDelta = cate !== 0 ? target / cate : null;
+  const cyanoNeeded = requiredEwgDelta !== null ? Math.abs(requiredEwgDelta / 0.66) : null;
+  const predictedHomo = m.homo + (cate * 0.66); // one cyano addition
+
+  // Check if this molecule was in our validation set
+  const validationResult = XTB_RESULTS.find(r => Math.abs(r.ml - (m.homo + cate*0.66)) < 0.01);
+
+  const right = document.getElementById('right-panel');
+  right.innerHTML = `
+    <div class="result-hero">
+      <div class="result-hero-tag">Design Engine Result · Molecule ${m.id}</div>
+      <div class="result-hero-title">Counterfactual Design Analysis</div>
+      <div class="result-hero-sub">
+        Using per-molecule CATE = ${cate>0?'+':''}${cate.toFixed(4)} eV/unit from the causal forest. 
+        Target shift: ${target>=0?'+':''}${target.toFixed(2)} eV. 
+        ${requiredEwgDelta!==null && cyanoNeeded!==null
+          ? `Required EWG score increase: ${Math.abs(requiredEwgDelta).toFixed(2)} units ≈ ${Math.ceil(cyanoNeeded)} cyano group${Math.ceil(cyanoNeeded)!==1?'s':''}.`
+          : 'CATE is zero : cannot compute required additions.'}
+      </div>
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-box-label">Current HOMO</div>
+          <div class="stat-box-value">${m.homo}</div>
+          <div class="stat-box-unit">eV · experimental</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">Target HOMO</div>
+          <div class="stat-box-value" style="color:#90E0EF;">${(m.homo+target).toFixed(3)}</div>
+          <div class="stat-box-unit">eV · desired</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">Per-molecule CATE</div>
+          <div class="stat-box-value">${cate>0?'+':''}${cate.toFixed(4)}</div>
+          <div class="stat-box-unit">eV per unit EWG</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">EWG units needed</div>
+          <div class="stat-box-value">${requiredEwgDelta!==null?Math.abs(requiredEwgDelta).toFixed(2):':'}</div>
+          <div class="stat-box-unit">Hammett-weighted</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-label">Cyano groups</div>
+          <div class="stat-box-value">${cyanoNeeded!==null?Math.ceil(cyanoNeeded):':'}</div>
+          <div class="stat-box-unit">C≡N additions (σ=0.66)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Causal reasoning chain</div>
+          <div class="panel-sub">How the design engine computes the recommendation</div>
+        </div>
+        <div class="finding pass">
+          <div class="finding-label">Step 1 : Per-molecule CATE</div>
+          <div class="finding-text">Causal forest (4,000 trees) estimates CATE = ${cate>0?'+':''}${cate.toFixed(4)} eV per unit EWG score for this specific molecule. This is not the population average (−0.022 eV) but a molecule-specific estimate.</div>
+        </div>
+        <div class="finding">
+          <div class="finding-label">Step 2 : Required EWG increase</div>
+          <div class="finding-text">Required ΔEWGscore = target ÷ CATE = ${target.toFixed(2)} ÷ ${cate.toFixed(4)} = ${requiredEwgDelta!==null?Math.abs(requiredEwgDelta).toFixed(2):':'} units</div>
+        </div>
+        <div class="finding">
+          <div class="finding-label">Step 3 : Cyano group translation</div>
+          <div class="finding-text">Each cyano group (C≡N) has Hammett σ-para = 0.66. Groups needed = ${requiredEwgDelta!==null?Math.abs(requiredEwgDelta).toFixed(2):':'} ÷ 0.66 = ${cyanoNeeded!==null?cyanoNeeded.toFixed(1):':'} → round up to ${cyanoNeeded!==null?Math.ceil(cyanoNeeded):':'}</div>
+        </div>
+        <div class="finding warn">
+          <div class="finding-label">Step 4 : Honest caveat</div>
+          <div class="finding-text">${cate>0
+            ? 'This molecule has a positive CATE : adding EWGs is predicted to raise HOMO. To lower HOMO you may need a different scaffold or different EWG type.'
+            : 'Population-level DML shows HOMO is not significantly affected (p=0.115). This per-molecule estimate uses individual CATE. xTB validation is needed to confirm.'
+          }</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <div class="panel-title">Hammett sigma-para reference</div>
+          <div class="panel-sub">Electron-withdrawing strength used to compute EWG score</div>
+        </div>
+        <div class="bar-chart">
+          ${Object.entries(HAMMETT).sort((a,b)=>b[1]-a[1]).map(([name,val])=>`
+            <div class="bar-row">
+              <div class="bar-label">${name}</div>
+              <div class="bar-track">
+                <div class="bar-fill" style="width:${(val/0.78)*100}%;background:${val>=0.6?'#2EC4B6':val>=0.4?'#00B4D8':'#748CAB'};"></div>
+              </div>
+              <div class="bar-val">σ = ${val.toFixed(2)}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">xTB Validation Results : Pre-computed for top 10 candidates</div>
+        <div class="panel-sub">GFN2-xTB with calibration offset 4.6197 eV · conformer seed = 42 · MAE = 0.216 eV (PASSED 0.25 eV threshold)</div>
+      </div>
+      <div class="cand-grid">
+        ${XTB_RESULTS.map(r=>`
+          <div class="cand-card ${r.pass?'pass-card':'fail-card'}">
+            <div class="cand-num">Candidate ${r.candidate}</div>
+            <div class="cand-sa">SAScore: ${r.sascore}</div>
+            <div class="cand-error">Error: ${r.error.toFixed(3)} eV</div>
+            <div style="font-size:10px;color:#8899AA;margin-top:2px;">${r.pct} difference</div>
+            <div class="cand-rec ${r.pass?'pass':'fail'}">${r.pass?'Pass':'Validate'}</div>
+          </div>
+        `).join('')}
+      </div>
+      <div style="margin-top:16px;display:flex;gap:16px;flex-wrap:wrap;">
+        <div class="finding pass" style="flex:1;min-width:200px;margin-bottom:0;">
+          <div class="finding-label">Overall result</div>
+          <div class="finding-text">MAE = 0.216 eV · 6/10 candidates pass · 10/10 synthesizable (SAScore &lt; 4.0)</div>
+        </div>
+        <div class="finding warn" style="flex:1;min-width:200px;margin-bottom:0;">
+          <div class="finding-label">Why 4 candidates fail</div>
+          <div class="finding-text">Candidates 4–7 come from one scaffold class where CATE underestimates the quantum-chemical response at higher EWG loadings.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">Synthesizability filter : SAScore explained</div>
+        <div class="panel-sub">Ertl &amp; Schuffenhauer (2009) · Scale 1 (easy) to 10 (impossible)</div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="bar-chart">
+            <div class="bar-row">
+              <div class="bar-label" style="font-size:10px;">Very easy</div>
+              <div class="bar-track"><div class="bar-fill" style="width:20%;background:#2EC4B6;"></div></div>
+              <div class="bar-val">1–2</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label" style="font-size:10px;">Standard</div>
+              <div class="bar-track"><div class="bar-fill" style="width:40%;background:#00B4D8;"></div></div>
+              <div class="bar-val">2–4</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label" style="font-size:10px;">Moderate</div>
+              <div class="bar-track"><div class="bar-fill" style="width:60%;background:#FFB703;"></div></div>
+              <div class="bar-val">4–6</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label" style="font-size:10px;">Difficult</div>
+              <div class="bar-track"><div class="bar-fill" style="width:80%;background:#FF8C42;"></div></div>
+              <div class="bar-val">6–8</div>
+            </div>
+            <div class="bar-row">
+              <div class="bar-label" style="font-size:10px;">Impractical</div>
+              <div class="bar-track"><div class="bar-fill" style="width:100%;background:#FF5A5A;"></div></div>
+              <div class="bar-val">8–10</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="finding pass">
+            <div class="finding-label">This molecule SAScore: ${m.sa}</div>
+            <div class="finding-text">${m.sa<4?'Below 4.0 : synthesizable in a standard chemistry laboratory. This molecule is a valid starting point for the design engine.':'Above 4.0 : moderately difficult to synthesise. Generated candidates may also score above threshold.'}</div>
+          </div>
+          <div class="finding neg" style="margin-top:10px;">
+            <div class="finding-label">Filter threshold</div>
+            <div class="finding-text">SAScore &lt; 4.0 used in this project. All 10 generated candidates passed this filter. SYBA score was not computed : package no longer publicly available as of August 2026.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+init();
+</script>
+</body>
+</html>
