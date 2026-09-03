@@ -10,8 +10,8 @@ df[, meas_num := ifelse(measurement_type == "experiment", 1, 0)]
 cat("Rows:", nrow(df), "
 ")
 
-confounders <- c("mol_weight", "n_arom_rings", "conj_length",
-                 "halogen_count", "meas_num")
+confounders <- c("mol_weight", "n_arom_rings", "conj_length", "halogen_count")
+# Note: meas_num removed — all 598 causal molecules are experimental so measurement_type is constant
 
 # Model 1: EWG -> HOMO
 dml_data_homo <- DoubleMLData$new(df, y_col="homo_ev",
