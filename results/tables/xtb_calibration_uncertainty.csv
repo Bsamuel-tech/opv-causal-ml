@@ -1,0 +1,11 @@
+metric,value
+Calibration offset (eV),4.6197
+Offset std (eV),0.2776
+CI lower (eV),4.1678
+CI upper (eV),5.2561
+MAE central (eV),0.2155
+MAE lower CI (eV),0.6536
+MAE upper CI (eV),0.4346
+Threshold (eV),0.25
+Mean experimental uncertainty (eV),0.05
+Justified threshold (eV),1.2825
