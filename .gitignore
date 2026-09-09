@@ -28,3 +28,6 @@ results/models/causal_forest.rds
 results/tables/dml_ewg_corrected.pdf
 results/tables/iv_results_diagnostics.csv
 Manuscript Guidance/
+check_columns.py
+debug2.py
+debug_smiles.py
