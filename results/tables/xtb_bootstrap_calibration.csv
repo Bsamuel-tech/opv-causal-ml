@@ -1,0 +1,9 @@
+metric,value
+N calibration molecules,10.0
+Calibration offset mean (eV),4.7119
+Calibration offset std (eV),0.2776
+Bootstrap 95% CI lower (eV),4.5573
+Bootstrap 95% CI upper (eV),4.8792
+Bootstrap CI width (eV),0.3219
+MAE central (eV),0.2155
+Threshold (eV),0.25
