@@ -18,10 +18,10 @@ in a fully reproducible workflow.
 EWG score causally lowers LUMO energy by 0.025 eV (DML, p=0.0008).
 HOMO effect is not statistically significant after full confounder control
 (DML, p=0.115). No valid instrument was identified for IV estimation.
-halogen_count was dropped because it is a component of ewg_weighted.
+halogen_count is retained as a confounder because it contains structural information beyond its weighted contribution to the Hammett EWG score. A sensitivity analysis excluding halogen_count from the adjustment set is reported in the supplementary material.
 nonarom_cc was also found invalid because non-aromatic C=C bonds directly
 affect conjugation length which determines HOMO and LUMO energies, violating
-the exclusion restriction. Wu-Hausman p=0.433 confirms OLS is likely
+the exclusion restriction. Wu-Hausman p=0.433 is reported descriptively only. Because neither instrument satisfies the exclusion restriction this result is not treated as evidence supporting OLS consistency. OLS is likely
 consistent. IV results are inconclusive and DML remains the primary estimate.
 Bootstrap leakage gap mean=-0.0017 across 20 seeds, all below 0.15 threshold.
 Nuisance diagnostics: R2(ml_l)=0.181 RMSE=0.133 eV, R2(ml_m)=0.713.
