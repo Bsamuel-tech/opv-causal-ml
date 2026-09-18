@@ -53,8 +53,8 @@ iv_results <- data.table(
   instrument = "nonarom_cc",
   IV_coef    = c(coef(iv_homo)["ewg_weighted"],
                  coef(iv_lumo)["ewg_weighted"]),
-  F_stat     = c(304, 217),
-  wu_hausman_p = c(0.00175, 0.078),
+  F_stat     = c(NA, 216.614),  # halogen not tested; nonarom_cc F=216.614
+  wu_hausman_p = c(NA, 0.433),  # halogen not tested; nonarom_cc p=0.433
   note       = "just-identified: Sargan not applicable"
 )
 fwrite(iv_results, "results/tables/iv_results.csv")
