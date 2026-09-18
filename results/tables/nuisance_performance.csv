@@ -1,3 +1,4 @@
-model,r2_cv,rmse,interpretation
-ml_l: HOMO ~ confounders,0.181,0.1326,Low but positive - DML estimates valid with higher uncertainty than ideal
-ml_m: EWG score ~ confounders,0.713,0.7122,Moderate - adequate treatment variation remains after confounder control
+model,r2_cv,rmse,outcome
+ml_l: HOMO ~ confounders,0.181,0.133,HOMO
+ml_l: LUMO ~ confounders,0.159,0.131,LUMO
+ml_m: EWG ~ confounders,0.735,0.684,EWG treatment
