@@ -4,6 +4,7 @@
 **Supervisor:** Dr. Kekeli N'KONOU  
 **Target Journal:** Nature Machine Intelligence  
 **GitHub:** https://github.com/Bsamuel-tech/opv-causal-ml
+**Pipeline:** https://github.com/Bsamuel-tech/opv-causal-ml/blob/main/PIPELINE.md
 
 ## What This Project Does
 
