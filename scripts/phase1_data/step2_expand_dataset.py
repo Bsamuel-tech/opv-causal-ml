@@ -1,18 +1,25 @@
 import pandas as pd
 import numpy as np
+from pathlib import Path
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors
+
+# ── Paths ──────────────────────────────────────────────────────────────────
+ROOT           = Path(__file__).resolve().parent.parent.parent
+DATA_RAW       = ROOT / "data"
+DATA_INTERIM   = ROOT / "data" / "interim"
+DATA_PROCESSED = ROOT / "data" / "processed"
+DATA_INTERIM.mkdir(parents=True, exist_ok=True)
+DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
 
 print("=== Step 2: Expanding to 10,000-15,000 acceptor molecules ===\n")
 
 # ── 1. Load your base dataset ─────────────────────────────────────
-base = pd.read_csv("acceptor_base.csv")
+base = pd.read_csv(DATA_INTERIM / "step1_experimental_raw.csv")
 print(f"Base dataset: {len(base)} molecules")
 
 # ── 2. Load CEP dataset ───────────────────────────────────────────
-cep = pd.read_csv(
-    r"C:\Users\Samuel Bizimana\OneDrive\Desktop\Research Training\data\raw\moldata.csv"
-)
+cep = pd.read_csv(DATA_RAW / "raw" / "moldata.csv")
 print(f"CEP raw: {len(cep)} rows")
 print("CEP columns:", cep.columns.tolist())
 
@@ -104,8 +111,14 @@ master = pd.concat([base, cep_sample], ignore_index=True)
 master = master.drop_duplicates(subset=['canonical_SMILES'])
 print(f"\nMaster dataset: {len(master)} molecules")
 
-# ── 7. Save ───────────────────────────────────────────────────────
-master.to_csv("master_acceptor_dataset.csv", index=False)
+# ── 7. Save interim snapshot + final processed file ───────────────
+interim_path   = DATA_INTERIM   / "step2_merged_raw.csv"
+processed_path = DATA_PROCESSED / "master_acceptor_dataset.csv"
+
+master.to_csv(interim_path,   index=False)
+master.to_csv(processed_path, index=False)
+print(f"Saved interim:   {interim_path}")
+print(f"Saved processed: {processed_path}")
 
 print("\n=== Final Summary ===")
 print(f"Total molecules: {len(master)}")
@@ -117,4 +130,3 @@ print(f"Bandgap range: {master['bandgap_ev'].min():.3f} to {master['bandgap_ev']
 print(f"EWG count range: {master['ewg_count'].min():.0f} to {master['ewg_count'].max():.0f}")
 print(f"EWG weighted range: {master['ewg_weighted'].min():.2f} to {master['ewg_weighted'].max():.2f}")
 print(f"\nMissing values: {master.isnull().sum().sum()}")
-print("\nSaved master_acceptor_dataset.csv")
