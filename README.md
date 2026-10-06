@@ -3,9 +3,9 @@
 **Author:** Samuel Bizimana | JUNIA ISEN  
 **Supervisor:** Dr. Kekeli N'KONOU  
 **Target Journal:** Nature Machine Intelligence  
-**GitHub:** http//:github.com/Bsamuel-tech/opv-causal-ml
+**GitHub:** https://github.com/Bsamuel-tech/opv-causal-ml
 
-**Pipeline:** http//:github.com/Bsamuel-tech/opv-causal-ml/blob/main/PIPELINE.md
+**Pipeline:** https://github.com/Bsamuel-tech/opv-causal-ml/blob/main/PIPELINE.md
 
 ## What This Project Does
 
