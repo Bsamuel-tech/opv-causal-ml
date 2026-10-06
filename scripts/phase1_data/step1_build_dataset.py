@@ -1,15 +1,20 @@
 import pandas as pd
 import numpy as np
+from pathlib import Path
 from rdkit import Chem
 from rdkit.Chem import Descriptors, rdMolDescriptors, FilterCatalog
 from rdkit.Chem.Scaffolds import MurckoScaffold
 
+# ── Paths ──────────────────────────────────────────────────────────────────
+ROOT           = Path(__file__).resolve().parent.parent.parent
+DATA_RAW       = ROOT / "data"
+DATA_INTERIM   = ROOT / "data" / "interim"
+DATA_INTERIM.mkdir(parents=True, exist_ok=True)
+
 print("=== Step 1: Building correct acceptor dataset ===\n")
 
 # ── 1. Load your 1,573-row dataset ────────────────────────────────
-df = pd.read_excel(
-    r"C:\Users\Samuel Bizimana\OneDrive\Desktop\Research Training\data\Data_Merged_with_SMILES.xlsx"
-)
+df = pd.read_excel(DATA_RAW / "Data_Merged_with_SMILES.xlsx")
 print(f"Loaded: {len(df)} rows")
 
 # ── 2. Keep acceptor columns only ─────────────────────────────────
@@ -113,6 +118,7 @@ print(f"\nSource breakdown:")
 print(acc['source_db'].value_counts())
 
 # ── 8. Save ───────────────────────────────────────────────────────
-acc.to_csv("acceptor_base.csv", index=False)
-print(f"\nSaved acceptor_base.csv with {len(acc)} molecules")
+out_path = DATA_INTERIM / "step1_experimental_raw.csv"
+acc.to_csv(out_path, index=False)
+print(f"\nSaved {out_path} with {len(acc)} molecules")
 print("Columns:", acc.columns.tolist())
