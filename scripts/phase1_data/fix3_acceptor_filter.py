@@ -5,17 +5,24 @@ Filters CEP molecules to confirm they are acceptor-type
 by checking for known acceptor motifs: electron-withdrawing
 groups, low-lying LUMO, and absence of strong donor groups.
 
-Author: Samuel Bizimana | JUNIA ISEN
-Supervisor: Dr. Kekeli N'KONOU
 """
 
 import pandas as pd
+from pathlib import Path
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
+# ── Paths ──────────────────────────────────────────────────────────────────
+ROOT           = Path(__file__).resolve().parent.parent.parent
+DATA_INTERIM   = ROOT / "data" / "interim"
+DATA_PROCESSED = ROOT / "data" / "processed"
+RESULTS_TABLES = ROOT / "results" / "tables"
+DATA_INTERIM.mkdir(parents=True, exist_ok=True)
+RESULTS_TABLES.mkdir(parents=True, exist_ok=True)
+
 print("=== Fix 9: Acceptor structural filter for CEP sample ===\n")
 
-df = pd.read_csv("data/processed/master_acceptor_dataset.csv")
+df = pd.read_csv(DATA_INTERIM / "step2_merged_raw.csv")
 cep = df[df['source_db'] == 'CEP'].copy()
 print(f"CEP molecules before filter: {len(cep)}")
 
@@ -56,6 +63,18 @@ print(f"  HOMO: {passing['homo_ev'].min():.3f} to {passing['homo_ev'].max():.3f}
 print(f"  LUMO: {passing['lumo_ev'].min():.3f} to {passing['lumo_ev'].max():.3f} eV")
 print(f"  Bandgap: {passing['bandgap_ev'].min():.3f} to {passing['bandgap_ev'].max():.3f} eV")
 
+# Apply filter — keep only acceptor-like CEP + all experimental
+exp = df[df['source_db'] != 'CEP'].copy()
+cep_filtered = cep[cep['is_acceptor']].drop(columns=['is_acceptor'])
+master_filtered = pd.concat([exp, cep_filtered], ignore_index=True)
+print(f"\nFiltered master dataset: {len(master_filtered)} molecules")
+print(master_filtered['source_db'].value_counts().to_string())
+
+# Save interim snapshot
+interim_out = DATA_INTERIM / "fix3_acceptors_only.csv"
+master_filtered.to_csv(interim_out, index=False)
+print(f"\nSaved interim: {interim_out}")
+
 # Save filter report
 report = pd.DataFrame({
     'filter': ['LUMO < -2.0 eV', 'Bandgap < 3.5 eV', 'HOMO < -4.5 eV'],
@@ -71,7 +90,8 @@ report = pd.DataFrame({
     ]
 })
 
-report.to_csv("results/tables/cep_acceptor_filter_report.csv", index=False)
-print("\nSaved cep_acceptor_filter_report.csv")
+report_out = RESULTS_TABLES / "cep_acceptor_filter_report.csv"
+report.to_csv(report_out, index=False)
+print(f"Saved filter report: {report_out}")
 print("\nConclusion: CEP sample is verified as acceptor-like based on")
 print("frontier orbital energy criteria consistent with OPV acceptor literature.")

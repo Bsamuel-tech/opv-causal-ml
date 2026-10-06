@@ -5,8 +5,6 @@ Validates counterfactual candidates using xTB GFN2.
 ML predictions use per-molecule CATE from causal forest.
 Calibration offset computed against 8 experimental molecules.
 
-Author: Samuel Bizimana | JUNIA ISEN
-Supervisor: Dr. Kekeli N'KONOU
 """
 
 import pandas as pd
@@ -14,16 +12,22 @@ import numpy as np
 import subprocess
 import os
 import tempfile
+from pathlib import Path
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
+# ── Paths ──────────────────────────────────────────────────────────────────
+ROOT           = Path(__file__).resolve().parent.parent.parent
+RESULTS_TABLES = ROOT / "results" / "tables"
+RESULTS_TABLES.mkdir(parents=True, exist_ok=True)
+
 print("=== Phase 3: xTB Validation of Counterfactual Candidates ===\n")
 
-# ── Configuration ─────────────────────────────────────────────────
+# ── Configuration ──────────────────────────────────────────────────────────
 XTB_OFFSET    = 4.6197   # calibrated against 8 experimental molecules
 MAE_THRESHOLD = 0.25     # eV
 
-# ── xTB runner ────────────────────────────────────────────────────
+# ── xTB runner ────────────────────────────────────────────────────────────
 def run_xtb_homo(smiles, mol_id, seed=42):
     try:
         mol = Chem.MolFromSmiles(smiles)
@@ -31,7 +35,6 @@ def run_xtb_homo(smiles, mol_id, seed=42):
             return None
         mol = Chem.AddHs(mol)
 
-        # Fixed seed for reproducibility
         params = AllChem.ETKDGv3()
         params.randomSeed = seed
         result = AllChem.EmbedMolecule(mol, params)
@@ -73,22 +76,22 @@ def run_xtb_homo(smiles, mol_id, seed=42):
         print(f"  xTB error: {e}")
         return None
 
-# ── Load candidates ───────────────────────────────────────────────
-df = pd.read_csv("results/tables/phase3_top10_candidates.csv")
+# ── Load candidates ────────────────────────────────────────────────────────
+df = pd.read_csv(RESULTS_TABLES / "phase3_top10_candidates.csv")
 print(f"Candidates to validate: {len(df)}")
 print(f"xTB calibration offset: {XTB_OFFSET} eV")
-print(f"MAE threshold: {MAE_THRESHOLD} eV")
-print(f"Conformer seed: 42 (fixed for reproducibility)\n")
+print(f"MAE threshold:          {MAE_THRESHOLD} eV")
+print(f"Conformer seed:         42 (fixed for reproducibility)\n")
 
-# ── Run validation ────────────────────────────────────────────────
+# ── Run validation ─────────────────────────────────────────────────────────
 results = []
 
 for i, row in df.iterrows():
-    orig_homo     = row['original_homo']
-    pred_homo     = row['predicted_homo']
-    pred_shift    = row['predicted_shift']
-    cate          = row['cate']
-    cate_se       = row['cate_se']
+    orig_homo  = row['original_homo']
+    pred_homo  = row['predicted_homo']
+    pred_shift = row['predicted_shift']
+    cate       = row['cate']
+    cate_se    = row['cate_se']
 
     print(f"Candidate {len(results)+1}/10 (SA={row['sascore']:.3f}):")
     print(f"  Original HOMO:    {orig_homo:.4f} eV")
@@ -107,7 +110,7 @@ for i, row in df.iterrows():
         print(f"  xTB calibrated:   {xtb_cal:.4f} eV "
               f"(shift={xtb_shift:+.4f})")
         print(f"  Absolute error:   {error:.4f} eV "
-              f"{'✅ PASS' if passed else '❌ FAIL'}")
+              f"{'PASS' if passed else 'FAIL'}")
     else:
         xtb_cal = xtb_shift = error = None
         passed  = None
@@ -130,7 +133,7 @@ for i, row in df.iterrows():
         'synthesizable':      'YES'
     })
 
-# ── Summary ───────────────────────────────────────────────────────
+# ── Summary ────────────────────────────────────────────────────────────────
 results_df = pd.DataFrame(results)
 valid      = results_df.dropna(subset=['xtb_homo_ev'])
 
@@ -149,11 +152,9 @@ if len(valid) > 0:
     print(f"Candidates passing:   {n_pass}/{len(valid)}")
     print(f"All synthesizable:    10/10 SAScore < 4.0")
     print(f"Validation:           "
-          f"{'PASSED ✅' if mae < MAE_THRESHOLD else 'FAILED ❌'}")
+          f"{'PASSED' if mae < MAE_THRESHOLD else 'FAILED'}")
 
-results_df.to_csv(
-    "results/tables/phase3_xtb_validation_final.csv",
-    index=False
-)
-print("\nSaved phase3_xtb_validation_final.csv")
+out_path = RESULTS_TABLES / "phase3_xtb_validation_final.csv"
+results_df.to_csv(out_path, index=False)
+print(f"\nSaved {out_path}")
 print("NOTE: ML predictions use per-molecule CATE from causal forest")

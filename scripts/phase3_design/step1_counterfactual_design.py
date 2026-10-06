@@ -5,11 +5,10 @@ Uses per-molecule CATE from causal forest (not population ATE)
 to compute required EWG additions for each starting molecule.
 Each molecule gets its own individualized causal effect estimate.
 
-Author: Samuel Bizimana | JUNIA ISEN
-Supervisor: Dr. Kekeli N'KONOU
 """
 
 import pandas as pd
+from pathlib import Path
 from rdkit import Chem
 from rdkit.Chem import AllChem, Descriptors
 import os
@@ -19,17 +18,22 @@ from rdkit.Chem import RDConfig
 sys.path.append(os.path.join(RDConfig.RDContribDir, 'SA_Score'))
 import sascorer
 
+# ── Paths ──────────────────────────────────────────────────────────────────
+ROOT           = Path(__file__).resolve().parent.parent.parent
+DATA_PROCESSED = ROOT / "data" / "processed"
+RESULTS_TABLES = ROOT / "results" / "tables"
+RESULTS_TABLES.mkdir(parents=True, exist_ok=True)
+
 print("=== Phase 3: Counterfactual Molecular Design Engine ===")
 print("Using per-molecule CATE from causal forest\n")
 
-# ── 1. Load molecules with pre-computed CATEs ─────────────────────
-# CATEs computed in R using causal_forest.R and saved to this file
-df = pd.read_csv("data/processed/experimental_with_cates.csv")
+# ── 1. Load molecules with pre-computed CATEs ─────────────────────────────
+df = pd.read_csv(DATA_PROCESSED / "experimental_with_cates.csv")
 print(f"Experimental molecules with CATEs: {len(df)}")
 print(f"Mean CATE: {df['CATE'].mean():.6f} eV")
 print(f"CATE range: {df['CATE'].min():.6f} to {df['CATE'].max():.6f} eV")
 
-# ── 2. Filter to synthesizable starting molecules ─────────────────
+# ── 2. Filter to synthesizable starting molecules ─────────────────────────
 def get_sa(smi):
     try:
         mol = Chem.MolFromSmiles(str(smi))
@@ -44,7 +48,7 @@ good_starts   = df[df['sascore'] < 4.0].copy()
 good_starts   = good_starts.sort_values('sascore')
 print(f"\nStarting molecules with SAScore < 4.0: {len(good_starts)}")
 
-# ── 3. SMARTS reaction: add cyano to aromatic C-H ─────────────────
+# ── 3. SMARTS reaction: add cyano to aromatic C-H ─────────────────────────
 cyano_rxn = AllChem.ReactionFromSmarts('[cH:1]>>[c:1]C#N')
 
 def add_one_cyano(smiles):
@@ -64,7 +68,7 @@ def add_one_cyano(smiles):
             continue
     return list(set(results))
 
-# ── 4. Compute EWG features for modified molecules ────────────────
+# ── 4. Compute EWG features for modified molecules ────────────────────────
 def get_features(smi):
     try:
         mol = Chem.MolFromSmiles(smi)
@@ -90,7 +94,7 @@ def get_features(smi):
     except:
         return None
 
-# ── 5. Generate candidates using per-molecule CATE ────────────────
+# ── 5. Generate candidates using per-molecule CATE ────────────────────────
 print("\nGenerating counterfactual candidates using per-molecule CATE...")
 all_candidates = []
 
@@ -112,7 +116,6 @@ for _, row in good_starts.iterrows():
         feats = get_features(new_smi)
         if feats and feats['sascore'] < 4.0:
             delta_ewg  = feats['ewg_weighted'] - orig_ewg
-            # Use per-molecule CATE for prediction
             pred_shift = cate * delta_ewg
             pred_homo  = orig_homo + pred_shift
 
@@ -132,10 +135,9 @@ for _, row in good_starts.iterrows():
                 'n_cyano_added':      1
             })
 
-# ── 6. Select top 10 by SAScore ───────────────────────────────────
+# ── 6. Select top 10 by SAScore ───────────────────────────────────────────
 candidates_df = pd.DataFrame(all_candidates)
-candidates_df = candidates_df.drop_duplicates(
-    subset=['modified_smiles'])
+candidates_df = candidates_df.drop_duplicates(subset=['modified_smiles'])
 candidates_df = candidates_df.sort_values('sascore').head(10)
 
 print(f"\nTop 10 candidates (SAScore < 4.0):")
@@ -144,11 +146,9 @@ print(candidates_df[[
     'predicted_shift', 'sascore', 'mol_weight'
 ]].to_string())
 
-candidates_df.to_csv(
-    "results/tables/phase3_top10_candidates.csv",
-    index=False
-)
-print(f"\nSaved results/tables/phase3_top10_candidates.csv")
+out_path = RESULTS_TABLES / "phase3_top10_candidates.csv"
+candidates_df.to_csv(out_path, index=False)
+print(f"\nSaved {out_path}")
 print(f"Total candidates: {len(candidates_df)}")
 print("\nNOTE: Predicted HOMO shifts use per-molecule CATE")
 print("      not the population-average DML ATE")

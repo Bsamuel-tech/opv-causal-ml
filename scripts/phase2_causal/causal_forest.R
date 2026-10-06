@@ -1,15 +1,21 @@
-
 # causal_forest.R
 # Phase 2 Task 2.4: Causal Forest and CATE Maps
-# Author: Samuel Bizimana | JUNIA ISEN
-# Supervisor: Dr. Kekeli N'KONOU
-
+library(here)
 library(grf)
 library(data.table)
 library(ggplot2)
 
-df <- fread("data/processed/master_acceptor_dataset.csv")
-df <- df[ewg_count > 0]
+# ── Paths ──────────────────────────────────────────────────────────────────
+data_processed <- here::here("data", "processed")
+results_models <- here::here("results", "models")
+results_tables <- here::here("results", "tables")
+results_figures <- here::here("results", "figures")
+dir.create(results_models,  recursive = TRUE, showWarnings = FALSE)
+dir.create(results_tables,  recursive = TRUE, showWarnings = FALSE)
+dir.create(results_figures, recursive = TRUE, showWarnings = FALSE)
+
+df <- fread(file.path(data_processed, "master_acceptor_dataset.csv"))
+df <- df[measurement_type == "experimental" & ewg_count > 0]
 cat("Rows:", nrow(df), "\n")
 
 # Feature matrix, treatment, outcome
@@ -45,13 +51,17 @@ cat("\n=== Calibration Test ===\n")
 print(cal)
 
 # Save model
-saveRDS(cf, "results/models/causal_forest_ewg_homo.rds")
+saveRDS(cf, file.path(results_models, "causal_forest_ewg_homo.rds"))
 cat("Saved causal_forest_ewg_homo.rds\n")
 
-# Save CATE results
+# Save CATE results (also used by Phase 3)
 fwrite(df[, .(canonical_SMILES, homo_ev, ewg_weighted,
               mol_weight, CATE, CATE_se)],
-       "results/tables/cate_results_corrected.csv")
+       file.path(data_processed, "experimental_with_cates.csv"))
+
+fwrite(df[, .(canonical_SMILES, homo_ev, ewg_weighted,
+              mol_weight, CATE, CATE_se)],
+       file.path(results_tables, "cate_results_corrected.csv"))
 
 # CATE distribution plot
 p1 <- ggplot(df, aes(x = CATE)) +
@@ -71,7 +81,7 @@ p1 <- ggplot(df, aes(x = CATE)) +
   theme_minimal(base_size = 13) +
   theme(plot.title = element_text(face = "bold"))
 
-ggsave("results/figures/cate_ewg_homo_distribution.png",
+ggsave(file.path(results_figures, "cate_ewg_homo_distribution.png"),
        p1, width = 9, height = 5, dpi = 300)
 
 # CATE vs molecular weight
@@ -93,8 +103,7 @@ p2 <- ggplot(df, aes(x = mol_weight, y = CATE)) +
   theme_minimal(base_size = 13) +
   theme(plot.title = element_text(face = "bold"))
 
-ggsave("results/figures/cate_ewg_vs_molweight.png",
+ggsave(file.path(results_figures, "cate_ewg_vs_molweight.png"),
        p2, width = 9, height = 5, dpi = 300)
 
 cat("All figures saved.\n")
-

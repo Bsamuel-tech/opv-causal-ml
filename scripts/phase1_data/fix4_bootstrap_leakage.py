@@ -4,21 +4,28 @@ Fix 15: Bootstrap leakage gap analysis
 Replaces single-point generalisation gap estimate with
 bootstrapped distribution across multiple scaffold splits.
 
-Author: Samuel Bizimana | JUNIA ISEN
-Supervisor: Dr. Kekeli N'KONOU
 """
 
 import pandas as pd
 import numpy as np
+from pathlib import Path
 from rdkit import Chem
 from rdkit.Chem.Scaffolds import MurckoScaffold
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score
+from sklearn.model_selection import train_test_split
 import random
+
+# ── Paths ──────────────────────────────────────────────────────────────────
+ROOT           = Path(__file__).resolve().parent.parent.parent
+DATA_INTERIM   = ROOT / "data" / "interim"
+DATA_PROCESSED = ROOT / "data" / "processed"
+RESULTS_TABLES = ROOT / "results" / "tables"
+RESULTS_TABLES.mkdir(parents=True, exist_ok=True)
 
 print("=== Fix 15: Bootstrap leakage gap analysis ===\n")
 
-df = pd.read_csv("data/processed/master_acceptor_dataset.csv")
+df = pd.read_csv(DATA_INTERIM / "fix3_acceptors_only.csv")
 features = ['ewg_weighted', 'mol_weight', 'n_arom_rings',
             'conj_length', 'logp', 'halogen_count']
 target   = 'homo_ev'
@@ -27,7 +34,6 @@ X = df[features].values
 y = df[target].values
 
 # Random split R2 (single estimate - stable)
-from sklearn.model_selection import train_test_split
 X_tr, X_te, y_tr, y_te = train_test_split(
     X, y, test_size=0.2, random_state=42)
 rf = RandomForestRegressor(n_estimators=200, random_state=42)
@@ -59,8 +65,7 @@ for seed in range(20):
     if len(test_idx) < 10:
         continue
 
-    rf_s = RandomForestRegressor(n_estimators=200,
-                                  random_state=seed)
+    rf_s = RandomForestRegressor(n_estimators=200, random_state=seed)
     rf_s.fit(X[train_idx], y[train_idx])
     r2_s = r2_score(y[test_idx], rf_s.predict(X[test_idx]))
     gap  = r2_random - r2_s
@@ -68,7 +73,7 @@ for seed in range(20):
     r2_scaffolds.append(r2_s)
     gaps.append(gap)
 
-gaps = np.array(gaps)
+gaps        = np.array(gaps)
 r2_scaffolds = np.array(r2_scaffolds)
 
 print(f"\n=== Bootstrap Results (20 seeds) ===")
@@ -84,17 +89,18 @@ print(f"Gap 95% CI:              [{np.percentile(gaps,2.5):.4f}, "
 print(f"Leakage threshold:       0.15")
 print(f"All gaps below 0.15:     {(gaps < 0.15).all()}")
 
-# Save
+# Save per-seed results
+gap_out = RESULTS_TABLES / "bootstrap_leakage_gap.csv"
 results = pd.DataFrame({
     'seed':        list(range(len(gaps))),
     'r2_scaffold': r2_scaffolds,
+    'r2_random':   r2_random,
     'gap':         gaps
 })
-results.to_csv(
-    "results/tables/bootstrap_leakage_gap.csv",
-    index=False
-)
+results.to_csv(gap_out, index=False)
 
+# Save summary
+summary_out = RESULTS_TABLES / "bootstrap_leakage_summary.csv"
 summary = pd.DataFrame({
     'metric': [
         'random_split_r2',
@@ -118,9 +124,12 @@ summary = pd.DataFrame({
         str((gaps < 0.15).all())
     ]
 })
-summary.to_csv(
-    "results/tables/bootstrap_leakage_summary.csv",
-    index=False
-)
-print("\nSaved bootstrap_leakage_gap.csv")
-print("Saved bootstrap_leakage_summary.csv")
+summary.to_csv(summary_out, index=False)
+
+# Also copy final master dataset to processed/ for downstream scripts
+master_out = DATA_PROCESSED / "master_acceptor_dataset.csv"
+df.to_csv(master_out, index=False)
+
+print(f"\nSaved: {gap_out}")
+print(f"Saved: {summary_out}")
+print(f"Saved: {master_out}")
