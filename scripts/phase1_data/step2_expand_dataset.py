@@ -19,7 +19,7 @@ base = pd.read_csv(DATA_INTERIM / "step1_experimental_raw.csv")
 print(f"Base dataset: {len(base)} molecules")
 
 # ── 2. Load CEP dataset ───────────────────────────────────────────
-cep = pd.read_csv(DATA_RAW / "raw" / "moldata.csv")
+cep = pd.read_csv(DATA_RAW / "raw" / "cep_sample_15000.csv")
 print(f"CEP raw: {len(cep)} rows")
 print("CEP columns:", cep.columns.tolist())
 
