@@ -1,15 +1,22 @@
 import pandas as pd
 import numpy as np
+from pathlib import Path
 from rdkit import Chem
 from rdkit.Chem.Scaffolds import MurckoScaffold
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score
+from sklearn.model_selection import train_test_split
 import random
+
+# ── Paths ──────────────────────────────────────────────────────────────────
+ROOT         = Path(__file__).resolve().parent.parent.parent
+DATA_INTERIM = ROOT / "data" / "interim"
+DATA_INTERIM.mkdir(parents=True, exist_ok=True)
 
 print("=== Fix 2: Scaffold-based split ===\n")
 
-df = pd.read_csv("master_acceptor_dataset.csv")
-print(f"Loaded: {len(df)} rows")
+df = pd.read_csv(DATA_INTERIM / "fix1_with_columns.csv")
+print(f"Loaded: {len(df)} rows from fix1_with_columns.csv")
 
 # ── 1. Compute Murcko scaffold for every molecule ─────────────────
 def get_scaffold(smi):
@@ -21,7 +28,7 @@ def get_scaffold(smi):
         return Chem.MolToSmiles(scaffold)
     except:
         return None
-    
+
 print("Computing Murcko scaffolds...")
 df['scaffold'] = df['canonical_SMILES'].apply(get_scaffold)
 df = df.dropna(subset=['scaffold'])
@@ -68,7 +75,6 @@ X = df[features].values
 y = df[target].values
 
 # Random split
-from sklearn.model_selection import train_test_split
 X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, random_state=42)
 rf = RandomForestRegressor(n_estimators=200, random_state=42)
 rf.fit(X_tr, y_tr)
@@ -86,23 +92,16 @@ rf2.fit(X_tr_sc, y_tr_sc)
 r2_scaffold = r2_score(y_te_sc, rf2.predict(X_te_sc))
 
 print(f"\n=== R² Comparison ===")
-print(f"Random split R²:   {r2_random:.4f}")
-print(f"Scaffold split R²: {r2_scaffold:.4f}")
+print(f"Random split R²:    {r2_random:.4f}")
+print(f"Scaffold split R²:  {r2_scaffold:.4f}")
 print(f"Generalisation gap: {r2_random - r2_scaffold:.4f}")
 
 if r2_random - r2_scaffold > 0.15:
     print("Data leakage CONFIRMED — gap > 0.15")
-    print("This finding is publishable on its own.")
 else:
     print("No significant data leakage detected.")
 
-# ── 4. Save ───────────────────────────────────────────────────────
-df.to_csv("master_acceptor_dataset.csv", index=False)
-results = pd.DataFrame({
-    'split_type':    ['random', 'scaffold'],
-    'r2_homo':       [r2_random, r2_scaffold],
-    'gap':           [0, r2_random - r2_scaffold]
-})
-results.to_csv("scaffold_split_results.csv", index=False)
-print(f"\n✅ Saved master_acceptor_dataset.csv with split column")
-print(f"✅ Saved scaffold_split_results.csv")
+# ── 4. Save interim snapshot ───────────────────────────────────────
+out = DATA_INTERIM / "fix2_with_scaffolds.csv"
+df.to_csv(out, index=False)
+print(f"\nSaved: {out}")

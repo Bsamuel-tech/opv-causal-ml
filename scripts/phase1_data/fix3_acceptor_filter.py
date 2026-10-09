@@ -4,7 +4,6 @@ Fix 9: Add acceptor structural filter to CEP sample
 Filters CEP molecules to confirm they are acceptor-type
 by checking for known acceptor motifs: electron-withdrawing
 groups, low-lying LUMO, and absence of strong donor groups.
-
 """
 
 import pandas as pd
@@ -22,7 +21,8 @@ RESULTS_TABLES.mkdir(parents=True, exist_ok=True)
 
 print("=== Fix 9: Acceptor structural filter for CEP sample ===\n")
 
-df = pd.read_csv(DATA_INTERIM / "step2_merged_raw.csv")
+# READ FROM fix2's output (was step2_merged_raw.csv — broken link fixed)
+df = pd.read_csv(DATA_INTERIM / "fix2_with_scaffolds.csv")
 cep = df[df['source_db'] == 'CEP'].copy()
 print(f"CEP molecules before filter: {len(cep)}")
 
@@ -32,13 +32,10 @@ print(f"CEP molecules before filter: {len(cep)}")
 # 3. LUMO < -2.0 eV (acceptors have low-lying LUMOs)
 
 def is_acceptor_like(row):
-    # Must have low LUMO energy (acceptors)
     if row['lumo_ev'] > -2.0:
         return False
-    # Must have reasonable bandgap for acceptor
     if row['bandgap_ev'] > 3.5:
         return False
-    # Must have HOMO in acceptor range
     if row['homo_ev'] > -4.5:
         return False
     return True
@@ -93,5 +90,3 @@ report = pd.DataFrame({
 report_out = RESULTS_TABLES / "cep_acceptor_filter_report.csv"
 report.to_csv(report_out, index=False)
 print(f"Saved filter report: {report_out}")
-print("\nConclusion: CEP sample is verified as acceptor-like based on")
-print("frontier orbital energy criteria consistent with OPV acceptor literature.")

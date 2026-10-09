@@ -6,17 +6,18 @@ library(data.table)
 library(ggplot2)
 
 # ── Paths ──────────────────────────────────────────────────────────────────
-data_processed <- here::here("data", "processed")
-results_models <- here::here("results", "models")
-results_tables <- here::here("results", "tables")
+data_processed  <- here::here("data", "processed")
+results_models  <- here::here("results", "models")
+results_tables  <- here::here("results", "tables")
 results_figures <- here::here("results", "figures")
 dir.create(results_models,  recursive = TRUE, showWarnings = FALSE)
 dir.create(results_tables,  recursive = TRUE, showWarnings = FALSE)
 dir.create(results_figures, recursive = TRUE, showWarnings = FALSE)
 
 df <- fread(file.path(data_processed, "master_acceptor_dataset.csv"))
-df <- df[measurement_type == "experimental" & ewg_count > 0]
-cat("Rows:", nrow(df), "\n")
+# NOTE: column value is "experiment" not "experimental"
+df <- df[measurement_type == "experiment" & ewg_count > 0]
+cat("Rows in causal subset:", nrow(df), "\n")
 
 # Feature matrix, treatment, outcome
 X <- as.matrix(df[, .(mol_weight, n_arom_rings, conj_length, logp)])
@@ -42,8 +43,8 @@ df[, CATE_se := sqrt(cate_out$variance.estimates)]
 
 cat("\n=== CATE Summary ===\n")
 cat("Mean CATE:", round(mean(df$CATE), 6), "\n")
-cat("Min CATE: ", round(min(df$CATE), 6), "\n")
-cat("Max CATE: ", round(max(df$CATE), 6), "\n")
+cat("Min CATE: ", round(min(df$CATE),  6), "\n")
+cat("Max CATE: ", round(max(df$CATE),  6), "\n")
 
 # Calibration test
 cal <- test_calibration(cf)

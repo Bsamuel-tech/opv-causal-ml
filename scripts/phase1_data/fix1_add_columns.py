@@ -1,13 +1,18 @@
 import pandas as pd
+from pathlib import Path
 from rdkit import Chem
 
-print("=== Fix 1: Adding measurement_type and halogen_count ===\n")
+# ── Paths ──────────────────────────────────────────────────────────────────
+ROOT         = Path(__file__).resolve().parent.parent.parent
+DATA_INTERIM = ROOT / "data" / "interim"
+DATA_INTERIM.mkdir(parents=True, exist_ok=True)
 
-df = pd.read_csv("master_acceptor_dataset.csv")
-print(f"Loaded: {len(df)} rows")
+print("=== Fix 1: Adding measurement_type, halogen_count, nonarom_cc ===\n")
+
+df = pd.read_csv(DATA_INTERIM / "step2_merged_raw.csv")
+print(f"Loaded: {len(df)} rows from step2_merged_raw.csv")
 
 # ── measurement_type ───────────────────────────────────────────────
-# Your 599 experimental molecules vs CEP DFT molecules
 df['measurement_type'] = df['source_db'].map({
     'your_data': 'experiment',
     'CEP':       'DFT_B3LYP'
@@ -32,13 +37,12 @@ df['halogen_count'] = df['canonical_SMILES'].apply(count_halogens)
 print(f"Halogen count range: {df['halogen_count'].min()} to {df['halogen_count'].max()}")
 print(f"Molecules with halogens: {(df['halogen_count'] > 0).sum()}")
 
-# ── non-aromatic C=C bonds (second instrument for IV) ─────────────
+# ── non-aromatic C=C bonds (IV instrument) ─────────────────────────
 def count_nonarom_cc(smi):
     try:
         mol = Chem.MolFromSmiles(str(smi))
         if mol is None:
             return 0
-        # Non-aromatic C=C double bonds
         pattern = Chem.MolFromSmarts('[C;!a]=[C;!a]')
         return len(mol.GetSubstructMatches(pattern))
     except:
@@ -48,8 +52,10 @@ print("Computing non-aromatic C=C bonds...")
 df['nonarom_cc'] = df['canonical_SMILES'].apply(count_nonarom_cc)
 print(f"Non-arom C=C range: {df['nonarom_cc'].min()} to {df['nonarom_cc'].max()}")
 
-# ── Save ───────────────────────────────────────────────────────────
-df.to_csv("master_acceptor_dataset.csv", index=False)
-print(f"\n✅ Saved master_acceptor_dataset.csv")
+# ── Save interim snapshot ──────────────────────────────────────────
+out = DATA_INTERIM / "fix1_with_columns.csv"
+df.to_csv(out, index=False)
+print(f"\nSaved: {out}")
 print(f"Columns now: {df.columns.tolist()}")
 print(f"Total rows: {len(df)}")
+

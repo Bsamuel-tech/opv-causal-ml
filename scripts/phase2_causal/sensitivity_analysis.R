@@ -13,7 +13,7 @@ dir.create(results_tables,  recursive = TRUE, showWarnings = FALSE)
 dir.create(results_figures, recursive = TRUE, showWarnings = FALSE)
 
 df <- fread(file.path(data_processed, "master_acceptor_dataset.csv"))
-df <- df[measurement_type == "experimental" & ewg_count > 0]
+df <- df[measurement_type == "experiment" & ewg_count > 0]
 # measurement_type is constant in causal subset — meas_num excluded
 df_sens <- as.data.frame(df)
 
