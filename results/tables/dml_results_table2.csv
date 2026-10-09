@@ -1,4 +1,4 @@
-Outcome,ATE_eV,SE,P_value_nominal,P_value_Bonferroni,OLS_baseline_eV,Significant_Bonferroni,Interpretation
-HOMO energy,-0.012,0.0076,0.115,0.345,-0.029,No,Not significant after full confounder control
-LUMO energy,-0.025,0.0074,8e-04,0.0024,-0.024,Yes,Significant after Bonferroni correction
-Optical bandgap,-0.018,0.0095,0.061,0.182,,No,Not significant after Bonferroni correction
+Outcome,ATE_eV,SE,P_value,CI_lower,CI_upper,fold_scheme,Interpretation
+HOMO energy,-0.022230,0.008610,0.009826,-0.039105,-0.005354,scaffold-grouped,Significant negative effect (p=0.010); CI excludes zero
+LUMO energy,-0.015383,0.008667,0.075899,-0.032369,0.001603,scaffold-grouped,Negative point estimate; CI crosses zero; inconclusive at 0.05
+Optical bandgap,0.001726,0.009739,0.859346,-0.017362,0.020814,scaffold-grouped,No effect

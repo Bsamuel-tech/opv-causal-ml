@@ -1,11 +1,11 @@
 step,value,p_value,interpretation
-DML_EWG_HOMO,-0.012012652,0.114852508,EWG -> HOMO not significant after full confounder control (p=0.115)
-DML_EWG_LUMO,-0.024806537,0.000796621,EWG causally lowers LUMO (p=0.0008)***
-DML_EWG_Bandgap,-0.017843933,0.060645187,EWG -> Bandgap borderline (p=0.061)
+DML_EWG_HOMO,-0.022230,0.009826,Significant negative effect on HOMO (p=0.010); CI [-0.039 to -0.005] excludes zero
+DML_EWG_LUMO,-0.015383,0.075899,Negative point estimate; CI [-0.032 to +0.002] crosses zero; inconclusive at 0.05
+DML_EWG_Bandgap,0.001726,0.859346,No effect
 Sensitivity_RV,0.217,,Confounder needs 21.7% variance in both EWG and HOMO to nullify
 Sensitivity_RV_alpha05,0.1515,,Threshold for statistical significance at alpha=0.05
 CATE_mean,-0.0215,,Average EWG causal effect on HOMO across molecules
-CATE_min,-0.0448,,"Most negative CATE observed (MW > 1200 g/mol) - exploratory observation only, not a confirmed finding"
-CATE_max,0.0325,,"Most positive CATE observed (MW < 900 g/mol) - exploratory observation only, not a confirmed finding"
-Calibration_mean_p,0.0004063,,Forest mean effect confirmed (p=0.0004)***
-Calibration_het_p,0.2954489,,"Heterogeneity p=0.295: NOT statistically confirmed. While exploratory analysis suggests potential MW-dependent trend, global heterogeneity was not significant. Larger samples needed to confirm any heterogeneous effects."
+CATE_min,-0.0448,,"Most negative CATE observed - exploratory observation only, not a confirmed finding"
+CATE_max,0.0325,,"Most positive CATE observed - exploratory observation only, not a confirmed finding"
+Calibration_mean_p,0.0004063,,Forest mean effect confirmed (p=0.0004)
+Calibration_het_p,0.2954489,,Heterogeneity NOT statistically confirmed. Larger samples needed.

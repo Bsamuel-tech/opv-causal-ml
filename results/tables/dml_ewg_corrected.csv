@@ -1,4 +1,4 @@
-treatment,outcome,ATE,SE,p_value,fold_scheme,CI_lower,CI_upper,n_obs,n_scaffolds,n_folds
-ewg_weighted,homo_ev,-0.017883,0.009478,0.059175,scaffold-grouped,-0.036459,0.000693,598,288,5
-ewg_weighted,lumo_ev,-0.016109,0.008243,0.050672,scaffold-grouped,-0.032266,0.000047,598,288,5
-ewg_weighted,bandgap_ev,-0.002452,0.009583,0.798015,scaffold-grouped,-0.021235,0.016330,598,288,5
+treatment,outcome,ATE,SE,p_value,CI_lower,CI_upper,fold_scheme,n_obs,n_scaffolds,n_folds
+ewg_weighted,homo_ev,-0.0222295597739493,0.00860982652829906,0.00982630559962379,-0.0391048197694155,-0.00535429977848318,scaffold-grouped,598,288,5
+ewg_weighted,lumo_ev,-0.0153830408599375,0.00866654386532695,0.075899306604747,-0.0323694668359784,0.00160338511610328,scaffold-grouped,598,288,5
+ewg_weighted,bandgap_ev,0.00172580074724999,0.00973891181134395,0.859346007017661,-0.0173624664029842,0.0208140678974841,scaffold-grouped,598,288,5

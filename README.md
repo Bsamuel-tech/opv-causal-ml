@@ -17,25 +17,27 @@ in a fully reproducible workflow.
 
 ## Key Results
 
-EWG score causally lowers LUMO energy by -0.0161 eV (DML, p=0.051).
-HOMO effect is marginally significant after full confounder control
-(DML, -0.0179 eV, p=0.059). No valid instrument was identified for IV
-estimation. halogen_count is retained as a confounder because it contains
-structural information beyond its weighted contribution to the Hammett EWG
-score. A sensitivity analysis excluding halogen_count from the adjustment
-set is reported in the supplementary material.
-nonarom_cc was tested as an instrument but its exclusion restriction is
-uncertain — non-aromatic C=C bonds may directly affect conjugation length
-which determines HOMO and LUMO energies. Wu-Hausman p=0.433 is reported
-descriptively only. Because instrument validity cannot be established, IV
-results are inconclusive and DML remains the primary estimate.
+EWG score causally lowers HOMO energy by -0.0222 eV (DML, p=0.010;
+95% CI [-0.039, -0.005] excludes zero — statistically significant).
+LUMO shows a negative but inconclusive estimate (-0.0154 eV, p=0.076;
+CI [-0.032, +0.002] crosses zero). Bandgap shows no effect (+0.0017 eV,
+p=0.859). All three estimates come from scaffold-grouped 5-fold
+cross-fitting on 598 experimental molecules across 288 unique scaffolds,
+using cyclic round-robin fold assignment (verified run 2026-10-09).
+No valid instrument was identified for IV estimation. halogen_count is
+retained as a confounder because it contains structural information beyond
+its weighted contribution to the Hammett EWG score. nonarom_cc was tested
+as an instrument but its exclusion restriction is chemically uncertain —
+non-aromatic C=C bonds may directly affect conjugation length, which
+determines orbital energies. IV results are inconclusive; DML is the
+primary estimate.
 Bootstrap leakage gap mean=0.0122 (full dataset, 20 seeds, all below 0.15
 threshold). The causal estimation subset (598 molecules) is bootstrapped
 separately — see Section B of bootstrap_leakage_summary.csv.
 Nuisance diagnostics: R2(ml_l)=0.181 RMSE=0.133 eV, R2(ml_m)=0.713.
 Causal forest calibration confirmed (p=0.0004). Heterogeneity not confirmed
-(p=0.295) — this is an important negative finding reported honestly.
-Phase 3 design engine achieves MAE=0.219 eV with 5/10 candidates passing
+(p=0.295) — reported as an honest negative finding.
+Phase 3 design engine achieves MAE=0.219 eV; 5/10 candidates pass both
 xTB validation and SAScore < 4.0.
 
 ## Analysis Restriction
@@ -70,8 +72,10 @@ sensitivity_analysis.R, causal_forest.R, and econml_comparison.py.
 scripts/phase3_design contains step1_counterfactual_design.py and
 step2_xtb_validation.py with fixed conformer seed for reproducibility.
 
-results/figures contains four publication figures at 300 dpi.
-results/tables contains all results tables and supplementary information.
+results/figures contains four publication figures at 300 dpi, including
+cate_ewg_homo_distribution.png and cate_ewg_vs_molweight.png.
+results/tables contains all results tables and supplementary information,
+including dml_ewg_corrected.csv and dml_fold_diagnostics.csv.
 results/models contains causal_forest_ewg_homo.rds (5MB trained model).
 
 data/processed contains master_acceptor_dataset.csv with 15,403 molecules.
@@ -85,13 +89,13 @@ Phase 0 complete: R 4.6.0 + Python 3.10, all packages locked in
 renv.lock, requirements.txt, and environment.yml.
 Phase 1 complete: 15,403 molecules, bootstrap leakage gap mean=0.0122
 (full dataset, 20 seeds), CEP acceptor filter 99.32% pass rate.
-Phase 2 complete: DML (primary), IV (no valid instrument — limitation),
-sensitivity analysis, CATE maps, nuisance diagnostics, EconML robustness.
-Fold assignment updated to cyclic round-robin (replace=FALSE).
-DML output now includes CI_lower, CI_upper, n_obs=598, n_scaffolds=288,
-n_folds=5. Fold diagnostics saved to dml_fold_diagnostics.csv.
+Phase 2 complete: DML verified run 2026-10-09 (scaffold-grouped cyclic
+folds, 598 molecules, 288 scaffolds). HOMO effect significant (p=0.010),
+LUMO inconclusive (p=0.076), Bandgap no effect (p=0.859). Fold diagnostics
+in dml_fold_diagnostics.csv. IV no valid instrument — reported as
+limitation. Sensitivity analysis and CATE maps complete.
 Phase 3 complete: counterfactual design using per-molecule CATE,
-xTB validation MAE=0.219 eV, 5/10 validated, 5/10 pass SAScore < 4.0.
+xTB validation MAE=0.219 eV, 5/10 pass SAScore < 4.0.
 Phase 4 complete: four publication figures, seven-section supplementary.
 
 ## Data Availability
@@ -103,9 +107,11 @@ See PATHS_NOTICE.md for notes on running scripts on different machines.
 
 ```r
 renv::restore()
+source("scripts/phase2_causal/dml_analysis.R")
 ```
 
 ```bash
 conda activate causal-mol
 conda env create -f environment.yml
+python scripts/phase1_data/fix4_bootstrap_leakage.py
 ```
