@@ -1,15 +1,15 @@
 section,item,detail
-S0 — Analysis Restrictions and Estimand,EWG filter applied,"df[ewg_count > 0] applied in dml_analysis.R, iv_analysis.R, econml_comparison.py"
-S0 — Analysis Restrictions and Estimand,Molecules before filter,"15,529 total molecules in master dataset"
+S0 — Analysis Restrictions and Estimand,EWG filter applied,"df[measurement_type == 'experiment' & ewg_count > 0] applied in dml_analysis.R; df[ewg_count > 0] applied in iv_analysis.R and econml_comparison.py"
+S0 — Analysis Restrictions and Estimand,Molecules before filter,"15,403 total molecules in master dataset"
 S0 — Analysis Restrictions and Estimand,Molecules after filter,598 molecules used in all causal models
-S0 — Analysis Restrictions and Estimand,Molecules excluded,"14,931 molecules excluded (14,930 CEP + 1 experimental)"
-S0 — Analysis Restrictions and Estimand,Percent excluded,96.15% of dataset excluded by this filter
-S0 — Analysis Restrictions and Estimand,Source of excluded molecules,"14,930 CEP molecules have ewg_count=0 by SMARTS definition; 1 experimental molecule also excluded"
+S0 — Analysis Restrictions and Estimand,Molecules excluded,"14,805 molecules excluded (14,804 CEP + 1 experimental)"
+S0 — Analysis Restrictions and Estimand,Percent excluded,96.12% of dataset excluded by this filter
+S0 — Analysis Restrictions and Estimand,Source of excluded molecules,"14,804 CEP molecules have ewg_count=0 by SMARTS definition; 1 experimental molecule also excluded"
 S0 — Analysis Restrictions and Estimand,Estimand,ATE among organic acceptor molecules with at least one electron-withdrawing group
 S0 — Analysis Restrictions and Estimand,Justification,Molecules with zero EWGs provide no treatment variation and cannot contribute to causal estimation
-S0 — Analysis Restrictions and Estimand,Implication,"Results should not be interpreted as population ATE across all 15,529 molecules"
+S0 — Analysis Restrictions and Estimand,Implication,"Results should not be interpreted as population ATE across all 15,403 molecules"
 S1 — Data Cleaning Protocol,Source 1,599 experimental acceptor molecules from OPV literature
-S1 — Data Cleaning Protocol,Source 2,"14,930 CEP DFT molecules (Harvard Clean Energy Project)"
+S1 — Data Cleaning Protocol,Source 2,"14,804 CEP DFT molecules (Harvard Clean Energy Project)"
 S1 — Data Cleaning Protocol,SMILES validation,RDKit MolFromSmiles — 2 invalid SMILES dropped
 S1 — Data Cleaning Protocol,Deduplication,"Canonical SMILES deduplication — 1,573 to 599 unique acceptors"
 S1 — Data Cleaning Protocol,Physical range filter,HOMO: -8 to -3 eV | LUMO: -6 to -1 eV | Bandgap: 0.5 to 4.0 eV
@@ -21,46 +21,54 @@ S1 — Data Cleaning Protocol,Conclusion,Gap 0.050 < 0.15 — no meaningful data
 S2 — DoubleML Results,Treatment,Hammett-weighted EWG score
 S2 — DoubleML Results,Confounders,"mol_weight, n_arom_rings, conj_length, halogen_count, meas_num"
 S2 — DoubleML Results,Learner,Random Forest ranger 500 trees min.node.size=5
-S2 — DoubleML Results,Cross-fitting folds,5
-S2 — DoubleML Results,EWG->HOMO ATE,-0.01201265 eV
-S2 — DoubleML Results,EWG->HOMO SE,0.007618604
-S2 — DoubleML Results,EWG->HOMO p,0.115
-S2 — DoubleML Results,EWG->LUMO ATE,-0.02480654 eV
-S2 — DoubleML Results,EWG->LUMO SE,0.007396180
-S2 — DoubleML Results,EWG->LUMO p,0.0008***
-S2 — DoubleML Results,EWG->Bandgap ATE,-0.01784393 eV
-S2 — DoubleML Results,EWG->Bandgap SE,0.009511319
-S2 — DoubleML Results,EWG->Bandgap p,0.061
-S2 — DoubleML Results,EconML vs DoubleML HOMO,Difference=0.0002 eV PASS within 0.005 eV threshold
-S2 — DoubleML Results,EconML vs DoubleML LUMO,Difference=0.006 eV directionally consistent beyond threshold
-S2 — DoubleML Results,EconML vs DoubleML Bandgap,Difference=0.007 eV directionally consistent beyond threshold
-S3 — IV Diagnostics,Instrument 1,Halogen count F Cl Br I
-S3 — IV Diagnostics,Instrument 2,Non-aromatic C=C bond count
+S2 — DoubleML Results,Cross-fitting folds,5 scaffold-grouped folds (cyclic round-robin assignment)
+S2 — DoubleML Results,n_obs,598
+S2 — DoubleML Results,n_scaffolds,288
+S2 — DoubleML Results,EWG->HOMO ATE,-0.022230 eV
+S2 — DoubleML Results,EWG->HOMO SE,0.008610
+S2 — DoubleML Results,EWG->HOMO p,0.009826**
+S2 — DoubleML Results,EWG->HOMO CI,"[-0.039105, -0.005354] excludes zero"
+S2 — DoubleML Results,EWG->HOMO interpretation,Significant negative effect on HOMO energy
+S2 — DoubleML Results,EWG->LUMO ATE,-0.015383 eV
+S2 — DoubleML Results,EWG->LUMO SE,0.008667
+S2 — DoubleML Results,EWG->LUMO p,0.075899
+S2 — DoubleML Results,EWG->LUMO CI,"[-0.032369, +0.001603] crosses zero"
+S2 — DoubleML Results,EWG->LUMO interpretation,Negative point estimate; inconclusive at alpha=0.05
+S2 — DoubleML Results,EWG->Bandgap ATE,+0.001726 eV
+S2 — DoubleML Results,EWG->Bandgap SE,0.009739
+S2 — DoubleML Results,EWG->Bandgap p,0.859346
+S2 — DoubleML Results,EWG->Bandgap CI,"[-0.017362, +0.020814] crosses zero"
+S2 — DoubleML Results,EWG->Bandgap interpretation,No causal effect on optical bandgap
+S2 — DoubleML Results,EconML vs DoubleML HOMO,"Difference=0.009 eV FAIL — beyond 0.005 eV threshold; directionally consistent (both negative)"
+S2 — DoubleML Results,EconML vs DoubleML LUMO,"Difference=0.003 eV PASS — within 0.005 eV threshold; directionally consistent (both negative)"
+S2 — DoubleML Results,EconML vs DoubleML Bandgap,"Difference=0.012 eV FAIL — beyond threshold; sign differs (EconML negative; DoubleML near-zero positive)"
+S3 — IV Diagnostics,Instrument,Non-aromatic C=C bond count (nonarom_cc) — sole instrument (just-identified)
+S3 — IV Diagnostics,Instrument excluded,"halogen_count removed: it is a component of ewg_weighted violating the exclusion restriction"
 S3 — IV Diagnostics,F-statistic,304.139
-S3 — IV Diagnostics,F-threshold,> 10 Staiger-Stock rule
-S3 — IV Diagnostics,Sargan p-value,0.182
-S3 — IV Diagnostics,Sargan threshold,> 0.05 instruments exogenous
+S3 — IV Diagnostics,F-threshold,> 10 Staiger-Stock rule — instrument is strong
+S3 — IV Diagnostics,Sargan test,Not applicable — just-identified model (one instrument one endogenous variable)
 S3 — IV Diagnostics,Wu-Hausman p-value,0.00175**
-S3 — IV Diagnostics,Wu-Hausman interpretation,OLS inconsistent IV necessary
+S3 — IV Diagnostics,Wu-Hausman interpretation,OLS inconsistent — IV estimation necessary
 S3 — IV Diagnostics,IV coef HOMO,-0.060 eV
 S3 — IV Diagnostics,IV coef LUMO,-0.077 eV
-S3 — IV Diagnostics,Direction agreement,Both methods negative direction confirmed
+S3 — IV Diagnostics,Direction agreement,Both IV and DML negative for HOMO and LUMO — direction confirmed
 S4 — Sensemakr Sensitivity,OLS coefficient,-0.039 eV
 S4 — Sensemakr Sensitivity,t-value,-5.97
 S4 — Sensemakr Sensitivity,Partial R2,0.0567
 S4 — Sensemakr Sensitivity,Robustness Value,0.217
 S4 — Sensemakr Sensitivity,RV alpha=0.05,0.1515
 S4 — Sensemakr Sensitivity,Benchmark covariate,Molecular weight
-S4 — Sensemakr Sensitivity,Interpretation,Confounder needs >21.7% variance in both EWG and HOMO to nullify
+S4 — Sensemakr Sensitivity,Interpretation,Confounder needs >21.7% variance in both EWG and HOMO to nullify the effect
 S5 — CATE Distribution,Method,Causal forest grf R
 S5 — CATE Distribution,Trees,4000
-S5 — CATE Distribution,Mean CATE,-0.022 eV
-S5 — CATE Distribution,Min CATE,-0.045 eV
-S5 — CATE Distribution,Max CATE,+0.033 eV
+S5 — CATE Distribution,Mean CATE,-0.0215 eV
+S5 — CATE Distribution,Min CATE,-0.0448 eV
+S5 — CATE Distribution,Max CATE,+0.0325 eV
 S5 — CATE Distribution,Std Dev,0.008 eV
 S5 — CATE Distribution,Calibration p,0.0004*** well calibrated
-S5 — CATE Distribution,Heterogeneity p,0.295 not confirmed at this sample size
-S5 — CATE Distribution,Interpretation,Mean effect confirmed heterogeneity present but not significant
+S5 — CATE Distribution,Heterogeneity p,0.2954 not confirmed at this sample size
+S5 — CATE Distribution,Interpretation,"Mean effect confirmed (p=0.0004); heterogeneity present but not statistically significant at n=598"
+S5 — CATE Distribution,Figures produced,"cate_ewg_homo_distribution.png, cate_ewg_vs_molweight.png"
 S6 — xTB Validation,Candidate 1,SAScore=3.125 | ML_HOMO=-5.9719 | xTB_HOMO=-5.8796 | Error=0.0923 | PctDiff=1.57% | SYNTHESIZE - ML and xTB agree within threshold
 S6 — xTB Validation,Candidate 2,SAScore=3.16 | ML_HOMO=-5.9719 | xTB_HOMO=-5.914 | Error=0.0579 | PctDiff=0.98% | SYNTHESIZE - ML and xTB agree within threshold
 S6 — xTB Validation,Candidate 3,SAScore=3.2 | ML_HOMO=-5.9719 | xTB_HOMO=-5.8949 | Error=0.077 | PctDiff=1.31% | SYNTHESIZE - ML and xTB agree within threshold
