@@ -1,4 +1,4 @@
-treatment,outcome,ATE,SE,p_value,fold_scheme
-ewg_weighted,homo_ev,-0.0178830801761726,0.00947752229504302,0.0591745811310346,scaffold-grouped
-ewg_weighted,lumo_ev,-0.0161090809741769,0.00824310546319269,0.050671771766573,scaffold-grouped
-ewg_weighted,bandgap_ev,-0.00245243453874203,0.00958293236455207,0.798014989038643,scaffold-grouped
+treatment,outcome,ATE,SE,p_value,fold_scheme,CI_lower,CI_upper,n_obs,n_scaffolds,n_folds
+ewg_weighted,homo_ev,-0.017883,0.009478,0.059175,scaffold-grouped,-0.036459,0.000693,598,288,5
+ewg_weighted,lumo_ev,-0.016109,0.008243,0.050672,scaffold-grouped,-0.032266,0.000047,598,288,5
+ewg_weighted,bandgap_ev,-0.002452,0.009583,0.798015,scaffold-grouped,-0.021235,0.016330,598,288,5
