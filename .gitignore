@@ -31,3 +31,6 @@ Manuscript Guidance/
 check_columns.py
 debug2.py
 debug_smiles.py
+data/interim/
+fort.0
+fort.6
