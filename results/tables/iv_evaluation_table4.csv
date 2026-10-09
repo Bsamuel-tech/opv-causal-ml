@@ -1,0 +1,3 @@
+instrument,outcome,IV_coef,F_stat,wu_hausman_p,note
+nonarom_cc,homo_ev,[from iv_analysis output],,[from iv_analysis output],just-identified: Sargan not applicable
+nonarom_cc,lumo_ev,[from iv_analysis output],,[from iv_analysis output],just-identified: Sargan not applicable
