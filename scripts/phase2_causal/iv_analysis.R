@@ -59,3 +59,15 @@ iv_results <- data.table(
 fwrite(iv_results, file.path(results_tables, "iv_results.csv"))
 cat("Saved iv_results.csv\n")
 print(iv_results)
+
+# Save IV diagnostics (F-stat, Wu-Hausman) to CSV
+iv_diag <- data.frame(
+  outcome       = c("homo_ev", "lumo_ev"),
+  instrument    = "nonarom_cc",
+  f_statistic   = c(summary(iv_homo)$diagnostics["Weak instruments", "statistic"],
+                    summary(iv_lumo)$diagnostics["Weak instruments", "statistic"]),
+  wu_hausman_p  = c(summary(iv_homo)$diagnostics["Wu-Hausman", "p-value"],
+                    summary(iv_lumo)$diagnostics["Wu-Hausman", "p-value"]),
+  sargan        = "not applicable — just-identified"
+)
+write.csv(iv_diag, file.path(results_tables, "iv_diagnostics.csv"), row.names = FALSE)

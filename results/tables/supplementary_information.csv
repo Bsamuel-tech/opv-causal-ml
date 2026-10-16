@@ -13,13 +13,15 @@ S1 — Data Cleaning Protocol,Source 2,"14,804 CEP DFT molecules (Harvard Clean 
 S1 — Data Cleaning Protocol,SMILES validation,RDKit MolFromSmiles — 2 invalid SMILES dropped
 S1 — Data Cleaning Protocol,Deduplication,"Canonical SMILES deduplication — 1,573 to 599 unique acceptors"
 S1 — Data Cleaning Protocol,Physical range filter,HOMO: -8 to -3 eV | LUMO: -6 to -1 eV | Bandgap: 0.5 to 4.0 eV
-S1 — Data Cleaning Protocol,Random split R2,0.533
-S1 — Data Cleaning Protocol,Scaffold split R2,0.483
-S1 — Data Cleaning Protocol,Generalisation gap,0.050
+S1 — Data Cleaning Protocol,Random split R2,0.578
+S1 — Data Cleaning Protocol,Scaffold split R2,0.566
+S1 — Data Cleaning Protocol,Generalisation gap,0.0122
+S1 — Data Cleaning Protocol,Conclusion,Gap 0.0122 < 0.15 — no meaningful data leakage detected (full 15403-molecule dataset)
 S1 — Data Cleaning Protocol,Leakage threshold,0.15 (brief specification)
 S1 — Data Cleaning Protocol,Conclusion,Gap 0.050 < 0.15 — no meaningful data leakage detected
 S2 — DoubleML Results,Treatment,Hammett-weighted EWG score
-S2 — DoubleML Results,Confounders,"mol_weight, n_arom_rings, conj_length, halogen_count, meas_num"
+S2 — DoubleML Results,Confounders,"mol_weight, n_arom_rings, conj_length, halogen_count"
+S2 — DoubleML Results,meas_num excluded,Constant across causal subset (all measurement_type == experiment) — excluded from confounder set
 S2 — DoubleML Results,Learner,Random Forest ranger 500 trees min.node.size=5
 S2 — DoubleML Results,Cross-fitting folds,5 scaffold-grouped folds (cyclic round-robin assignment)
 S2 — DoubleML Results,n_obs,598
@@ -49,14 +51,14 @@ S3 — IV Diagnostics,F-threshold,> 10 Staiger-Stock rule — instrument is stro
 S3 — IV Diagnostics,Sargan test,Not applicable — just-identified model (one instrument one endogenous variable)
 S3 — IV Diagnostics,Wu-Hausman p-value,0.00175**
 S3 — IV Diagnostics,Wu-Hausman interpretation,OLS inconsistent — IV estimation necessary
-S3 — IV Diagnostics,IV coef HOMO,-0.060 eV
-S3 — IV Diagnostics,IV coef LUMO,-0.077 eV
+S3 — IV Diagnostics,IV coef HOMO,-0.066 eV
+S3 — IV Diagnostics,IV coef LUMO,-0.066 eV
 S3 — IV Diagnostics,Direction agreement,Both IV and DML negative for HOMO and LUMO — direction confirmed
-S4 — Sensemakr Sensitivity,OLS coefficient,-0.039 eV
+S4 — Sensemakr Sensitivity,OLS coefficient,-0.044 eV
 S4 — Sensemakr Sensitivity,t-value,-5.97
 S4 — Sensemakr Sensitivity,Partial R2,0.0567
-S4 — Sensemakr Sensitivity,Robustness Value,0.217
-S4 — Sensemakr Sensitivity,RV alpha=0.05,0.1515
+S4 — Sensemakr Sensitivity,Robustness Value,0.197
+S4 — Sensemakr Sensitivity,RV alpha=0.05,0.130
 S4 — Sensemakr Sensitivity,Benchmark covariate,Molecular weight
 S4 — Sensemakr Sensitivity,Interpretation,Confounder needs >21.7% variance in both EWG and HOMO to nullify the effect
 S5 — CATE Distribution,Method,Causal forest grf R
