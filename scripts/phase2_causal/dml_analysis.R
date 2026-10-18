@@ -141,3 +141,64 @@ out_path <- file.path(results_tables, "dml_ewg_corrected.csv")
 fwrite(results, out_path)
 cat("\nSaved:", out_path, "\n")
 print(results)
+
+# -- Post-hoc cluster-robust variance correction ---------------------------
+# DoubleML PLR does not natively support clustered inference. This block
+# applies a manual sandwich correction using the score function residuals
+# from the final repetition, grouped by scaffold.
+#
+# Method: HC-cluster sandwich estimator on the PLR score.
+# Reference: Cameron & Miller (2015), "A Practitioner's Guide to
+# Cluster-Robust Inference", Journal of Human Resources 50(2), 317-372.
+
+cluster_robust_se <- function(dml_obj, df, cluster_var = "scaffold") {
+  theta  <- as.numeric(dml_obj$coef)
+  psi_b  <- as.numeric(dml_obj$psi_b[, 1, N_REP])
+  psi_a  <- as.numeric(dml_obj$psi_a[, 1, N_REP])
+  
+  clusters <- df[[cluster_var]]
+  n        <- length(psi_b)
+  
+  score        <- psi_a * theta + psi_b
+  cluster_ids  <- unique(clusters)
+  G            <- length(cluster_ids)
+  
+  meat <- sum(sapply(cluster_ids, function(g) {
+    idx <- which(clusters == g)
+    sum(score[idx])^2
+  }))
+  
+  bread  <- sum(psi_a)
+  cr_var <- (G / (G - 1)) * (n / (n - 1)) * meat / (bread^2)
+  sqrt(cr_var)
+}
+
+cr_se_homo <- cluster_robust_se(dml_homo, df)
+cr_se_lumo <- cluster_robust_se(dml_lumo, df)
+cr_se_gap  <- cluster_robust_se(dml_gap,  df)
+
+cr_results <- data.table(
+  outcome     = c("homo_ev", "lumo_ev", "bandgap_ev"),
+  ATE         = c(dml_homo$coef, dml_lumo$coef, dml_gap$coef),
+  SE_iid      = c(dml_homo$se,   dml_lumo$se,   dml_gap$se),
+  SE_cluster  = c(cr_se_homo,    cr_se_lumo,    cr_se_gap),
+  p_cluster   = c(
+    2 * pnorm(-abs(dml_homo$coef / cr_se_homo)),
+    2 * pnorm(-abs(dml_lumo$coef / cr_se_lumo)),
+    2 * pnorm(-abs(dml_gap$coef  / cr_se_gap))
+  ),
+  CI_lower_cr = c(dml_homo$coef - 1.96 * cr_se_homo,
+                  dml_lumo$coef - 1.96 * cr_se_lumo,
+                  dml_gap$coef  - 1.96 * cr_se_gap),
+  CI_upper_cr = c(dml_homo$coef + 1.96 * cr_se_homo,
+                  dml_lumo$coef + 1.96 * cr_se_lumo,
+                  dml_gap$coef  + 1.96 * cr_se_gap),
+  n_clusters  = df[, uniqueN(scaffold)]
+)
+
+cat("\nCluster-robust SE correction (scaffold clusters):\n")
+print(cr_results)
+
+cr_path <- file.path(results_tables, "dml_cluster_robust.csv")
+fwrite(cr_results, cr_path)
+cat("Saved:", cr_path, "\n")

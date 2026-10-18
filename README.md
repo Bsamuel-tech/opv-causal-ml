@@ -1,8 +1,8 @@
 # Causal Machine Learning for Organic Acceptor Design
 
-**Author:** Samuel Bizimana | JUNIA ISEN  
-**Supervisor:** Dr. Kekeli N'KONOU  
-**Target Journal:** Nature Machine Intelligence  
+**Author:** Samuel Bizimana | JUNIA ISEN
+**Supervisor:** Dr. Kekeli N'KONOU
+**Target Journal:** Nature Machine Intelligence
 **GitHub:** https://github.com/Bsamuel-tech/opv-causal-ml
 
 **Pipeline:** https://github.com/Bsamuel-tech/opv-causal-ml/blob/main/PIPELINE.md
@@ -17,25 +17,28 @@ in a fully reproducible workflow.
 
 ## Key Results
 
-EWG score causally lowers HOMO energy by -0.0222 eV (DML, p=0.010;
-95% CI [-0.039, -0.005] excludes zero — statistically significant).
-LUMO shows a negative but inconclusive estimate (-0.0154 eV, p=0.076;
-CI [-0.032, +0.002] crosses zero). Bandgap shows no effect (+0.0017 eV,
-p=0.859). All three estimates come from scaffold-grouped 5-fold
+EWG score causally lowers HOMO energy by -0.01828 eV (DML, p=0.042;
+95% CI [-0.03589, -0.00066] excludes zero — statistically significant).
+LUMO also shows a significant negative effect (-0.01633 eV, p=0.049;
+CI [-0.03260, -0.00006] excludes zero). Bandgap shows no effect (-0.00228 eV,
+p=0.814). All three estimates come from scaffold-grouped 5-fold
 cross-fitting on 598 experimental molecules across 288 unique scaffolds,
-using cyclic round-robin fold assignment (verified run 2026-10-09).
-No valid instrument was identified for IV estimation. halogen_count is
-retained as a confounder because it contains structural information beyond
-its weighted contribution to the Hammett EWG score. nonarom_cc was tested
-as an instrument but its exclusion restriction is chemically uncertain —
-non-aromatic C=C bonds may directly affect conjugation length, which
-determines orbital energies. IV results are inconclusive; DML is the
-primary estimate.
-Bootstrap leakage gap mean=0.0122 (full dataset, 20 seeds, all below 0.15
-threshold). The causal estimation subset (598 molecules) is bootstrapped
-separately — see Section B of bootstrap_leakage_summary.csv.
+using cyclic round-robin fold assignment (verified run 2026-10-19, n_rep=20).
+Post-hoc scaffold cluster-robust SEs computed via sandwich estimator
+(Cameron & Miller 2015); output in results/tables/dml_cluster_robust.csv.
+IV estimation attempted with nonarom_cc as sole instrument. Formal
+diagnostics pass (F-stat=215.448, Wu-Hausman p=0.036 HOMO / p=0.026 LUMO)
+but the exclusion restriction is chemically uncertain: non-aromatic C=C
+bonds may directly affect conjugation length and therefore orbital energies.
+IV results are reported for transparency in S3; DML is the primary estimate.
+halogen_count is retained as a confounder because it contains structural
+information beyond its weighted contribution to the Hammett EWG score.
+Bootstrap leakage gap mean=0.0194 (full dataset, 20 seeds, all below 0.15
+threshold). Causal subset (598 molecules) bootstrapped separately: gap
+mean=0.316, 95% CI [0.164, 0.486] — confirms scaffold leakage in naive
+random splits, validating scaffold-grouped cross-fitting.
 Nuisance diagnostics: R2(ml_l)=0.181 RMSE=0.133 eV, R2(ml_m)=0.713.
-Causal forest calibration confirmed (p=0.0004). Heterogeneity not confirmed
+Causal forest calibration confirmed (p=0.0039). Heterogeneity not confirmed
 (p=0.295) — reported as an honest negative finding.
 Phase 3 design engine achieves MAE=0.219 eV; 5/10 candidates pass both
 xTB validation and SAScore < 4.0.
@@ -53,12 +56,15 @@ See results/tables/supplementary_information.csv Section S0 for full details.
 
 Double Machine Learning via DoubleML in R. Scaffold-grouped 5-fold
 cross-fitting with cyclic round-robin fold assignment (guarantees no empty
-folds). Filter: measurement_type == "experiment" AND ewg_count > 0.
-IV estimation attempted but no valid instrument identified — reported as
+folds). Post-hoc scaffold cluster-robust SE correction via sandwich
+estimator (Cameron & Miller 2015). Filter: measurement_type == "experiment"
+AND ewg_count > 0. IV estimation attempted; formal diagnostics pass but
+exclusion restriction for nonarom_cc is chemically uncertain — reported as
 a limitation. Sensitivity analysis via sensemakr in R with molecular weight
-as benchmark. Causal forests and CATE maps via grf in R with 4,000 trees.
-Molecular processing and SMARTS reactions via RDKit in Python.
-Quantum chemistry validation via xTB 6.7.1 GFN2 with fixed conformer seed=42.
+as benchmark. Causal forests and CATE maps via grf in R with 4,000 trees
+and 288 scaffold clusters. Molecular processing and SMARTS reactions via
+RDKit in Python. Quantum chemistry validation via xTB 6.7.1 GFN2 with
+fixed conformer seed=42.
 
 ## Repository Contents
 
@@ -75,7 +81,8 @@ step2_xtb_validation.py with fixed conformer seed for reproducibility.
 results/figures contains four publication figures at 300 dpi, including
 cate_ewg_homo_distribution.png and cate_ewg_vs_molweight.png.
 results/tables contains all results tables and supplementary information,
-including dml_ewg_corrected.csv and dml_fold_diagnostics.csv.
+including dml_ewg_corrected.csv, dml_fold_diagnostics.csv, and
+dml_cluster_robust.csv.
 results/models contains causal_forest_ewg_homo.rds (5MB trained model).
 
 data/processed contains master_acceptor_dataset.csv with 15,403 molecules.
@@ -87,13 +94,14 @@ or run git clone to get all files locally.
 
 Phase 0 complete: R 4.6.0 + Python 3.10, all packages locked in
 renv.lock, requirements.txt, and environment.yml.
-Phase 1 complete: 15,403 molecules, bootstrap leakage gap mean=0.0122
+Phase 1 complete: 15,403 molecules, bootstrap leakage gap mean=0.0194
 (full dataset, 20 seeds), CEP acceptor filter 99.32% pass rate.
-Phase 2 complete: DML verified run 2026-10-09 (scaffold-grouped cyclic
-folds, 598 molecules, 288 scaffolds). HOMO effect significant (p=0.010),
-LUMO inconclusive (p=0.076), Bandgap no effect (p=0.859). Fold diagnostics
-in dml_fold_diagnostics.csv. IV no valid instrument — reported as
-limitation. Sensitivity analysis and CATE maps complete.
+Phase 2 complete: DML verified run 2026-10-19 (scaffold-grouped cyclic
+folds, n_rep=20, 598 molecules, 288 scaffolds). HOMO significant (p=0.042),
+LUMO significant (p=0.049), Bandgap no effect (p=0.814). Cluster-robust
+SEs in dml_cluster_robust.csv. IV diagnostics pass formal tests; exclusion
+restriction uncertain — reported as limitation. Sensitivity analysis and
+CATE maps complete.
 Phase 3 complete: counterfactual design using per-molecule CATE,
 xTB validation MAE=0.219 eV, 5/10 pass SAScore < 4.0.
 Phase 4 complete: four publication figures, seven-section supplementary.

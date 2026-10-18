@@ -66,7 +66,7 @@ S3 — IV Diagnostics,F-threshold,> 10 Staiger-Stock rule — instrument is stro
 S3 — IV Diagnostics,Sargan test,Not applicable — just-identified model (one instrument one endogenous variable)
 S3 — IV Diagnostics,Wu-Hausman p HOMO,0.036*
 S3 — IV Diagnostics,Wu-Hausman p LUMO,0.0256*
-S3 — IV Diagnostics,Wu-Hausman interpretation,"OLS inconsistent for both outcomes (p<0.05) — IV estimation supported"
+S3 — IV Diagnostics,Wu-Hausman interpretation,"Formal diagnostics pass (F=215, Wu-Hausman p<0.05 for both outcomes) but exclusion restriction for nonarom_cc is chemically uncertain: non-aromatic C=C bonds may directly affect conjugation length and orbital energies. IV results reported for transparency; DML is the primary causal estimate."
 S3 — IV Diagnostics,IV coef HOMO,-0.066 eV
 S3 — IV Diagnostics,IV coef LUMO,-0.066 eV
 S3 — IV Diagnostics,Direction agreement,Both IV and DML negative for HOMO and LUMO — directional consistency confirmed across estimators
@@ -88,13 +88,13 @@ S5 — CATE Distribution,Calibration p,0.0039** well calibrated
 S5 — CATE Distribution,Heterogeneity p,not significant — consistent effect across molecule types
 S5 — CATE Distribution,Interpretation,"Mean effect confirmed (p=0.0039); effect is consistent across molecular weight and conjugation length — no strong heterogeneity at n=598"
 S5 — CATE Distribution,Figures produced,"cate_ewg_homo_distribution.png, cate_ewg_vs_molweight.png"
-S6 — xTB Validation,Candidate 1,SAScore=3.125 | ML_HOMO=-5.9719 | xTB_HOMO=-5.8796 | Error=0.0923 | PctDiff=1.57% | SYNTHESIZE - ML and xTB agree within threshold
-S6 — xTB Validation,Candidate 2,SAScore=3.16 | ML_HOMO=-5.9719 | xTB_HOMO=-5.914 | Error=0.0579 | PctDiff=0.98% | SYNTHESIZE - ML and xTB agree within threshold
-S6 — xTB Validation,Candidate 3,SAScore=3.2 | ML_HOMO=-5.9719 | xTB_HOMO=-5.8949 | Error=0.077 | PctDiff=1.31% | SYNTHESIZE - ML and xTB agree within threshold
-S6 — xTB Validation,Candidate 4,SAScore=3.239 | ML_HOMO=-5.6331 | xTB_HOMO=-6.1266 | Error=0.4935 | PctDiff=8.05% | VALIDATE FURTHER - ML-xTB discrepancy exceeds 0.25 eV
-S6 — xTB Validation,Candidate 5,SAScore=3.241 | ML_HOMO=-5.6331 | xTB_HOMO=-6.0983 | Error=0.4652 | PctDiff=7.63% | VALIDATE FURTHER - ML-xTB discrepancy exceeds 0.25 eV
-S6 — xTB Validation,Candidate 6,SAScore=3.264 | ML_HOMO=-5.6331 | xTB_HOMO=-6.1346 | Error=0.5015 | PctDiff=8.17% | VALIDATE FURTHER - ML-xTB discrepancy exceeds 0.25 eV
-S6 — xTB Validation,Candidate 7,SAScore=3.338 | ML_HOMO=-6.1831 | xTB_HOMO=-5.9269 | Error=0.2562 | PctDiff=4.32% | VALIDATE FURTHER - ML-xTB discrepancy exceeds 0.25 eV
-S6 — xTB Validation,Candidate 8,SAScore=3.344 | ML_HOMO=-5.6331 | xTB_HOMO=-5.6874 | Error=0.0543 | PctDiff=0.95% | SYNTHESIZE - ML and xTB agree within threshold
-S6 — xTB Validation,Candidate 9,SAScore=3.361 | ML_HOMO=-6.1831 | xTB_HOMO=-6.1366 | Error=0.0465 | PctDiff=0.76% | SYNTHESIZE - ML and xTB agree within threshold
-S6 — xTB Validation,Candidate 10,SAScore=3.361 | ML_HOMO=-5.6331 | xTB_HOMO=-5.7435 | Error=0.1104 | PctDiff=1.92% | SYNTHESIZE - ML and xTB agree within threshold
+S6 — xTB Validation,Candidate 1,SAScore=3.128 | ML_HOMO=-5.995027 | xTB_HOMO=-5.8974 | Error=0.0977 | PctDiff=1.64% | SYNTHESIZE - ML and xTB agree within threshold
+S6 — xTB Validation,Candidate 2,SAScore=3.166 | ML_HOMO=-5.995027 | xTB_HOMO=-5.8097 | Error=0.1853 | PctDiff=3.09% | SYNTHESIZE - ML and xTB agree within threshold
+S6 — xTB Validation,Candidate 3,SAScore=3.182 | ML_HOMO=-5.995027 | xTB_HOMO=-5.8531 | Error=0.1419 | PctDiff=2.37% | SYNTHESIZE - ML and xTB agree within threshold
+S6 — xTB Validation,Candidate 4,SAScore=3.241 | ML_HOMO=-5.643304 | xTB_HOMO=-6.0983 | Error=0.4550 | PctDiff=7.35% | VALIDATE FURTHER - ML-xTB discrepancy exceeds 0.25 eV
+S6 — xTB Validation,Candidate 5,SAScore=3.269 | ML_HOMO=-5.643304 | xTB_HOMO=-5.9494 | Error=0.3061 | PctDiff=5.17% | VALIDATE FURTHER - ML-xTB discrepancy exceeds 0.25 eV
+S6 — xTB Validation,Candidate 6,SAScore=3.270 | ML_HOMO=-5.643304 | xTB_HOMO=-5.9562 | Error=0.3129 | PctDiff=5.25% | VALIDATE FURTHER - ML-xTB discrepancy exceeds 0.25 eV
+S6 — xTB Validation,Candidate 7,SAScore=3.307 | ML_HOMO=-6.202597 | xTB_HOMO=-6.1251 | Error=0.0775 | PctDiff=1.25% | SYNTHESIZE - ML and xTB agree within threshold
+S6 — xTB Validation,Candidate 8,SAScore=3.309 | ML_HOMO=-5.642556 | xTB_HOMO=-5.3616 | Error=0.2810 | PctDiff=4.97% | VALIDATE FURTHER - ML-xTB discrepancy exceeds 0.25 eV
+S6 — xTB Validation,Candidate 9,SAScore=3.338 | ML_HOMO=-6.202597 | xTB_HOMO=-5.9269 | Error=0.2757 | PctDiff=4.44% | VALIDATE FURTHER - ML-xTB discrepancy exceeds 0.25 eV
+S6 — xTB Validation,Candidate 10,SAScore=3.344 | ML_HOMO=-5.642556 | xTB_HOMO=-5.7028 | Error=0.0602 | PctDiff=1.07% | SYNTHESIZE - ML and xTB agree within threshold
