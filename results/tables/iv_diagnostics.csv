@@ -1,0 +1,3 @@
+"outcome","instrument","f_statistic","wu_hausman_p","sargan"
+"homo_ev","nonarom_cc",215.448047454594,0.0359974515373455,"not applicable — just-identified"
+"lumo_ev","nonarom_cc",215.448047454594,0.025560717294804,"not applicable — just-identified"

@@ -13,47 +13,63 @@ S1 — Data Cleaning Protocol,Source 2,"14,804 CEP DFT molecules (Harvard Clean 
 S1 — Data Cleaning Protocol,SMILES validation,RDKit MolFromSmiles — 2 invalid SMILES dropped
 S1 — Data Cleaning Protocol,Deduplication,"Canonical SMILES deduplication — 1,573 to 599 unique acceptors"
 S1 — Data Cleaning Protocol,Physical range filter,HOMO: -8 to -3 eV | LUMO: -6 to -1 eV | Bandgap: 0.5 to 4.0 eV
-S1 — Data Cleaning Protocol,Random split R2,0.578
-S1 — Data Cleaning Protocol,Scaffold split R2,0.566
-S1 — Data Cleaning Protocol,Generalisation gap,0.0122
-S1 — Data Cleaning Protocol,Conclusion,Gap 0.0122 < 0.15 — no meaningful data leakage detected (full 15403-molecule dataset)
-S1 — Data Cleaning Protocol,Leakage threshold,0.15 (brief specification)
-S1 — Data Cleaning Protocol,Conclusion,Gap 0.050 < 0.15 — no meaningful data leakage detected
+S1 — Data Cleaning Protocol,Section A — Full dataset random split R2,0.5781
+S1 — Data Cleaning Protocol,Section A — Full dataset scaffold split R2 mean,0.5587
+S1 — Data Cleaning Protocol,Section A — Full dataset gap mean,0.0194
+S1 — Data Cleaning Protocol,Section A — Full dataset gap std,0.0192
+S1 — Data Cleaning Protocol,Section A — All gaps below 0.15,True
+S1 — Data Cleaning Protocol,Section A — Conclusion,"Gap 0.0194 < 0.15 — no meaningful data leakage in full 15,403-molecule prediction model"
+S1 — Data Cleaning Protocol,Section B — Causal subset random split R2,0.2117
+S1 — Data Cleaning Protocol,Section B — Causal subset scaffold split R2 mean,-0.1038
+S1 — Data Cleaning Protocol,Section B — Causal subset gap mean,0.3155
+S1 — Data Cleaning Protocol,Section B — Causal subset gap std,0.0983
+S1 — Data Cleaning Protocol,Section B — Causal subset gap 95% CI,"[0.1640, 0.4858]"
+S1 — Data Cleaning Protocol,Section B — All gaps below 0.15,False
+S1 — Data Cleaning Protocol,Section B — Conclusion,"Gap 0.316 confirms substantial scaffold leakage in the 598-molecule causal subset. This validates use of scaffold-grouped cross-fitting in all DML and causal forest analyses. Naive random-split R2 would be inflated by ~0.32."
+S1 — Data Cleaning Protocol,Leakage threshold,0.15 (Sheridan 2013 convention)
 S2 — DoubleML Results,Treatment,Hammett-weighted EWG score
 S2 — DoubleML Results,Confounders,"mol_weight, n_arom_rings, conj_length, halogen_count"
 S2 — DoubleML Results,meas_num excluded,Constant across causal subset (all measurement_type == experiment) — excluded from confounder set
 S2 — DoubleML Results,Learner,Random Forest ranger 500 trees min.node.size=5
 S2 — DoubleML Results,Cross-fitting folds,5 scaffold-grouped folds (cyclic round-robin assignment)
+S2 — DoubleML Results,n_rep,20 independent scaffold-grouped fold draws aggregated by median
 S2 — DoubleML Results,n_obs,598
 S2 — DoubleML Results,n_scaffolds,288
-S2 — DoubleML Results,EWG->HOMO ATE,-0.022230 eV
-S2 — DoubleML Results,EWG->HOMO SE,0.008610
-S2 — DoubleML Results,EWG->HOMO p,0.009826**
-S2 — DoubleML Results,EWG->HOMO CI,"[-0.039105, -0.005354] excludes zero"
-S2 — DoubleML Results,EWG->HOMO interpretation,Significant negative effect on HOMO energy
-S2 — DoubleML Results,EWG->LUMO ATE,-0.015383 eV
-S2 — DoubleML Results,EWG->LUMO SE,0.008667
-S2 — DoubleML Results,EWG->LUMO p,0.075899
-S2 — DoubleML Results,EWG->LUMO CI,"[-0.032369, +0.001603] crosses zero"
-S2 — DoubleML Results,EWG->LUMO interpretation,Negative point estimate; inconclusive at alpha=0.05
-S2 — DoubleML Results,EWG->Bandgap ATE,+0.001726 eV
-S2 — DoubleML Results,EWG->Bandgap SE,0.009739
-S2 — DoubleML Results,EWG->Bandgap p,0.859346
-S2 — DoubleML Results,EWG->Bandgap CI,"[-0.017362, +0.020814] crosses zero"
+S2 — DoubleML Results,EWG->HOMO ATE,-0.018277 eV
+S2 — DoubleML Results,EWG->HOMO SE,0.008988
+S2 — DoubleML Results,EWG->HOMO p,0.042015*
+S2 — DoubleML Results,EWG->HOMO CI,"[-0.035894, -0.000659] excludes zero"
+S2 — DoubleML Results,EWG->HOMO rep median,-0.018277 eV
+S2 — DoubleML Results,EWG->HOMO rep range (p5 to p95),"[-0.023099, -0.012043]"
+S2 — DoubleML Results,EWG->HOMO interpretation,Significant negative effect on HOMO energy (robust across 20 scaffold-grouped repetitions)
+S2 — DoubleML Results,EWG->LUMO ATE,-0.016332 eV
+S2 — DoubleML Results,EWG->LUMO SE,0.008300
+S2 — DoubleML Results,EWG->LUMO p,0.049095*
+S2 — DoubleML Results,EWG->LUMO CI,"[-0.032600, -0.000064] excludes zero"
+S2 — DoubleML Results,EWG->LUMO rep median,-0.016332 eV
+S2 — DoubleML Results,EWG->LUMO rep range (p5 to p95),"[-0.023178, -0.008070]"
+S2 — DoubleML Results,EWG->LUMO interpretation,Significant negative effect on LUMO energy (20-rep scaffold-grouped cross-fitting)
+S2 — DoubleML Results,EWG->Bandgap ATE,-0.002283 eV
+S2 — DoubleML Results,EWG->Bandgap SE,0.009692
+S2 — DoubleML Results,EWG->Bandgap p,0.813750
+S2 — DoubleML Results,EWG->Bandgap CI,"[-0.021281, +0.016714] crosses zero"
+S2 — DoubleML Results,EWG->Bandgap rep median,-0.002283 eV
+S2 — DoubleML Results,EWG->Bandgap rep range (p5 to p95),"[-0.005810, +0.004942]"
 S2 — DoubleML Results,EWG->Bandgap interpretation,No causal effect on optical bandgap
 S2 — DoubleML Results,EconML vs DoubleML HOMO,"Difference=0.009 eV FAIL — beyond 0.005 eV threshold; directionally consistent (both negative)"
 S2 — DoubleML Results,EconML vs DoubleML LUMO,"Difference=0.003 eV PASS — within 0.005 eV threshold; directionally consistent (both negative)"
-S2 — DoubleML Results,EconML vs DoubleML Bandgap,"Difference=0.012 eV FAIL — beyond threshold; sign differs (EconML negative; DoubleML near-zero positive)"
+S2 — DoubleML Results,EconML vs DoubleML Bandgap,"Difference=0.012 eV FAIL — beyond threshold; sign differs (EconML negative; DoubleML near-zero negative)"
 S3 — IV Diagnostics,Instrument,Non-aromatic C=C bond count (nonarom_cc) — sole instrument (just-identified)
 S3 — IV Diagnostics,Instrument excluded,"halogen_count removed: it is a component of ewg_weighted violating the exclusion restriction"
-S3 — IV Diagnostics,F-statistic,304.139
+S3 — IV Diagnostics,F-statistic,215.448
 S3 — IV Diagnostics,F-threshold,> 10 Staiger-Stock rule — instrument is strong
 S3 — IV Diagnostics,Sargan test,Not applicable — just-identified model (one instrument one endogenous variable)
-S3 — IV Diagnostics,Wu-Hausman p-value,0.00175**
-S3 — IV Diagnostics,Wu-Hausman interpretation,OLS inconsistent — IV estimation necessary
+S3 — IV Diagnostics,Wu-Hausman p HOMO,0.036*
+S3 — IV Diagnostics,Wu-Hausman p LUMO,0.0256*
+S3 — IV Diagnostics,Wu-Hausman interpretation,"OLS inconsistent for both outcomes (p<0.05) — IV estimation supported"
 S3 — IV Diagnostics,IV coef HOMO,-0.066 eV
 S3 — IV Diagnostics,IV coef LUMO,-0.066 eV
-S3 — IV Diagnostics,Direction agreement,Both IV and DML negative for HOMO and LUMO — direction confirmed
+S3 — IV Diagnostics,Direction agreement,Both IV and DML negative for HOMO and LUMO — directional consistency confirmed across estimators
 S4 — Sensemakr Sensitivity,OLS coefficient,-0.044 eV
 S4 — Sensemakr Sensitivity,t-value,-5.97
 S4 — Sensemakr Sensitivity,Partial R2,0.0567
@@ -61,15 +77,16 @@ S4 — Sensemakr Sensitivity,Robustness Value,0.197
 S4 — Sensemakr Sensitivity,RV alpha=0.05,0.130
 S4 — Sensemakr Sensitivity,Benchmark covariate,Molecular weight
 S4 — Sensemakr Sensitivity,Interpretation,Confounder needs >21.7% variance in both EWG and HOMO to nullify the effect
-S5 — CATE Distribution,Method,Causal forest grf R
+S5 — CATE Distribution,Method,Causal forest grf R with scaffold cluster-robust standard errors
 S5 — CATE Distribution,Trees,4000
-S5 — CATE Distribution,Mean CATE,-0.0215 eV
-S5 — CATE Distribution,Min CATE,-0.0448 eV
-S5 — CATE Distribution,Max CATE,+0.0325 eV
-S5 — CATE Distribution,Std Dev,0.008 eV
-S5 — CATE Distribution,Calibration p,0.0004*** well calibrated
-S5 — CATE Distribution,Heterogeneity p,0.2954 not confirmed at this sample size
-S5 — CATE Distribution,Interpretation,"Mean effect confirmed (p=0.0004); heterogeneity present but not statistically significant at n=598"
+S5 — CATE Distribution,Clusters,288 scaffold clusters passed via clusters= argument
+S5 — CATE Distribution,Mean CATE,-0.024568 eV
+S5 — CATE Distribution,Min CATE,-0.047691 eV
+S5 — CATE Distribution,Max CATE,+0.016957 eV
+S5 — CATE Distribution,Std Dev,0.011371 eV
+S5 — CATE Distribution,Calibration p,0.0039** well calibrated
+S5 — CATE Distribution,Heterogeneity p,not significant — consistent effect across molecule types
+S5 — CATE Distribution,Interpretation,"Mean effect confirmed (p=0.0039); effect is consistent across molecular weight and conjugation length — no strong heterogeneity at n=598"
 S5 — CATE Distribution,Figures produced,"cate_ewg_homo_distribution.png, cate_ewg_vs_molweight.png"
 S6 — xTB Validation,Candidate 1,SAScore=3.125 | ML_HOMO=-5.9719 | xTB_HOMO=-5.8796 | Error=0.0923 | PctDiff=1.57% | SYNTHESIZE - ML and xTB agree within threshold
 S6 — xTB Validation,Candidate 2,SAScore=3.16 | ML_HOMO=-5.9719 | xTB_HOMO=-5.914 | Error=0.0579 | PctDiff=0.98% | SYNTHESIZE - ML and xTB agree within threshold

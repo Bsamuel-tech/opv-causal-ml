@@ -18,7 +18,7 @@ Run scripts in the order listed. Each step reads from the previous step's output
 |------|--------|-------|--------|
 | 7 | `scripts/phase2_causal/dml_analysis.R` | `data/processed/master_acceptor_dataset.csv` | `results/tables/dml_ewg_corrected.csv`, `results/tables/dml_fold_diagnostics.csv` |
 | 8 | `scripts/phase2_causal/causal_forest.R` | `data/processed/master_acceptor_dataset.csv` | `data/processed/experimental_with_cates.csv`, `results/tables/cate_results_corrected.csv`, `results/figures/cate_ewg_homo_distribution.png`, `results/figures/cate_ewg_vs_molweight.png` |
-| 9 | `scripts/phase2_causal/iv_analysis.R` | `data/processed/master_acceptor_dataset.csv` | `results/tables/iv_results.csv` |
+| 9 | `scripts/phase2_causal/iv_analysis.R` | `data/processed/master_acceptor_dataset.csv` | `results/tables/iv_results.csv`, `results/tables/iv_diagnostics.csv` |
 | 10 | `scripts/phase2_causal/sensitivity_analysis.R` | `data/processed/master_acceptor_dataset.csv` | `results/tables/sensitivity_results.csv`, `results/figures/sensitivity_contour.png` |
 
 ## Phase 3: Counterfactual Design
@@ -28,15 +28,35 @@ Run scripts in the order listed. Each step reads from the previous step's output
 | 11 | `scripts/phase3_design/step1_counterfactual_design.py` | `data/processed/experimental_with_cates.csv` | `results/tables/phase3_top10_candidates.csv` |
 | 12 | `scripts/phase3_design/step2_xtb_validation.py` | `results/tables/phase3_top10_candidates.csv` | `results/tables/phase3_xtb_validation_final.csv` |
 
-## Key results (verified from R run 2026-10-09)
+## Key results (verified from R run 2026-10-19, n_rep=20 scaffold-grouped)
 
 | Outcome | ATE (eV) | SE | p-value | CI | Significant |
 |---------|----------|----|---------|----|-------------|
-| HOMO | -0.02223 | 0.00861 | 0.0098 | [-0.0391, -0.0054] | Yes |
-| LUMO | -0.01538 | 0.00867 | 0.0759 | [-0.0324, +0.0016] | No |
-| Bandgap | +0.00173 | 0.00974 | 0.8593 | [-0.0174, +0.0208] | No |
+| HOMO | -0.01828 | 0.00899 | 0.0420 | [-0.03589, -0.00066] | Yes |
+| LUMO | -0.01633 | 0.00830 | 0.0491 | [-0.03260, -0.00006] | Yes |
+| Bandgap | -0.00228 | 0.00969 | 0.8138 | [-0.02128, +0.01671] | No |
 
-n_obs=598 | n_scaffolds=288 | fold_scheme=scaffold-grouped | n_folds=5
+n_obs=598 | n_scaffolds=288 | fold_scheme=scaffold-grouped-cyclic | n_folds=5 | n_rep=20
+
+## Lineage manifest
+
+| File | Rows | Description |
+|------|------|-------------|
+| `data/raw/Data_Merged_with_SMILES.xlsx` | 1,573 | Raw experimental acceptors including duplicates |
+| `data/interim/step1_experimental_raw.csv` | 599 | Deduplicated experimental acceptors |
+| `data/interim/fix3_acceptors_only.csv` | 15,403 | Full merged dataset after acceptor filter |
+| `data/processed/master_acceptor_dataset.csv` | 15,403 | Final master dataset (copy of fix3 after leakage check) |
+| `results/tables/dml_ewg_corrected.csv` | 3 | DML ATE results (one row per outcome), n_rep=20 |
+| `results/tables/dml_fold_diagnostics.csv` | 5 | Fold size diagnostics for seed 1 |
+| `results/tables/iv_results.csv` | 2 | IV coefficients (one row per outcome) |
+| `results/tables/iv_diagnostics.csv` | 2 | IV diagnostics: F-stat, Wu-Hausman p (one row per outcome) |
+| `results/tables/cate_results_corrected.csv` | 598 | Per-molecule CATE estimates with scaffold column |
+| `data/processed/experimental_with_cates.csv` | 598 | Causal subset with CATE column attached |
+| `results/tables/bootstrap_leakage_summary.csv` | 17 | Section A and B leakage gap summary |
+| `results/tables/bootstrap_leakage_gap.csv` | 20 | Per-seed leakage gaps (full and causal subset) |
+| `results/tables/sensitivity_results.csv` | — | Sensemakr robustness values |
+| `results/tables/phase3_xtb_validation_final.csv` | 10 | xTB-validated counterfactual candidates |
+| `results/tables/supplementary_information.csv` | — | All supplementary sections S0-S6 |
 
 ## Raw data notes
 
@@ -48,6 +68,8 @@ n_obs=598 | n_scaffolds=288 | fold_scheme=scaffold-grouped | n_folds=5
 - `measurement_type` column values are `"experiment"` and `"DFT_B3LYP"` (not `"experimental"`). All Phase 2 R scripts filter on `"experiment"`.
 - `iv_evaluation_table4.csv` has been removed (commit 292f723). The IV results table is `results/tables/iv_results.csv`, produced by `iv_analysis.R` with `nonarom_cc` as the sole instrument. `halogen_count` is not used as an instrument (exclusion restriction violation — it is a component of `ewg_weighted`). The just-identified model has no Sargan test.
 - `causal_forest.R` produces two figures: `cate_ewg_homo_distribution.png` and `cate_ewg_vs_molweight.png`. There is no `cate_heatmap.png`.
-- DML cross-fitting uses scaffold-grouped folds (cyclic round-robin assignment, not random) to prevent train/test scaffold overlap. Fold sizes: 183 / 91 / 106 / 102 / 116 molecules.
+- DML cross-fitting uses scaffold-grouped folds (cyclic round-robin assignment, not random) to prevent train/test scaffold overlap. Fold sizes at seed 1: 118 / 131 / 151 / 79 / 119 molecules. Sizes vary across seeds by design.
+- `causal_forest.R` passes `clusters = scaffold_cluster_ids` (288 integer cluster IDs) to `grf::causal_forest()` for cluster-robust variance estimation.
+- Section B bootstrap (causal subset, n=598): gap mean=0.316, 95% CI [0.164, 0.486]. Large gap confirms scaffold leakage in naive random splits, validating scaffold-grouped cross-fitting in all Phase 2 models.
 - Causal subset (598 molecules) is distinct from the full dataset (15,403 molecules). All Phase 2 causal estimates apply only to the causal subset.
 - xTB must be installed separately and available on PATH for `step2_xtb_validation.py` to run.

@@ -5,7 +5,7 @@ library(grf)
 library(data.table)
 library(ggplot2)
 
-# ── Paths ──────────────────────────────────────────────────────────────────
+# -- Paths ------------------------------------------------------------------
 data_processed  <- here::here("data", "processed")
 results_models  <- here::here("results", "models")
 results_tables  <- here::here("results", "tables")
@@ -15,56 +15,68 @@ dir.create(results_tables,  recursive = TRUE, showWarnings = FALSE)
 dir.create(results_figures, recursive = TRUE, showWarnings = FALSE)
 
 df <- fread(file.path(data_processed, "master_acceptor_dataset.csv"))
-# NOTE: column value is "experiment" not "experimental"
 df <- df[measurement_type == "experiment" & ewg_count > 0]
 cat("Rows in causal subset:", nrow(df), "\n")
+cat("Unique scaffolds:", df[, uniqueN(scaffold)], "\n")
 
-# Feature matrix, treatment, outcome
+# -- Scaffold cluster IDs --------------------------------------------------
+# Convert scaffold strings to integer cluster IDs for grf.
+# Molecules sharing a scaffold are in the same cluster, which tells the
+# forest to account for within-scaffold correlation when estimating
+# uncertainty. This addresses Arindam point 3.
+scaffold_levels  <- unique(df$scaffold)
+cluster_ids      <- match(df$scaffold, scaffold_levels)
+cat("Cluster ID range:", min(cluster_ids), "to", max(cluster_ids), "\n")
+
+# -- Feature matrix, treatment, outcome ------------------------------------
 X <- as.matrix(df[, .(mol_weight, n_arom_rings, conj_length, logp)])
 W <- df$ewg_weighted
 Y <- df$homo_ev
 
-# Train causal forest
+# -- Train causal forest ---------------------------------------------------
 set.seed(42)
-cat("Training causal forest (4000 trees)...\n")
+cat("Training causal forest (4000 trees, scaffold clusters)...\n")
 cf <- causal_forest(
   X             = X,
   Y             = Y,
   W             = W,
+  clusters      = cluster_ids,
   num.trees     = 4000,
   min.node.size = 5,
   seed          = 42
 )
 
-# Extract CATEs
+# -- Extract CATEs ---------------------------------------------------------
 cate_out <- predict(cf, estimate.variance = TRUE)
 df[, CATE    := cate_out$predictions]
 df[, CATE_se := sqrt(cate_out$variance.estimates)]
 
 cat("\n=== CATE Summary ===\n")
 cat("Mean CATE:", round(mean(df$CATE), 6), "\n")
+cat("SD CATE:  ", round(sd(df$CATE),   6), "\n")
 cat("Min CATE: ", round(min(df$CATE),  6), "\n")
 cat("Max CATE: ", round(max(df$CATE),  6), "\n")
 
-# Calibration test
+# -- Calibration test ------------------------------------------------------
 cal <- test_calibration(cf)
 cat("\n=== Calibration Test ===\n")
 print(cal)
 
-# Save model
+# -- Save model and results ------------------------------------------------
 saveRDS(cf, file.path(results_models, "causal_forest_ewg_homo.rds"))
 cat("Saved causal_forest_ewg_homo.rds\n")
 
-# Save CATE results (also used by Phase 3)
 fwrite(df[, .(canonical_SMILES, homo_ev, ewg_weighted,
-              mol_weight, CATE, CATE_se)],
+              mol_weight, scaffold, CATE, CATE_se)],
        file.path(data_processed, "experimental_with_cates.csv"))
 
 fwrite(df[, .(canonical_SMILES, homo_ev, ewg_weighted,
-              mol_weight, CATE, CATE_se)],
+              mol_weight, scaffold, CATE, CATE_se)],
        file.path(results_tables, "cate_results_corrected.csv"))
 
-# CATE distribution plot
+cat("Saved cate_results_corrected.csv\n")
+
+# -- CATE distribution plot ------------------------------------------------
 p1 <- ggplot(df, aes(x = CATE)) +
   geom_histogram(bins = 60, fill = "#2166ac",
                  color = "white", alpha = 0.85) +
@@ -74,7 +86,7 @@ p1 <- ggplot(df, aes(x = CATE)) +
              color = "orange", linewidth = 1) +
   labs(
     title    = "Causal Effect of EWG Score on HOMO Energy",
-    subtitle = "Conditional Average Treatment Effects",
+    subtitle = "Conditional Average Treatment Effects (scaffold-clustered forest)",
     x        = "CATE (eV per unit Hammett-weighted EWG score)",
     y        = "Number of molecules",
     caption  = "Orange = mean CATE | Red = zero effect"
@@ -85,7 +97,7 @@ p1 <- ggplot(df, aes(x = CATE)) +
 ggsave(file.path(results_figures, "cate_ewg_homo_distribution.png"),
        p1, width = 9, height = 5, dpi = 300)
 
-# CATE vs molecular weight
+# -- CATE vs molecular weight ----------------------------------------------
 p2 <- ggplot(df, aes(x = mol_weight, y = CATE)) +
   geom_hline(yintercept = 0, linetype = "dashed",
              color = "gray50") +
