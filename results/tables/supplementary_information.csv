@@ -1,5 +1,5 @@
 section,item,detail
-S0 — Analysis Restrictions and Estimand,EWG filter applied,"df[measurement_type == 'experiment' & ewg_count > 0] applied in dml_analysis.R; df[ewg_count > 0] applied in iv_analysis.R and econml_comparison.py"
+S0 — Analysis Restrictions and Estimand,EWG filter applied,"df[measurement_type == 'experiment' & measurement_type == "experiment" AND ewg_count > 0] applied in dml_analysis.R; df[measurement_type == "experiment" AND ewg_count > 0] applied in iv_analysis.R and econml_comparison.py"
 S0 — Analysis Restrictions and Estimand,Molecules before filter,"15,403 total molecules in master dataset"
 S0 — Analysis Restrictions and Estimand,Molecules after filter,598 molecules used in all causal models
 S0 — Analysis Restrictions and Estimand,Molecules excluded,"14,805 molecules excluded (14,804 CEP + 1 experimental)"
