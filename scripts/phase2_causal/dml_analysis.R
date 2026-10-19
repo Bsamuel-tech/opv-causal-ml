@@ -153,8 +153,8 @@ print(results)
 
 cluster_robust_se <- function(dml_obj, df, cluster_var = "scaffold") {
   theta  <- as.numeric(dml_obj$coef)
-  psi_b  <- as.numeric(dml_obj$psi_b[, 1, N_REP])
-  psi_a  <- as.numeric(dml_obj$psi_a[, 1, N_REP])
+  psi_b  <- as.numeric(dml_obj$psi_b[, N_REP, 1])
+  psi_a  <- as.numeric(dml_obj$psi_a[, N_REP, 1])
   
   clusters <- df[[cluster_var]]
   n        <- length(psi_b)
