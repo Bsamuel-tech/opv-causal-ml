@@ -17,15 +17,18 @@ in a fully reproducible workflow.
 
 ## Key Results
 
-EWG score causally lowers HOMO energy by -0.01828 eV (DML, p=0.042;
-95% CI [-0.03589, -0.00066] excludes zero — statistically significant).
-LUMO also shows a significant negative effect (-0.01633 eV, p=0.049;
-CI [-0.03260, -0.00006] excludes zero). Bandgap shows no effect (-0.00228 eV,
-p=0.814). All three estimates come from scaffold-grouped 5-fold
-cross-fitting on 598 experimental molecules across 288 unique scaffolds,
-using cyclic round-robin fold assignment (Results from committed code (not independently reproduced) run 2026-10-19, n_rep=20).
+EWG score lowers HOMO energy by -0.01828 eV (DML, p=0.042 IID SE;
+p=0.052 scaffold-cluster-robust SE; 95% CI [-0.03589, -0.00066]).
+LUMO shows a consistent negative effect (-0.01633 eV, p=0.049 IID;
+p=0.051 cluster-robust; CI [-0.03260, -0.00006]). Both effects are
+marginal under cluster-robust inference. Bandgap shows no effect
+(-0.00228 eV, p=0.814). All three estimates come from scaffold-grouped
+5-fold cross-fitting on 598 experimental molecules across 288 unique
+scaffolds, using cyclic round-robin fold assignment (results from
+committed code, not independently reproduced; run 2026-10-19, n_rep=20).
 Post-hoc scaffold cluster-robust SEs computed via sandwich estimator
-(Cameron & Miller 2015); output in results/tables/dml_cluster_robust.csv.
+(Cameron & Miller 2015, rowMeans across 20 reps); output in
+results/tables/dml_cluster_robust.csv.
 IV estimation attempted with nonarom_cc as sole instrument. Formal
 diagnostics pass (F-stat=215.448, Wu-Hausman p=0.036 HOMO / p=0.026 LUMO)
 but the exclusion restriction is chemically uncertain: non-aromatic C=C
@@ -45,26 +48,27 @@ xTB validation and SAScore < 4.0.
 
 ## Analysis Restriction
 
-All causal models apply ewg_count > 0, restricting causal estimation to
-598 molecules with at least one EWG group. Nearly all CEP molecules
-have zero EWGs by SMARTS definition and contribute to scaffold diversity
-but not to causal estimation. The estimand is the ATE among EWG-containing
-organic acceptors, not the full 15,403-molecule population.
-See results/tables/supplementary_information.csv Section S0 for full details.
+All causal models apply measurement_type == "experiment" AND ewg_count > 0,
+restricting causal estimation to 598 molecules with at least one EWG group.
+Nearly all CEP molecules have zero EWGs by SMARTS definition and contribute
+to scaffold diversity but not to causal estimation. The estimand is the ATE
+among EWG-containing organic acceptors, not the full 15,403-molecule
+population. See results/tables/supplementary_information.csv Section S0
+for full details.
 
 ## Methods
 
 Double Machine Learning via DoubleML in R. Scaffold-grouped 5-fold
 cross-fitting with cyclic round-robin fold assignment (guarantees no empty
 folds). Post-hoc scaffold cluster-robust SE correction via sandwich
-estimator (Cameron & Miller 2015). Filter: measurement_type == "experiment"
-AND ewg_count > 0. IV estimation attempted; formal diagnostics pass but
-exclusion restriction for nonarom_cc is chemically uncertain — reported as
-a limitation. Sensitivity analysis via sensemakr in R with molecular weight
-as benchmark. Causal forests and CATE maps via grf in R with 4,000 trees
-and 288 scaffold clusters. Molecular processing and SMARTS reactions via
-RDKit in Python. Quantum chemistry validation via xTB 6.7.1 GFN2 with
-fixed conformer seed=42.
+estimator (Cameron & Miller 2015, rowMeans across 20 reps). Filter:
+measurement_type == "experiment" AND ewg_count > 0. IV estimation
+attempted; formal diagnostics pass but exclusion restriction for nonarom_cc
+is chemically uncertain — reported as a limitation. Sensitivity analysis
+via sensemakr in R with molecular weight as benchmark. Causal forests and
+CATE maps via grf in R with 4,000 trees and 288 scaffold clusters.
+Molecular processing and SMARTS reactions via RDKit in Python. Quantum
+chemistry validation via xTB 6.7.1 GFN2 with fixed conformer seed=42.
 
 ## Repository Contents
 
@@ -96,12 +100,13 @@ Phase 0 complete: R 4.6.0 + Python 3.10, all packages locked in
 renv.lock, requirements.txt, and environment.yml.
 Phase 1 complete: 15,403 molecules, bootstrap leakage gap mean=0.0194
 (full dataset, 20 seeds), CEP acceptor filter 99.32% pass rate.
-Phase 2 complete: DML verified run 2026-10-19 (scaffold-grouped cyclic
-folds, n_rep=20, 598 molecules, 288 scaffolds). HOMO significant (p=0.042),
-LUMO significant (p=0.049), Bandgap no effect (p=0.814). Cluster-robust
-SEs in dml_cluster_robust.csv. IV diagnostics pass formal tests; exclusion
-restriction uncertain — reported as limitation. Sensitivity analysis and
-CATE maps complete.
+Phase 2 complete: DML results from committed code (not independently
+reproduced), run 2026-10-19 (scaffold-grouped cyclic folds, n_rep=20,
+598 molecules, 288 scaffolds). HOMO p=0.042 (IID) / p=0.052
+(cluster-robust), LUMO p=0.049 / p=0.051, Bandgap no effect (p=0.814).
+Cluster-robust SEs in dml_cluster_robust.csv. IV diagnostics pass formal
+tests; exclusion restriction uncertain — reported as limitation.
+Sensitivity analysis and CATE maps complete.
 Phase 3 complete: counterfactual design using per-molecule CATE,
 xTB validation MAE=0.219 eV, 5/10 pass SAScore < 4.0.
 Phase 4 complete: four publication figures, seven-section supplementary.
