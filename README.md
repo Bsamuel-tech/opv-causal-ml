@@ -23,7 +23,7 @@ LUMO also shows a significant negative effect (-0.01633 eV, p=0.049;
 CI [-0.03260, -0.00006] excludes zero). Bandgap shows no effect (-0.00228 eV,
 p=0.814). All three estimates come from scaffold-grouped 5-fold
 cross-fitting on 598 experimental molecules across 288 unique scaffolds,
-using cyclic round-robin fold assignment (verified run 2026-10-19, n_rep=20).
+using cyclic round-robin fold assignment (Results from committed code (not independently reproduced) run 2026-10-19, n_rep=20).
 Post-hoc scaffold cluster-robust SEs computed via sandwich estimator
 (Cameron & Miller 2015); output in results/tables/dml_cluster_robust.csv.
 IV estimation attempted with nonarom_cc as sole instrument. Formal
