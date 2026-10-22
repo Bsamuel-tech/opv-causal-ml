@@ -1,8 +1,8 @@
 step,value,p_value,interpretation
-DML_EWG_HOMO,-0.022230,0.009826,Significant negative effect on HOMO (p=0.010); CI [-0.039 to -0.005] excludes zero
-DML_EWG_LUMO,-0.015383,0.075899,Negative point estimate; CI [-0.032 to +0.002] crosses zero; inconclusive at 0.05
-DML_EWG_Bandgap,0.001726,0.859346,No effect
-Sensitivity_RV,0.217,,Confounder needs 21.7% variance in both EWG and HOMO to nullify
+DML_EWG_HOMO,-0.018280,0.042000,Borderline negative effect on HOMO (p=0.042 IID; p=0.052 cluster-robust); IID CI [-0.036 to -0.001] marginally excludes zero; cluster-robust CI crosses zero
+DML_EWG_LUMO,-0.016330,0.049000,Borderline negative effect on LUMO (p=0.049 IID; p=0.051 cluster-robust); IID CI [-0.033 to -0.000] marginally excludes zero; cluster-robust CI crosses zero
+DML_EWG_Bandgap,-0.002280,0.814000,No effect
+Sensitivity_RV,0.197,,Confounder needs 19.7% variance in both EWG and HOMO to nullify
 Sensitivity_RV_alpha05,0.1515,,Threshold for statistical significance at alpha=0.05
 CATE_mean,-0.0215,,Average EWG causal effect on HOMO across molecules
 CATE_min,-0.0448,,"Most negative CATE observed - exploratory observation only, not a confirmed finding"
