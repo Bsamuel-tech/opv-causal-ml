@@ -6,9 +6,9 @@ Run scripts in the order listed. Each step reads from the previous step's output
 | Step | Script | Input | Output | Rows (approx) |
 |------|--------|-------|--------|---------------|
 | 1 | `scripts/phase1_data/step1_build_dataset.py` | `data/raw/Data_Merged_with_SMILES.xlsx` | `data/interim/step1_experimental_raw.csv` | 599 (output rows; input xlsx has 1,573 including header/duplicates) |
-| 2 | `scripts/phase1_data/step2_expand_dataset.py` | `data/interim/step1_experimental_raw.csv` + `data/raw/cep_sample_15000.csv` | `data/interim/step2_merged_raw.csv` | ~14,000 |
-| 3 | `scripts/phase1_data/fix1_add_columns.py` | `data/interim/step2_merged_raw.csv` | `data/interim/fix1_with_columns.csv` | ~14,000 |
-| 4 | `scripts/phase1_data/fix2_scaffold_split.py` | `data/interim/fix1_with_columns.csv` | `data/interim/fix2_with_scaffolds.csv` | ~14,000 |
+| 2 | `scripts/phase1_data/step2_expand_dataset.py` | `data/interim/step1_experimental_raw.csv` + `data/raw/cep_sample_15000.csv` | `data/interim/step2_merged_raw.csv` | ~15,000 |
+| 3 | `scripts/phase1_data/fix1_add_columns.py` | `data/interim/step2_merged_raw.csv` | `data/interim/fix1_with_columns.csv` | ~15,000 |
+| 4 | `scripts/phase1_data/fix2_scaffold_split.py` | `data/interim/fix1_with_columns.csv` | `data/interim/fix2_with_scaffolds.csv` | ~15,000 |
 | 5 | `scripts/phase1_data/fix3_acceptor_filter.py` | `data/interim/fix2_with_scaffolds.csv` | `data/interim/fix3_acceptors_only.csv` | 15,403 |
 | 6 | `scripts/phase1_data/fix4_bootstrap_leakage.py` | `data/interim/fix3_acceptors_only.csv` | `data/processed/master_acceptor_dataset.csv` + `results/tables/bootstrap_leakage_gap.csv` + `results/tables/bootstrap_leakage_summary.csv` | 15,403 |
 
@@ -32,11 +32,13 @@ Run scripts in the order listed. Each step reads from the previous step's output
 
 | Outcome | ATE (eV) | SE IID / SE CR | p IID / p CR | CI (IID) | Inference |
 |---------|----------|----------------|--------------|----------|-----------|
-| HOMO | -0.01828 | 0.00899 / 0.00940 | 0.0420 / 0.0520 | [-0.03589, -0.00066] | Marginal |
-| LUMO | -0.01633 | 0.00830 / 0.00837 | 0.0491 / 0.0510 | [-0.03260, -0.00006] | Marginal |
+| HOMO | -0.01828 | 0.00899 / 0.00940 | 0.0420 / 0.0520 | [-0.03589, -0.00066] | Borderline |
+| LUMO | -0.01633 | 0.00830 / 0.00837 | 0.0491 / 0.0510 | [-0.03260, -0.00006] | Borderline |
 | Bandgap | -0.00228 | 0.00969 / 0.01139 | 0.8138 / 0.8410 | [-0.02128, +0.01671] | No effect |
 
 IID = DoubleML i.i.d. SE; CR = post-hoc scaffold cluster-robust sandwich SE (Cameron & Miller 2015, rowMeans across 20 reps).
+Cluster-robust CIs: HOMO [-0.03671, +0.00016]; LUMO [-0.03273, +0.00007] — both marginally cross zero.
+Bonferroni-adjusted p-values (3 outcomes): HOMO ~0.13; LUMO ~0.15; both non-significant after correction.
 
 n_obs=598 | n_scaffolds=288 | fold_scheme=scaffold-grouped-cyclic | n_folds=5 | n_rep=20
 
@@ -48,8 +50,8 @@ n_obs=598 | n_scaffolds=288 | fold_scheme=scaffold-grouped-cyclic | n_folds=5 | 
 | `data/interim/step1_experimental_raw.csv` | `cb04b2a9a2665daa557f36fec26f8ead` | 599 | — | Deduplicated experimental acceptors |
 | `data/interim/fix3_acceptors_only.csv` | `664009c84abab43ee3c3a6fc0600c419` | 15,403 | — | Full merged dataset after acceptor filter |
 | `data/processed/master_acceptor_dataset.csv` | `664009c84abab43ee3c3a6fc0600c419` | 15,403 | — | Final master dataset (copy of fix3 after leakage check) |
-| `results/tables/dml_ewg_corrected.csv` | `35979fdc752c93f85fc7efa4a73a26e5` | 3 | 13 | DML ATE results (one row per outcome), n_rep=20 |
-| `results/tables/dml_cluster_robust.csv` | — | 3 | 8 | Scaffold cluster-robust SEs (outcome, ATE, SE_iid, SE_cluster, p_cluster, CI_lower_cr, CI_upper_cr, n_clusters) |
+| `results/tables/dml_ewg_corrected.csv` | `35979fdc752c93f85fc7efa4a73a26e5` | 3 | 15 | DML ATE results (one row per outcome), n_rep=20 |
+| `results/tables/dml_cluster_robust.csv` | `f7b21e1dee183851579d7c5255e57420` | 3 | 8 | Scaffold cluster-robust SEs (outcome, ATE, SE_iid, SE_cluster, p_cluster, CI_lower_cr, CI_upper_cr, n_clusters) |
 | `results/tables/dml_fold_diagnostics.csv` | `5af92d85c6a91bb3273729f56f4f8caa` | 5 | — | Fold size diagnostics for seed 1 |
 | `results/tables/iv_results.csv` | `99464bf1d97b44ff76f7a3897222601e` | 2 | — | IV coefficients (one row per outcome) |
 | `results/tables/iv_diagnostics.csv` | `cf7d54527988bd7166950fdfe3a0922b` | 2 | — | IV diagnostics: F-stat, Wu-Hausman p (one row per outcome) |
@@ -58,9 +60,9 @@ n_obs=598 | n_scaffolds=288 | fold_scheme=scaffold-grouped-cyclic | n_folds=5 | 
 | `results/tables/bootstrap_leakage_summary.csv` | `71c5ff401ecb5d294a6427d6b0e665f7` | 17 | — | Section A and B leakage gap summary |
 | `results/tables/bootstrap_leakage_gap.csv` | `d1fcaa509bf73d7ca98f900fa962643e` | 20 | — | Per-seed leakage gaps (full and causal subset) |
 | `results/tables/phase3_xtb_validation_final.csv` | `2a6ef1b58b242e40638af276432e3bdc` | 10 | — | xTB-validated counterfactual candidates |
-| `results/tables/supplementary_information.csv` | `9d6c41d0b22b9b8a93042f8fcbfaaa41` | — | — | All supplementary sections S0-S6 |
+| `results/tables/supplementary_information.csv` | `ee4e82b26e39104602712bfff5ae687b` | — | — | All supplementary sections S0-S6 |
 
-Note: Cols marked — have not been verified against committed files. MD5 for dml_cluster_robust.csv to be updated after next run.
+Note: MD5s verified against committed files 2026-10-22. Cols marked — have not been verified. Re-run `scripts/generate_manifest_md5.sh` after any pipeline rerun to refresh hashes.
 
 ## Raw data notes
 
@@ -78,4 +80,5 @@ Note: Cols marked — have not been verified against committed files. MD5 for dm
 - Section B bootstrap (causal subset, n=598): gap mean=0.316, 95% CI [0.164, 0.486]. Large gap confirms scaffold leakage in naive random splits, validating scaffold-grouped cross-fitting in all Phase 2 models.
 - Causal subset (598 molecules) is distinct from the full dataset (15,403 molecules). All Phase 2 causal estimates apply only to the causal subset.
 - xTB must be installed separately and available on PATH for `step2_xtb_validation.py` to run.
-- IV exclusion restriction for `nonarom_cc` is chemically uncertain. Non-aromatic C=C bonds may directly affect conjugation length and orbital energies. IV results reported for transparency; DML is the primary estimate.
+- IV exclusion restriction for `nonarom_cc` is chemically uncertain. Non-aromatic C=C bonds may directly affect conjugation length and orbital energies. IV coefficients (~-0.066 eV) are approximately 3.7x larger than DML estimates; IV supports the direction but not the magnitude. IV results reported for transparency; DML is the primary estimate.
+- Wu-Hausman p<0.05 for HOMO and LUMO confirms endogeneity (OLS and IV inconsistent). This supports use of IV estimation but does not validate the instrument itself.
