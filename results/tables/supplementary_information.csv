@@ -1,5 +1,5 @@
 section,item,detail
-S0 — Analysis Restrictions and Estimand,EWG filter applied,"df[measurement_type == 'experiment' & ewg_count > 0] applied in dml_analysis.R and econml_comparison.py; df[ewg_count > 0] applied in iv_analysis.R"
+S0 — Analysis Restrictions and Estimand,EWG filter applied,"df[measurement_type == 'experiment' & ewg_count > 0] applied in dml_analysis.R, iv_analysis.R, and econml_comparison.py"
 S0 — Analysis Restrictions and Estimand,Molecules before filter,"15,403 total molecules in master dataset"
 S0 — Analysis Restrictions and Estimand,Molecules after filter,598 molecules used in all causal models
 S0 — Analysis Restrictions and Estimand,Molecules excluded,"14,805 molecules excluded (14,804 CEP + 1 experimental)"
@@ -86,7 +86,8 @@ S5 — CATE Distribution,Min CATE,-0.047691 eV
 S5 — CATE Distribution,Max CATE,+0.016957 eV
 S5 — CATE Distribution,Std Dev,0.011371 eV
 S5 — CATE Distribution,Calibration p,0.0039** well calibrated
-S5 — CATE Distribution,Heterogeneity p,p=0.629 (one-sided HC3) — not significant; consistent effect across molecule typesS5 — CATE Distribution,Interpretation,"Mean effect confirmed (p=0.0039); effect is consistent across molecular weight and conjugation length — no strong heterogeneity at n=598"
+S5 — CATE Distribution,Heterogeneity p,p=0.629 (one-sided HC3) — not significant; consistent effect across molecule types
+S5 — CATE Distribution,Interpretation,"Mean effect confirmed (p=0.0039); effect is consistent across molecular weight and conjugation length — no strong heterogeneity at n=598"
 S5 — CATE Distribution,Figures produced,"cate_ewg_homo_distribution.png, cate_ewg_vs_molweight.png"
 S6 — xTB Validation,Candidate 1,SAScore=3.128 | ML_HOMO=-5.995027 | xTB_HOMO=-5.8974 | Error=0.0977 | PctDiff=1.64% | SYNTHESIZE - ML and xTB agree within threshold
 S6 — xTB Validation,Candidate 2,SAScore=3.166 | ML_HOMO=-5.995027 | xTB_HOMO=-5.8097 | Error=0.1853 | PctDiff=3.09% | SYNTHESIZE - ML and xTB agree within threshold

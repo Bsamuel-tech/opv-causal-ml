@@ -48,7 +48,7 @@ mean=0.316, 95% CI [0.164, 0.486] — confirms scaffold leakage in naive
 random splits, validating scaffold-grouped cross-fitting.
 Nuisance diagnostics: R2(ml_l)=0.181 RMSE=0.133 eV, R2(ml_m)=0.735.
 Causal forest calibration confirmed (p=0.0039). Heterogeneity not confirmed
-(p=0.295) — reported as an honest negative finding.
+(p=0.629, one-sided HC3 from test_calibration) — reported as an honest negative finding.
 Sensitivity analysis (sensemakr): t-value=-5.34, partial R2=0.046,
 RV=19.7% (point estimate), RV(alpha=0.05)=12.95%.
 Phase 3 design engine achieves MAE=0.219 eV; 5/10 candidates pass both
