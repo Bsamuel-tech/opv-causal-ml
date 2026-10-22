@@ -50,7 +50,7 @@ Causal forest calibration: mean effect confirmed (p=0.0039). Heterogeneity not c
 |------|-----|------|------|-------------|
 | `data/raw/Data_Merged_with_SMILES.xlsx` | `99b06236592b7663fd3272cb2608d640` | 1,573 | — | Raw experimental acceptors including duplicates |
 | `data/interim/step1_experimental_raw.csv` | `cb04b2a9a2665daa557f36fec26f8ead` | 599 | 12 | Deduplicated experimental acceptors |
-| `data/interim/step2_merged_raw.csv` | — | 15,528 | 12 | Merged experimental + CEP before column enrichment |
+| `data/interim/step2_merged_raw.csv` | `7cd697be41008cde2dbd81a78052ff3b` | 15,528 | 12 | Merged experimental + CEP before column enrichment |
 | `data/interim/fix1_with_columns.csv` | `2bf6bba5321d7ac0c8298e68c65eecf8` | 15,528 | 15 | After column standardization |
 | `data/interim/fix2_with_scaffolds.csv` | `56e025278ba4f2c0d0c2e080ae4fa62d` | 15,528 | 17 | After scaffold assignment |
 | `data/interim/fix3_acceptors_only.csv` | `664009c84abab43ee3c3a6fc0600c419` | 15,403 | 17 | Full merged dataset after acceptor filter |
