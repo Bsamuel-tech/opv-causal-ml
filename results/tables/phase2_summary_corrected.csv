@@ -1,11 +1,11 @@
 step,value,p_value,interpretation
-DML_EWG_HOMO,-0.018280,0.042000,Borderline negative effect on HOMO (p=0.042 IID; p=0.052 cluster-robust); IID CI [-0.036 to -0.001] marginally excludes zero; cluster-robust CI crosses zero
-DML_EWG_LUMO,-0.016330,0.049000,Borderline negative effect on LUMO (p=0.049 IID; p=0.051 cluster-robust); IID CI [-0.033 to -0.000] marginally excludes zero; cluster-robust CI crosses zero
+DML_EWG_HOMO,-0.018280,0.042000,Borderline negative effect on HOMO (p=0.042 IID; p=0.052 cluster-robust); IID CI excludes zero; cluster-robust CI marginally crosses zero
+DML_EWG_LUMO,-0.016330,0.049000,Borderline negative effect on LUMO (p=0.049 IID; p=0.051 cluster-robust); IID CI marginally excludes zero; cluster-robust CI marginally crosses zero
 DML_EWG_Bandgap,-0.002280,0.814000,No effect
 Sensitivity_RV,0.197,,Confounder needs 19.7% variance in both EWG and HOMO to nullify
-Sensitivity_RV_alpha05,0.1515,,Threshold for statistical significance at alpha=0.05
-CATE_mean,-0.0215,,Average EWG causal effect on HOMO across molecules
-CATE_min,-0.0448,,"Most negative CATE observed - exploratory observation only, not a confirmed finding"
-CATE_max,0.0325,,"Most positive CATE observed - exploratory observation only, not a confirmed finding"
-Calibration_mean_p,0.0004063,,Forest mean effect confirmed (p=0.0004)
+Sensitivity_RV_alpha05,0.1295,,Threshold for statistical significance at alpha=0.05
+CATE_mean,-0.024568,,Average EWG causal effect on HOMO across molecules
+CATE_min,-0.047691,,"Most negative CATE observed - exploratory observation only; heterogeneity not statistically confirmed (p=0.295)"
+CATE_max,0.016957,,"Most positive CATE observed - exploratory observation only; heterogeneity not statistically confirmed (p=0.295)"
+Calibration_mean_p,0.0039,,Forest mean effect confirmed (p=0.0039)
 Calibration_het_p,0.2954489,,Heterogeneity NOT statistically confirmed. Larger samples needed.
