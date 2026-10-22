@@ -1,5 +1,5 @@
 section,item,detail
-df[measurement_type == 'experiment' & ewg_count > 0] applied in dml_analysis.R; df[ewg_count > 0] applied in iv_analysis.R and econml_comparison.py
+S0 — Analysis Restrictions and Estimand,EWG filter applied,"df[measurement_type == 'experiment' & ewg_count > 0] applied in dml_analysis.R and iv_analysis.R; df[ewg_count > 0] applied in econml_comparison.py"
 S0 — Analysis Restrictions and Estimand,Molecules before filter,"15,403 total molecules in master dataset"
 S0 — Analysis Restrictions and Estimand,Molecules after filter,598 molecules used in all causal models
 S0 — Analysis Restrictions and Estimand,Molecules excluded,"14,805 molecules excluded (14,804 CEP + 1 experimental)"
@@ -37,18 +37,18 @@ S2 — DoubleML Results,n_obs,598
 S2 — DoubleML Results,n_scaffolds,288
 S2 — DoubleML Results,EWG->HOMO ATE,-0.018277 eV
 S2 — DoubleML Results,EWG->HOMO SE,0.008988
-S2 — DoubleML Results,EWG->HOMO p,0.042015*
-S2 — DoubleML Results,EWG->HOMO CI,"[-0.035894, -0.000659] excludes zero"
+S2 — DoubleML Results,EWG->HOMO p,0.042015 (IID); 0.052 (cluster-robust); Bonferroni-adjusted ~0.13
+S2 — DoubleML Results,EWG->HOMO CI,"IID: [-0.035894, -0.000659] marginally excludes zero; cluster-robust: [-0.036710, +0.000160] marginally crosses zero"
 S2 — DoubleML Results,EWG->HOMO rep median,-0.018277 eV
 S2 — DoubleML Results,EWG->HOMO rep range (p5 to p95),"[-0.023099, -0.012043]"
-S2 — DoubleML Results,EWG->HOMO interpretation,Significant negative effect on HOMO energy (robust across 20 scaffold-grouped repetitions)
+S2 — DoubleML Results,EWG->HOMO interpretation,Borderline negative effect on HOMO energy (p~0.05; cluster-robust CI crosses zero; Bonferroni-adjusted p~0.13)
 S2 — DoubleML Results,EWG->LUMO ATE,-0.016332 eV
 S2 — DoubleML Results,EWG->LUMO SE,0.008300
-S2 — DoubleML Results,EWG->LUMO p,0.049095*
-S2 — DoubleML Results,EWG->LUMO CI,"[-0.032600, -0.000064] excludes zero"
+S2 — DoubleML Results,EWG->LUMO p,0.049095 (IID); 0.051 (cluster-robust); Bonferroni-adjusted ~0.15
+S2 — DoubleML Results,EWG->LUMO CI,"IID: [-0.032600, -0.000064] marginally excludes zero; cluster-robust: [-0.032730, +0.000070] marginally crosses zero"
 S2 — DoubleML Results,EWG->LUMO rep median,-0.016332 eV
 S2 — DoubleML Results,EWG->LUMO rep range (p5 to p95),"[-0.023178, -0.008070]"
-S2 — DoubleML Results,EWG->LUMO interpretation,Significant negative effect on LUMO energy (20-rep scaffold-grouped cross-fitting)
+S2 — DoubleML Results,EWG->LUMO interpretation,Borderline negative effect on LUMO energy (p~0.05; cluster-robust CI crosses zero; Bonferroni-adjusted p~0.15)
 S2 — DoubleML Results,EWG->Bandgap ATE,-0.002283 eV
 S2 — DoubleML Results,EWG->Bandgap SE,0.009692
 S2 — DoubleML Results,EWG->Bandgap p,0.813750
@@ -56,27 +56,28 @@ S2 — DoubleML Results,EWG->Bandgap CI,"[-0.021281, +0.016714] crosses zero"
 S2 — DoubleML Results,EWG->Bandgap rep median,-0.002283 eV
 S2 — DoubleML Results,EWG->Bandgap rep range (p5 to p95),"[-0.005810, +0.004942]"
 S2 — DoubleML Results,EWG->Bandgap interpretation,No causal effect on optical bandgap
-S2 — DoubleML Results,EconML vs DoubleML HOMO,"Difference=0.009 eV FAIL — beyond 0.005 eV threshold; directionally consistent (both negative)"
+S2 — DoubleML Results,EconML vs DoubleML HOMO,"Difference=0.006 eV FAIL — beyond 0.005 eV threshold; directionally consistent (both negative)"
 S2 — DoubleML Results,EconML vs DoubleML LUMO,"Difference=0.003 eV PASS — within 0.005 eV threshold; directionally consistent (both negative)"
-S2 — DoubleML Results,EconML vs DoubleML Bandgap,"Difference=0.012 eV FAIL — beyond threshold; sign differs (EconML negative; DoubleML near-zero negative)"
+S2 — DoubleML Results,EconML vs DoubleML Bandgap,"Difference=0.008 eV FAIL — beyond threshold; direction consistent (both negative; EconML -0.010 eV; DoubleML -0.002 eV)"
 S3 — IV Diagnostics,Instrument,Non-aromatic C=C bond count (nonarom_cc) — sole instrument (just-identified)
 S3 — IV Diagnostics,Instrument excluded,"halogen_count removed: it is a component of ewg_weighted violating the exclusion restriction"
 S3 — IV Diagnostics,F-statistic,215.448
 S3 — IV Diagnostics,F-threshold,> 10 Staiger-Stock rule — instrument is strong
 S3 — IV Diagnostics,Sargan test,Not applicable — just-identified model (one instrument one endogenous variable)
-S3 — IV Diagnostics,Wu-Hausman p HOMO,0.036*
-S3 — IV Diagnostics,Wu-Hausman p LUMO,0.0256*
-S3 — IV Diagnostics,Wu-Hausman interpretation,"Formal diagnostics pass (F=215, Wu-Hausman p<0.05 for both outcomes) but exclusion restriction for nonarom_cc is chemically uncertain: non-aromatic C=C bonds may directly affect conjugation length and orbital energies. IV results reported for transparency; DML is the primary causal estimate."
+S3 — IV Diagnostics,Wu-Hausman p HOMO,0.036
+S3 — IV Diagnostics,Wu-Hausman p LUMO,0.0256
+S3 — IV Diagnostics,Wu-Hausman interpretation,"Wu-Hausman p<0.05 for both outcomes indicates that OLS and IV estimates are inconsistent, confirming endogeneity. This supports the need for IV but does not validate the instrument itself. Exclusion restriction for nonarom_cc is chemically uncertain: non-aromatic C=C bonds may directly affect conjugation length and orbital energies. IV results reported for transparency; DML is the primary causal estimate."
 S3 — IV Diagnostics,IV coef HOMO,-0.066 eV
 S3 — IV Diagnostics,IV coef LUMO,-0.066 eV
+S3 — IV Diagnostics,IV vs DML magnitude,"IV coefficients (~-0.066 eV) are approximately 3.7x larger than DML estimates (~-0.018 eV). IV supports the direction of the EWG effect but not the magnitude; discrepancy likely reflects violation of the exclusion restriction."
 S3 — IV Diagnostics,Direction agreement,Both IV and DML negative for HOMO and LUMO — directional consistency confirmed across estimators
 S4 — Sensemakr Sensitivity,OLS coefficient,-0.044 eV
-S4 — Sensemakr Sensitivity,t-value,-5.97
-S4 — Sensemakr Sensitivity,Partial R2,0.0567
+S4 — Sensemakr Sensitivity,t-value,-5.34
+S4 — Sensemakr Sensitivity,Partial R2,0.046
 S4 — Sensemakr Sensitivity,Robustness Value,0.197
 S4 — Sensemakr Sensitivity,RV alpha=0.05,0.130
 S4 — Sensemakr Sensitivity,Benchmark covariate,Molecular weight
-S4 — Sensemakr Sensitivity,Interpretation,Confounder needs >21.7% variance in both EWG and HOMO to nullify the effect
+S4 — Sensemakr Sensitivity,Interpretation,Confounder needs >19.7% variance in both EWG and HOMO to nullify the effect
 S5 — CATE Distribution,Method,Causal forest grf R with scaffold cluster-robust standard errors
 S5 — CATE Distribution,Trees,4000
 S5 — CATE Distribution,Clusters,288 scaffold clusters passed via clusters= argument
