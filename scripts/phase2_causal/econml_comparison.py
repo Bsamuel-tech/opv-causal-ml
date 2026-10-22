@@ -5,15 +5,13 @@ from sklearn.ensemble import RandomForestRegressor
 
 print("=== EconML (Python) vs DoubleML (R) Comparison ===\n")
 
-# Load data
+# Load data — same filter as dml_analysis.R
 df = pd.read_csv("data/processed/master_acceptor_dataset.csv")
-df = df[df['ewg_count'] > 0].copy()
-df['meas_num'] = (df['measurement_type'] == 'experiment').astype(int)
+df = df[(df['measurement_type'] == 'experiment') & (df['ewg_count'] > 0)].copy()
 print(f"Rows: {len(df)}")
 
-# Define variables — same as R
-confounders = ['mol_weight', 'n_arom_rings', 'conj_length',
-               'halogen_count', 'meas_num']
+# meas_num excluded: constant across causal subset (all measurement_type == experiment)
+confounders = ['mol_weight', 'n_arom_rings', 'conj_length', 'halogen_count']
 treatment = 'ewg_weighted'
 
 outcomes = {
@@ -22,11 +20,11 @@ outcomes = {
     'bandgap_ev': 'Bandgap'
 }
 
-# R DoubleML results for comparison
+# R DoubleML results (n_rep=20, scaffold-grouped cyclic folds, committed 2026-10-19)
 r_results = {
-    'homo_ev':    -0.01201265,
-    'lumo_ev':    -0.02480654,
-    'bandgap_ev': -0.01784393
+    'homo_ev':    -0.018280,
+    'lumo_ev':    -0.016330,
+    'bandgap_ev': -0.002280
 }
 
 results = []
@@ -37,11 +35,11 @@ for col, name in outcomes.items():
     W = df[confounders].values
 
     model = LinearDML(
-        model_y = RandomForestRegressor(n_estimators=500, min_samples_leaf=5,
-                                        random_state=42),
-        model_t = RandomForestRegressor(n_estimators=500, min_samples_leaf=5,
-                                        random_state=42),
-        cv      = 5,
+        model_y      = RandomForestRegressor(n_estimators=500, min_samples_leaf=5,
+                                             random_state=42),
+        model_t      = RandomForestRegressor(n_estimators=500, min_samples_leaf=5,
+                                             random_state=42),
+        cv           = 5,
         random_state = 42
     )
     model.fit(Y, T, X=None, W=W)
@@ -53,19 +51,19 @@ for col, name in outcomes.items():
     agree = diff < 0.005
 
     print(f"\n=== EWG -> {name} ===")
-    print(f"EconML ATE:  {ate:.6f} eV")
-    print(f"DoubleML ATE:{r_ate:.6f} eV")
-    print(f"Difference:  {diff:.6f} eV")
+    print(f"EconML ATE:   {ate:.6f} eV")
+    print(f"DoubleML ATE: {r_ate:.6f} eV")
+    print(f"Difference:   {diff:.6f} eV")
     print(f"Within 0.005 eV threshold: {agree}")
 
     results.append({
-        'outcome':     col,
-        'econml_ate':  ate,
+        'outcome':      col,
+        'econml_ate':   ate,
         'doubleml_ate': r_ate,
-        'difference':  diff,
-        'within_0005': agree,
-        'ci_lower':    ci[0],
-        'ci_upper':    ci[1]
+        'difference':   diff,
+        'within_0005':  agree,
+        'ci_lower':     ci[0],
+        'ci_upper':     ci[1]
     })
 
 results_df = pd.DataFrame(results)
@@ -74,5 +72,5 @@ results_df.to_csv(
     index=False
 )
 print("\n=== Summary ===")
-print(results_df[['outcome','econml_ate','doubleml_ate','difference','within_0005']])
+print(results_df[['outcome', 'econml_ate', 'doubleml_ate', 'difference', 'within_0005']])
 print("\nSaved results/tables/econml_vs_doubleml_comparison.csv")
