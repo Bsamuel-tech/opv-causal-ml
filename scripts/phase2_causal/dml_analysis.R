@@ -143,9 +143,9 @@ cat("\nSaved:", out_path, "\n")
 print(results)
 
 # -- Post-hoc cluster-robust variance correction ---------------------------
-# DoubleML PLR does not natively support clustered inference. This block
-# applies a manual sandwich correction using the score function residuals
-# from the final repetition, grouped by scaffold.
+# Applies a manual HC-cluster sandwich correction using the PLR score
+# function residuals (psi_a, psi_b), averaged across 20 repetitions,
+# grouped by scaffold cluster.
 #
 # Method: HC-cluster sandwich estimator on the PLR score.
 # Reference: Cameron & Miller (2015), "A Practitioner's Guide to
