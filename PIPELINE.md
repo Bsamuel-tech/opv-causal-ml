@@ -3,12 +3,12 @@ Run scripts in the order listed. Each step reads from the previous step's output
 
 ## Phase 1: Data
 
-| Step | Script | Input | Output | Rows (approx) |
-|------|--------|-------|--------|---------------|
+| Step | Script | Input | Output | Rows |
+|------|--------|-------|--------|------|
 | 1 | `scripts/phase1_data/step1_build_dataset.py` | `data/raw/Data_Merged_with_SMILES.xlsx` | `data/interim/step1_experimental_raw.csv` | 599 (output rows; input xlsx has 1,573 including header/duplicates) |
-| 2 | `scripts/phase1_data/step2_expand_dataset.py` | `data/interim/step1_experimental_raw.csv` + `data/raw/cep_sample_15000.csv` | `data/interim/step2_merged_raw.csv` | ~15,000 |
-| 3 | `scripts/phase1_data/fix1_add_columns.py` | `data/interim/step2_merged_raw.csv` | `data/interim/fix1_with_columns.csv` | ~15,000 |
-| 4 | `scripts/phase1_data/fix2_scaffold_split.py` | `data/interim/fix1_with_columns.csv` | `data/interim/fix2_with_scaffolds.csv` | ~15,000 |
+| 2 | `scripts/phase1_data/step2_expand_dataset.py` | `data/interim/step1_experimental_raw.csv` + `data/raw/cep_sample_15000.csv` | `data/interim/step2_merged_raw.csv` | 15,528 |
+| 3 | `scripts/phase1_data/fix1_add_columns.py` | `data/interim/step2_merged_raw.csv` | `data/interim/fix1_with_columns.csv` | 15,528 |
+| 4 | `scripts/phase1_data/fix2_scaffold_split.py` | `data/interim/fix1_with_columns.csv` | `data/interim/fix2_with_scaffolds.csv` | 15,528 |
 | 5 | `scripts/phase1_data/fix3_acceptor_filter.py` | `data/interim/fix2_with_scaffolds.csv` | `data/interim/fix3_acceptors_only.csv` | 15,403 |
 | 6 | `scripts/phase1_data/fix4_bootstrap_leakage.py` | `data/interim/fix3_acceptors_only.csv` | `data/processed/master_acceptor_dataset.csv` + `results/tables/bootstrap_leakage_gap.csv` + `results/tables/bootstrap_leakage_summary.csv` | 15,403 |
 
@@ -42,27 +42,33 @@ Bonferroni-adjusted p-values (3 outcomes): HOMO ~0.13; LUMO ~0.15; both non-sign
 
 n_obs=598 | n_scaffolds=288 | fold_scheme=scaffold-grouped-cyclic | n_folds=5 | n_rep=20
 
+Causal forest calibration: mean effect confirmed (p=0.0039). Heterogeneity not confirmed (differential.forest.prediction p=0.629, one-sided HC3, from test_calibration(cf)).
+
 ## Lineage manifest
 
 | File | MD5 | Rows | Cols | Description |
 |------|-----|------|------|-------------|
 | `data/raw/Data_Merged_with_SMILES.xlsx` | `99b06236592b7663fd3272cb2608d640` | 1,573 | — | Raw experimental acceptors including duplicates |
-| `data/interim/step1_experimental_raw.csv` | `cb04b2a9a2665daa557f36fec26f8ead` | 599 | — | Deduplicated experimental acceptors |
-| `data/interim/fix3_acceptors_only.csv` | `664009c84abab43ee3c3a6fc0600c419` | 15,403 | — | Full merged dataset after acceptor filter |
-| `data/processed/master_acceptor_dataset.csv` | `664009c84abab43ee3c3a6fc0600c419` | 15,403 | — | Final master dataset (copy of fix3 after leakage check) |
+| `data/interim/step1_experimental_raw.csv` | `cb04b2a9a2665daa557f36fec26f8ead` | 599 | 12 | Deduplicated experimental acceptors |
+| `data/interim/step2_merged_raw.csv` | — | 15,528 | 12 | Merged experimental + CEP before column enrichment |
+| `data/interim/fix1_with_columns.csv` | — | 15,528 | 15 | After column standardization |
+| `data/interim/fix2_with_scaffolds.csv` | — | 15,528 | 17 | After scaffold assignment |
+| `data/interim/fix3_acceptors_only.csv` | `664009c84abab43ee3c3a6fc0600c419` | 15,403 | 17 | Full merged dataset after acceptor filter |
+| `data/processed/master_acceptor_dataset.csv` | `664009c84abab43ee3c3a6fc0600c419` | 15,403 | 17 | Final master dataset (copy of fix3 after leakage check) |
 | `results/tables/dml_ewg_corrected.csv` | `35979fdc752c93f85fc7efa4a73a26e5` | 3 | 15 | DML ATE results (one row per outcome), n_rep=20 |
 | `results/tables/dml_cluster_robust.csv` | `f7b21e1dee183851579d7c5255e57420` | 3 | 8 | Scaffold cluster-robust SEs (outcome, ATE, SE_iid, SE_cluster, p_cluster, CI_lower_cr, CI_upper_cr, n_clusters) |
-| `results/tables/dml_fold_diagnostics.csv` | `5af92d85c6a91bb3273729f56f4f8caa` | 5 | — | Fold size diagnostics for seed 1 |
-| `results/tables/iv_results.csv` | `99464bf1d97b44ff76f7a3897222601e` | 2 | — | IV coefficients (one row per outcome) |
-| `results/tables/iv_diagnostics.csv` | `cf7d54527988bd7166950fdfe3a0922b` | 2 | — | IV diagnostics: F-stat, Wu-Hausman p (one row per outcome) |
-| `results/tables/cate_results_corrected.csv` | `f45d5dc5cd6c18801265443b6d8a9387` | 598 | — | Per-molecule CATE estimates with scaffold column |
-| `data/processed/experimental_with_cates.csv` | `f45d5dc5cd6c18801265443b6d8a9387` | 598 | — | Causal subset with CATE column attached |
-| `results/tables/bootstrap_leakage_summary.csv` | `71c5ff401ecb5d294a6427d6b0e665f7` | 17 | — | Section A and B leakage gap summary |
-| `results/tables/bootstrap_leakage_gap.csv` | `d1fcaa509bf73d7ca98f900fa962643e` | 20 | — | Per-seed leakage gaps (full and causal subset) |
-| `results/tables/phase3_xtb_validation_final.csv` | `2a6ef1b58b242e40638af276432e3bdc` | 10 | — | xTB-validated counterfactual candidates |
+| `results/tables/dml_fold_diagnostics.csv` | `5af92d85c6a91bb3273729f56f4f8caa` | 5 | 3 | Fold size diagnostics for seed 1 |
+| `results/tables/iv_results.csv` | `99464bf1d97b44ff76f7a3897222601e` | 2 | 4 | IV coefficients (one row per outcome) |
+| `results/tables/iv_diagnostics.csv` | `cf7d54527988bd7166950fdfe3a0922b` | 2 | 5 | IV diagnostics: F-stat, Wu-Hausman p (one row per outcome) |
+| `results/tables/cate_results_corrected.csv` | `f45d5dc5cd6c18801265443b6d8a9387` | 598 | 7 | Per-molecule CATE estimates with scaffold column |
+| `data/processed/experimental_with_cates.csv` | `f45d5dc5cd6c18801265443b6d8a9387` | 598 | 7 | Causal subset with CATE column attached |
+| `results/tables/bootstrap_leakage_summary.csv` | `71c5ff401ecb5d294a6427d6b0e665f7` | 17 | 2 | Section A and B leakage gap summary |
+| `results/tables/bootstrap_leakage_gap.csv` | `d1fcaa509bf73d7ca98f900fa962643e` | 20 | 7 | Per-seed leakage gaps (full and causal subset) |
+| `results/tables/phase3_xtb_validation_final.csv` | `2a6ef1b58b242e40638af276432e3bdc` | 10 | 14 | xTB-validated counterfactual candidates |
 | `results/tables/supplementary_information.csv` | `ee4e82b26e39104602712bfff5ae687b` | — | — | All supplementary sections S0-S6 |
 
-Note: MD5s verified against committed files 2026-10-22. Cols marked — have not been verified. Re-run `scripts/generate_manifest_md5.sh` after any pipeline rerun to refresh hashes.
+Note: MD5s marked — not yet verified for interim files (steps 2-4). Run `scripts/generate_manifest_md5.sh` after any pipeline rerun to refresh hashes.
+
 ## Raw data notes
 
 - `data/raw/Data_Merged_with_SMILES.xlsx`: 1,573 experimental acceptor molecules
