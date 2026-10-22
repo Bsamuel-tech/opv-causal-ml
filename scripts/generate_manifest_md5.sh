@@ -8,7 +8,6 @@ set -euo pipefail
 FILES=(
   "data/raw/Data_Merged_with_SMILES.xlsx"
   "data/interim/step1_experimental_raw.csv"
-    "data/interim/step1_experimental_raw.csv"
   "data/interim/step2_merged_raw.csv"
   "data/interim/fix1_with_columns.csv"
   "data/interim/fix2_with_scaffolds.csv"
