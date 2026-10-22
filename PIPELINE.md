@@ -63,7 +63,6 @@ n_obs=598 | n_scaffolds=288 | fold_scheme=scaffold-grouped-cyclic | n_folds=5 | 
 | `results/tables/supplementary_information.csv` | `ee4e82b26e39104602712bfff5ae687b` | — | — | All supplementary sections S0-S6 |
 
 Note: MD5s verified against committed files 2026-10-22. Cols marked — have not been verified. Re-run `scripts/generate_manifest_md5.sh` after any pipeline rerun to refresh hashes.
-
 ## Raw data notes
 
 - `data/raw/Data_Merged_with_SMILES.xlsx`: 1,573 experimental acceptor molecules
