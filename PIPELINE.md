@@ -67,8 +67,7 @@ Causal forest calibration: mean effect confirmed (p=0.0039). Heterogeneity not c
 | `results/tables/phase3_xtb_validation_final.csv` | `2a6ef1b58b242e40638af276432e3bdc` | 10 | 14 | xTB-validated counterfactual candidates |
 | `results/tables/supplementary_information.csv` | `ee4e82b26e39104602712bfff5ae687b` | — | — | All supplementary sections S0-S6 |
 
-Note: MD5s marked — not yet verified for interim files (steps 2-4). Run `scripts/generate_manifest_md5.sh` after any pipeline rerun to refresh hashes.
-
+Note: All MD5s verified 2026-10-22. Run `scripts/generate_manifest_md5.sh` after any pipeline rerun to refresh hashes.
 ## Raw data notes
 
 - `data/raw/Data_Merged_with_SMILES.xlsx`: 1,573 experimental acceptor molecules
