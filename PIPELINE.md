@@ -26,7 +26,7 @@ Run scripts in the order listed. Each step reads from the previous step's output
 | Step | Script | Input | Output |
 |------|--------|-------|--------|
 | 11 | `scripts/phase3_design/step1_counterfactual_design.py` | `data/processed/experimental_with_cates.csv` | `results/tables/phase3_top10_candidates.csv` |
-| 12 | `scripts/phase3_design/step2_xtb_validation.py` | `results/tables/phase3_top10_candidates.csv` | `results/tables/phase3_xtb_validation_final.csv` |
+| 12 | `scripts/phase3_design/step2_xtb_validation.py` | `results/tables/phase3_top10_candidates.csv` | `results/tables/phase3_xtb_shift_validation.csv` |
 
 ## Key results (from committed code, run 2026-10-19, n_rep=20 scaffold-grouped; not independently reproduced)
 
@@ -64,7 +64,7 @@ Causal forest calibration: mean effect confirmed (p=0.0039). Heterogeneity not c
 | `data/processed/experimental_with_cates.csv` | `f45d5dc5cd6c18801265443b6d8a9387` | 598 | 7 | Causal subset with CATE column attached |
 | `results/tables/bootstrap_leakage_summary.csv` | `71c5ff401ecb5d294a6427d6b0e665f7` | 17 | 2 | Section A and B leakage gap summary |
 | `results/tables/bootstrap_leakage_gap.csv` | `d1fcaa509bf73d7ca98f900fa962643e` | 20 | 7 | Per-seed leakage gaps (full and causal subset) |
-| `results/tables/phase3_xtb_validation_final.csv` | `2a6ef1b58b242e40638af276432e3bdc` | 10 | 14 | xTB-validated counterfactual candidates |
+| `results/tables/phase3_xtb_shift_validation.csv` | — | 10 | 13 | xTB shift-level validated counterfactual candidates |
 | `results/tables/supplementary_information.csv` | `ee4e82b26e39104602712bfff5ae687b` | — | — | All supplementary sections S0-S6 |
 
 Note: All MD5s verified 2026-10-22. Run `scripts/generate_manifest_md5.sh` after any pipeline rerun to refresh hashes.

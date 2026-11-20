@@ -51,7 +51,7 @@ Causal forest calibration confirmed (p=0.0039). Heterogeneity not confirmed
 (p=0.629, one-sided HC3 from test_calibration) — reported as an honest negative finding.
 Sensitivity analysis (sensemakr): t-value=-5.34, partial R2=0.046,
 RV=19.7% (point estimate), RV(alpha=0.05)=12.95%.
-Phase 3 design engine achieves MAE=0.219 eV; 5/10 candidates pass both
+Phase 3 design engine achieves shift MAE=0.154 eV; 8/10 candidates pass
 xTB validation and SAScore < 4.0.
 
 ## Analysis Restriction
@@ -118,7 +118,7 @@ and 0.15. Cluster-robust SEs in dml_cluster_robust.csv. IV endogeneity
 confirmed; exclusion restriction uncertain — reported as limitation.
 Sensitivity analysis (RV=19.7%) and CATE maps complete.
 Phase 3 complete: counterfactual design using per-molecule CATE,
-xTB validation MAE=0.219 eV, 5/10 pass SAScore < 4.0.
+xTB shift validation MAE=0.154 eV, 8/10 pass 0.25 eV shift-error threshold, 10/10 pass SAScore < 4.0. No-change baseline achieves equivalent MAE (0.154 eV); workflow is exploratory.
 Phase 4 complete: four publication figures, seven-section supplementary.
 
 ## Data Availability

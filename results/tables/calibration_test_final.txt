@@ -1,0 +1,11 @@
+
+Best linear fit using forest predictions (on held-out data)
+as well as the mean forest prediction as regressors, along
+with one-sided heteroskedasticity-robust (HC3) SEs:
+
+                               Estimate Std. Error t value   Pr(>t)   
+mean.forest.prediction          0.87864    0.32874  2.6728 0.003864 **
+differential.forest.prediction -0.23259    0.70515 -0.3298 0.629184   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
