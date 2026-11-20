@@ -5,7 +5,7 @@ DML_EWG_Bandgap,-0.002280,0.814000,No effect
 Sensitivity_RV,0.197,,Confounder needs 19.7% variance in both EWG and HOMO to nullify
 Sensitivity_RV_alpha05,0.1295,,Threshold for statistical significance at alpha=0.05
 CATE_mean,-0.024568,,Average EWG causal effect on HOMO across molecules
-CATE_min,-0.047691,,"Most negative CATE observed - exploratory observation only; heterogeneity not statistically confirmed (p=0.295)"
-CATE_max,0.016957,,"Most positive CATE observed - exploratory observation only; heterogeneity not statistically confirmed (p=0.295)"
+CATE_min,-0.047691,,"Most negative CATE observed - exploratory observation only; heterogeneity not statistically confirmed (p=0.629)"
+CATE_max,0.016957,,"Most positive CATE observed - exploratory observation only; heterogeneity not statistically confirmed (p=0.629)"
 Calibration_mean_p,0.0039,,Forest mean effect confirmed (p=0.0039)
-Calibration_het_p,0.2954489,,Heterogeneity NOT statistically confirmed. Larger samples needed.
+Calibration_het_p,0.6292,,Heterogeneity NOT statistically confirmed. Larger samples needed.
