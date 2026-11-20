@@ -52,7 +52,7 @@ Causal forest calibration confirmed (p=0.0039). Heterogeneity not confirmed
 Sensitivity analysis (sensemakr): t-value=-5.34, partial R2=0.046,
 RV=19.7% (point estimate), RV(alpha=0.05)=12.95%.
 Phase 3 design engine achieves shift MAE=0.154 eV; 8/10 candidates pass
-xTB validation and SAScore < 4.0.
+xTB validation and SAScore < 4.0. Zero-shift baseline also achieves MAE=0.154 eV (8/10 pass); ML did not outperform baseline on this 10-molecule set. Workflow is exploratory.
 
 ## Analysis Restriction
 
@@ -76,7 +76,7 @@ for nonarom_cc is chemically uncertain — reported as a limitation.
 Sensitivity analysis via sensemakr in R with molecular weight as benchmark.
 Causal forests and CATE maps via grf in R with 4,000 trees and 288 scaffold
 clusters. Molecular processing and SMARTS reactions via RDKit in Python.
-Quantum chemistry validation via xTB 6.7.1 GFN2 with fixed conformer
+Quantum chemistry validation via xTB 6.6.1 GFN2 with fixed conformer
 seed=42.
 
 ## Repository Contents
@@ -118,7 +118,7 @@ and 0.15. Cluster-robust SEs in dml_cluster_robust.csv. IV endogeneity
 confirmed; exclusion restriction uncertain — reported as limitation.
 Sensitivity analysis (RV=19.7%) and CATE maps complete.
 Phase 3 complete: counterfactual design using per-molecule CATE,
-xTB shift validation MAE=0.154 eV, 8/10 pass 0.25 eV shift-error threshold, 10/10 pass SAScore < 4.0. No-change baseline achieves equivalent MAE (0.154 eV); workflow is exploratory.
+xTB shift validation MAE=0.154 eV, 8/10 pass 0.25 eV shift-error threshold, 10/10 pass SAScore < 4.0. A zero-shift baseline (predicting no change for all candidates) achieves equivalent MAE=0.154 eV and 8/10 pass rate; the ML model did not outperform the baseline on this small validation set. Workflow is exploratory.
 Phase 4 complete: four publication figures, seven-section supplementary.
 
 ## Data Availability

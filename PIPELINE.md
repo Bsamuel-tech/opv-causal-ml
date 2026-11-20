@@ -65,6 +65,7 @@ Causal forest calibration: mean effect confirmed (p=0.0039). Heterogeneity not c
 | `results/tables/bootstrap_leakage_summary.csv` | `71c5ff401ecb5d294a6427d6b0e665f7` | 17 | 2 | Section A and B leakage gap summary |
 | `results/tables/bootstrap_leakage_gap.csv` | `d1fcaa509bf73d7ca98f900fa962643e` | 20 | 7 | Per-seed leakage gaps (full and causal subset) |
 | `results/tables/phase3_xtb_shift_validation.csv` | — | 10 | 13 | xTB shift-level validated counterfactual candidates |
+| `results/tables/calibration_test_output.csv` | — | 2 | 5 | Causal forest calibration test output (term, estimate, std_error, t_value, p_value) |
 | `results/tables/supplementary_information.csv` | `ee4e82b26e39104602712bfff5ae687b` | — | — | All supplementary sections S0-S6 |
 
 Note: All MD5s verified 2026-10-22. Run `scripts/generate_manifest_md5.sh` after any pipeline rerun to refresh hashes.
