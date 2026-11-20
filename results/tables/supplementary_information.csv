@@ -86,8 +86,8 @@ S5 — CATE Distribution,Min CATE,-0.047691 eV
 S5 — CATE Distribution,Max CATE,+0.016957 eV
 S5 — CATE Distribution,Std Dev,0.011371 eV
 S5 — CATE Distribution,Calibration p,0.0039** well calibrated
-S5 — CATE Distribution,Heterogeneity p,p=0.629 (one-sided HC3) — not significant; consistent effect across molecule types
-S5 — CATE Distribution,Interpretation,Mean effect confirmed (p=0.0039); effect is consistent across molecular weight and conjugation length — no strong heterogeneity at n=598
+S5 — CATE Distribution,Heterogeneity p,p=0.629 (one-sided HC3) — not significant; no statistically supported heterogeneity detected at n=598
+S5 — CATE Distribution,Interpretation,Mean effect confirmed (p=0.0039); differential prediction test not significant (p=0.629) — no statistically supported heterogeneity across molecular weight or conjugation length at n=598. Variation in point estimates is exploratory and should not be interpreted as confirmed distinct response groups.
 S5 — CATE Distribution,Figures produced,"cate_ewg_homo_distribution.png, cate_ewg_vs_molweight.png"
 S6 — xTB Shift Validation,Candidate 1,SAScore=3.128 | ML_shift=-0.0050 eV | xTB_parent=-5.7092 eV | xTB_modified=-5.8974 eV | xTB_shift=-0.1882 eV | Shift_error=0.1832 eV | PASS — shift-error threshold 0.25 eV
 S6 — xTB Shift Validation,Candidate 2,SAScore=3.166 | ML_shift=-0.0050 eV | xTB_parent=-5.7092 eV | xTB_modified=-5.8097 eV | xTB_shift=-0.1005 eV | Shift_error=0.0955 eV | PASS — shift-error threshold 0.25 eV

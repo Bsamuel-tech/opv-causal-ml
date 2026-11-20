@@ -62,6 +62,16 @@ cal <- test_calibration(cf)
 cat("\n=== Calibration Test ===\n")
 print(cal)
 
+# Save calibration test output for traceability
+cal_df <- as.data.frame(coef(summary(cal)))
+cal_df$term <- rownames(cal_df)
+cal_df <- cal_df[, c("term", "Estimate", "Std. Error", "t value", "Pr(>|t|)")]
+colnames(cal_df) <- c("term", "estimate", "std_error", "t_value", "p_value")
+fwrite(cal_df, file.path(results_tables, "calibration_test_output.csv"))
+cat("Saved calibration_test_output.csv\n")
+cat("  mean.forest.prediction p =", round(cal_df$p_value[cal_df$term == "mean.forest.prediction"], 6), "\n")
+cat("  differential.forest.prediction p =", round(cal_df$p_value[cal_df$term == "differential.forest.prediction"], 6), "\n")
+
 # -- Save model and results ------------------------------------------------
 saveRDS(cf, file.path(results_models, "causal_forest_ewg_homo.rds"))
 cat("Saved causal_forest_ewg_homo.rds\n")

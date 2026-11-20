@@ -149,6 +149,21 @@ if len(valid) > 0:
     print(f"Candidates passing:    {n_pass}/{len(valid)}")
     print(f"Threshold:             {MAE_THRESHOLD} eV")
 
+    # --- Zero-shift baseline comparison ---
+    # Baseline: predict zero shift for every candidate (no-change assumption)
+    valid = valid.copy()
+    valid['baseline_error_ev'] = valid['xtb_shift_ev'].abs()
+    valid['baseline_pass']     = valid['baseline_error_ev'] < MAE_THRESHOLD
+    baseline_mae    = valid['baseline_error_ev'].mean()
+    baseline_n_pass = int(valid['baseline_pass'].sum())
+    print(f"\n--- Zero-shift baseline (predict 0 for all candidates) ---")
+    print(f"Baseline MAE:          {baseline_mae:.4f} eV")
+    print(f"Baseline passing:      {baseline_n_pass}/{len(valid)}")
+    print(f"ML vs baseline MAE:    {mae:.4f} vs {baseline_mae:.4f} eV")
+    if abs(mae - baseline_mae) < 0.01:
+        print("NOTE: ML model does not outperform zero-shift baseline on this validation set.")
+        print("      Results should be interpreted as exploratory.")
+
 out_path = RESULTS_TABLES / "phase3_xtb_shift_validation.csv"
 results_df.to_csv(out_path, index=False)
 print(f"\nSaved {out_path}")
