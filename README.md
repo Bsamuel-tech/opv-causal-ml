@@ -9,9 +9,11 @@
 
 ## What This Project Does
 
-Applies causal machine learning to 15,403 organic acceptor molecules to
-identify what structurally causes changes in HOMO energy, LUMO energy,
-and optical bandgap. Treatment variable is the Hammett-weighted EWG score.
+This project investigates the relationship between electron-withdrawing
+groups and the electronic properties of organic acceptor molecules using
+causal machine learning. The assembled dataset contains 15,403 molecular
+records, while the primary causal analysis focuses on 598 experimental
+molecules. Treatment variable is the Hammett-weighted EWG score.
 The pipeline runs from dataset construction to quantum chemistry validation
 in a fully reproducible workflow.
 
@@ -44,11 +46,15 @@ halogen_count is retained as a confounder because it contains structural
 information beyond its weighted contribution to the Hammett EWG score.
 Bootstrap leakage gap mean=0.0194 (full dataset, 20 seeds, all below 0.15
 threshold). Causal subset (598 molecules) bootstrapped separately: gap
-mean=0.316, 95% CI [0.164, 0.486] — confirms scaffold leakage in naive
-random splits, validating scaffold-grouped cross-fitting.
+mean=0.316, 95% CI [0.164, 0.486] — indicates that random splitting can
+overestimate predictive performance when related molecular scaffolds appear
+in both training and test sets. This supports the use of scaffold-grouped
+cross-fitting.
 Nuisance diagnostics: R2(ml_l)=0.181 RMSE=0.133 eV, R2(ml_m)=0.735.
-Causal forest calibration confirmed (p=0.0039). Heterogeneity not confirmed
-(p=0.629, one-sided HC3 from test_calibration) — reported as an honest negative finding.
+The calibration test for the mean forest prediction was statistically
+significant (p = 0.0039). However, the differential prediction test did
+not provide statistically significant evidence of treatment-effect
+heterogeneity (p = 0.629).
 Sensitivity analysis (sensemakr): t-value=-5.34, partial R2=0.046,
 RV=19.7% (point estimate), RV(alpha=0.05)=12.95%.
 Phase 3 design engine achieves shift MAE=0.154 eV; 8/10 candidates pass
