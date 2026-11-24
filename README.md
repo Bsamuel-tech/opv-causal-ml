@@ -1,146 +1,342 @@
 # Causal Machine Learning for Organic Acceptor Design
 
-**Author:** Samuel Bizimana | JUNIA ISEN
-**Supervisor:** Dr. Kekeli N'KONOU
-**Target Journal:** Nature Machine Intelligence
-**GitHub:** https://github.com/Bsamuel-tech/opv-causal-ml
+**Author:** Samuel Bizimana  
+**Institution:** JUNIA ISEN  
+**Supervisor:** Dr. Kekeli N'KONOU  
+**Target Journal:** Nature Machine Intelligence  
+**GitHub Repository:** https://github.com/Bsamuel-tech/opv-causal-ml  
+**Pipeline Documentation:** https://github.com/Bsamuel-tech/opv-causal-ml/blob/main/PIPELINE.md
 
-**Pipeline:** https://github.com/Bsamuel-tech/opv-causal-ml/blob/main/PIPELINE.md
+## 1. Project Overview
 
-## What This Project Does
+This project investigates the relationship between electron-withdrawing groups (EWGs) and the electronic properties of organic acceptor molecules using causal machine learning.
 
-This project investigates the relationship between electron-withdrawing
-groups and the electronic properties of organic acceptor molecules using
-causal machine learning. The assembled dataset contains 15,403 molecular
-records, while the primary causal analysis focuses on 598 experimental
-molecules. Treatment variable is the Hammett-weighted EWG score.
-The pipeline runs from dataset construction to quantum chemistry validation
-in a fully reproducible workflow.
+The assembled dataset contains **15,403 molecular records**, while the primary causal analysis is restricted to **598 experimental molecules** containing at least one EWG. The treatment variable is a continuous Hammett-weighted EWG score, used to investigate how EWG substitution relates to frontier orbital energies and molecular bandgaps.
 
-## Key Results
+The workflow covers dataset construction, molecular feature engineering, causal estimation, sensitivity analysis, heterogeneous treatment-effect analysis, counterfactual molecular design, and quantum chemistry validation.
 
-EWG score lowers HOMO energy by -0.01828 eV (DML, IID 95% CI
-[-0.03589, -0.00066], p=0.042; cluster-robust CI [-0.03671, +0.00016],
-p=0.052). LUMO shows a consistent negative direction (-0.01633 eV,
-IID CI [-0.03260, -0.00006], p=0.049; cluster-robust CI [-0.03273,
-+0.00007], p=0.051). Both effects are borderline: IID CIs marginally
-exclude zero; cluster-robust CIs marginally cross zero. With Bonferroni
-correction for 3 outcomes, adjusted p-values are approximately 0.13
-(HOMO) and 0.15 (LUMO), both non-significant. Bandgap shows no effect
-(-0.00228 eV, p=0.814). All three estimates come from scaffold-grouped
-5-fold cross-fitting on 598 experimental molecules across 288 unique
-scaffolds, using cyclic round-robin fold assignment (results from
-committed code, not independently reproduced; run 2026-10-19, n_rep=20).
-Post-hoc scaffold cluster-robust SEs computed via sandwich estimator
-(Cameron & Miller 2015, rowMeans across 20 reps); output in
-results/tables/dml_cluster_robust.csv.
-IV estimation attempted with nonarom_cc as sole instrument. First-stage
-F-stat=215.448; Wu-Hausman p=0.036 (HOMO) / p=0.026 (LUMO) confirms
-endogeneity, indicating OLS and IV are inconsistent. The exclusion
-restriction is chemically uncertain: non-aromatic C=C bonds may directly
-affect conjugation length and orbital energies. IV coefficients
-(-0.066 eV) are approximately 3.7x larger than DML estimates and support
-the direction but not the magnitude. IV results reported for transparency
-in S3; DML is the primary estimate.
-halogen_count is retained as a confounder because it contains structural
-information beyond its weighted contribution to the Hammett EWG score.
-Bootstrap leakage gap mean=0.0194 (full dataset, 20 seeds, all below 0.15
-threshold). Causal subset (598 molecules) bootstrapped separately: gap
-mean=0.316, 95% CI [0.164, 0.486] — indicates that random splitting can
-overestimate predictive performance when related molecular scaffolds appear
-in both training and test sets. This supports the use of scaffold-grouped
-cross-fitting.
-Nuisance diagnostics: R2(ml_l)=0.181 RMSE=0.133 eV, R2(ml_m)=0.735.
-The calibration test for the mean forest prediction was statistically
-significant (p = 0.0039). However, the differential prediction test did
-not provide statistically significant evidence of treatment-effect
-heterogeneity (p = 0.629).
-Sensitivity analysis (sensemakr): t-value=-5.34, partial R2=0.046,
-RV=19.7% (point estimate), RV(alpha=0.05)=12.95%.
-Phase 3 design engine achieves shift MAE=0.154 eV; 8/10 candidates pass
-xTB validation and SAScore < 4.0. Zero-shift baseline also achieves MAE=0.154 eV (8/10 pass); ML did not outperform baseline on this 10-molecule set. Workflow is exploratory.
+The project is organised as a reproducible pipeline, with analysis scripts, processed data, result tables, figures, and model outputs maintained in the repository.
 
-## Analysis Restriction
+## 2. Key Results
 
-All causal models apply measurement_type == "experiment" AND ewg_count > 0,
-restricting causal estimation to 598 molecules with at least one EWG group.
-Nearly all CEP molecules have zero EWGs by SMARTS definition and contribute
-to scaffold diversity but not to causal estimation. The estimand is the ATE
-among EWG-containing organic acceptors, not the full 15,403-molecule
-population. See results/tables/supplementary_information.csv Section S0
-for full details.
+### 2.1 Double Machine Learning estimates
 
-## Methods
+Double Machine Learning (DML) estimates suggest a negative relationship between the Hammett-weighted EWG score and both HOMO and LUMO energies.
 
-Double Machine Learning via DoubleML in R. Scaffold-grouped 5-fold
-cross-fitting with cyclic round-robin fold assignment (guarantees no empty
-folds). Post-hoc scaffold cluster-robust SE correction via sandwich
-estimator (Cameron & Miller 2015, rowMeans across 20 reps). Filter:
-measurement_type == "experiment" AND ewg_count > 0. IV estimation
-attempted; Wu-Hausman test confirms endogeneity but exclusion restriction
-for nonarom_cc is chemically uncertain — reported as a limitation.
-Sensitivity analysis via sensemakr in R with molecular weight as benchmark.
-Causal forests and CATE maps via grf in R with 4,000 trees and 288 scaffold
-clusters. Molecular processing and SMARTS reactions via RDKit in Python.
-Quantum chemistry validation via xTB 6.6.1 GFN2 with fixed conformer
-seed=42.
+| Outcome | DML estimate (eV) | IID p-value | Cluster-robust p-value |
+|---|---:|---:|---:|
+| HOMO | −0.01828 | 0.042 | 0.052 |
+| LUMO | −0.01633 | 0.049 | 0.051 |
+| Bandgap | −0.00228 | 0.814 | 0.841 |
 
-## Repository Contents
+For HOMO, the IID 95% confidence interval is [−0.03589, −0.00066], while the scaffold cluster-robust interval is [−0.03671, +0.00016].
 
-scripts/phase1_data contains step1_build_dataset.py, step2_expand_dataset.py,
-fix1_add_columns.py, fix2_scaffold_split.py, fix3_acceptor_filter.py,
-fix4_bootstrap_leakage.py, and ewg_utils.py as a shared EWG module.
+For LUMO, the corresponding intervals are [−0.03260, −0.00006] and [−0.03273, +0.00007].
 
-scripts/phase2_causal contains dml_analysis.R, iv_analysis.R,
-sensitivity_analysis.R, causal_forest.R, and econml_comparison.py.
+The HOMO and LUMO estimates therefore have consistent negative directions, but their cluster-robust confidence intervals marginally cross zero. Neither outcome provides statistically significant evidence at the 5% level under cluster-robust inference. After Bonferroni correction for three outcomes, the adjusted p-values are approximately 0.13 for HOMO and 0.15 for LUMO. No statistically significant effect is detected for the bandgap.
 
-scripts/phase3_design contains step1_counterfactual_design.py and
-step2_xtb_validation.py with fixed conformer seed for reproducibility.
+The estimates were obtained using scaffold-grouped five-fold cross-fitting with cyclic round-robin fold assignment, across 20 repetitions. The analysis included 598 experimental molecules distributed across 288 unique molecular scaffolds. The reported results are from the committed analysis outputs and have not been independently reproduced.
 
-results/figures contains four publication figures at 300 dpi, including
-cate_ewg_homo_distribution.png and cate_ewg_vs_molweight.png.
-results/tables contains all results tables and supplementary information,
-including dml_ewg_corrected.csv, dml_fold_diagnostics.csv, and
-dml_cluster_robust.csv.
-results/models contains causal_forest_ewg_homo.rds (5MB trained model).
+Post-hoc scaffold cluster-robust standard errors were calculated using a sandwich estimator, following Cameron and Miller (2015), with row-wise averaging across the 20 repetitions. The results are available in `results/tables/dml_cluster_robust.csv`.
 
-data/processed contains master_acceptor_dataset.csv with 15,403 molecules.
-GitHub cannot preview files larger than 1MB in the browser.
-To access the file click it on GitHub then click View raw to download,
-or run git clone to get all files locally.
+### 2.2 Instrumental variable analysis
 
-## Status
+An instrumental variable (IV) analysis was conducted using `nonarom_cc` as the sole instrument.
 
-Phase 0 complete: R 4.6.0 + Python 3.10, all packages locked in
-renv.lock, requirements.txt, and environment.yml.
-Phase 1 complete: 15,403 molecules, bootstrap leakage gap mean=0.0194
-(full dataset, 20 seeds), CEP acceptor filter 99.32% pass rate.
-Phase 2 complete: DML results from committed code (not independently
-reproduced), run 2026-10-19 (scaffold-grouped cyclic folds, n_rep=20,
-598 molecules, 288 scaffolds). HOMO p=0.042 (IID) / p=0.052
-(cluster-robust), LUMO p=0.049 / p=0.051, Bandgap no effect (p=0.814).
-Both HOMO and LUMO borderline; Bonferroni-adjusted p approximately 0.13
-and 0.15. Cluster-robust SEs in dml_cluster_robust.csv. IV endogeneity
-confirmed; exclusion restriction uncertain — reported as limitation.
-Sensitivity analysis (RV=19.7%) and CATE maps complete.
-Phase 3 complete: counterfactual design using per-molecule CATE,
-xTB shift validation MAE=0.154 eV, 8/10 pass 0.25 eV shift-error threshold, 10/10 pass SAScore < 4.0. A zero-shift baseline (predicting no change for all candidates) achieves equivalent MAE=0.154 eV and 8/10 pass rate; the ML model did not outperform the baseline on this small validation set. Workflow is exploratory.
-Phase 4 complete: four publication figures, seven-section supplementary.
+The first-stage F-statistic was 215.448. The Wu–Hausman tests returned p-values of 0.036 for HOMO and 0.026 for LUMO, indicating statistically detectable differences between the OLS and IV estimates under the assumptions of the test.
 
-## Data Availability
+However, these results do not establish that the instrument is valid. The exclusion restriction remains chemically uncertain because non-aromatic carbon–carbon double bonds may directly influence molecular conjugation and frontier orbital energies.
 
-See DATA_AVAILABILITY.md for full data provenance documentation.
-See PATHS_NOTICE.md for notes on running scripts on different machines.
+The IV coefficients, approximately −0.066 eV, are around 3.7 times larger than the corresponding DML estimates. Although their directions are consistent, the difference in magnitude and uncertainty surrounding instrument validity prevent treating the IV results as independent confirmation of the DML findings.
 
-## Reproduce
+The IV analysis is therefore reported as supplementary evidence in Section S3. DML remains the primary estimation approach.
+
+### 2.3 Confounding and scaffold leakage
+
+`halogen_count` is retained as a confounder because it captures structural information beyond its weighted contribution to the Hammett EWG score.
+
+A bootstrap leakage analysis was conducted to assess the effect of molecular scaffold overlap on predictive performance.
+
+Across the full dataset, the mean leakage gap was 0.0194 over 20 random seeds, with all observed gaps below the predefined 0.15 threshold.
+
+For the 598-molecule causal subset, the mean gap was substantially larger at 0.316, with a 95% confidence interval of [0.164, 0.486].
+
+This difference indicates that random splitting can overestimate predictive performance when related molecular scaffolds appear in both training and test sets. It supports the use of scaffold-grouped cross-fitting for the primary causal analysis.
+
+### 2.4 Nuisance-model diagnostics
+
+The nuisance-model diagnostics were:
+
+- Treatment model (`ml_l`): R² = 0.181; RMSE = 0.133 eV.
+- Outcome model (`ml_m`): R² = 0.735.
+
+These metrics describe the predictive performance of the nuisance models used in the DML procedure.
+
+### 2.5 Causal forest analysis
+
+Causal forests were used to estimate conditional average treatment effects (CATEs) and explore potential variation in the effect of the EWG score across molecular structures.
+
+The calibration test for the mean forest prediction was statistically significant (one-sided p = 0.0039). However, the differential prediction test did not provide statistically significant evidence of treatment-effect heterogeneity (one-sided p = 0.629).
+
+The results therefore do not establish meaningful variation in treatment effects across the analysed molecules. The CATE maps are presented as exploratory descriptions of the estimated effects rather than evidence of confirmed molecular subgroups.
+
+### 2.6 Sensitivity analysis
+
+Sensitivity analysis was performed using `sensemakr` in R, with molecular weight as the benchmark confounder.
+
+The reported HOMO sensitivity statistics were:
+
+- t-value: −5.34
+- Partial R²: 0.046
+- Robustness value (point estimate): 19.7%
+- Robustness value (at α = 0.05): 12.95%
+
+These results describe the sensitivity of the corresponding OLS estimate to unobserved confounding. They should not be interpreted as a sensitivity analysis of the DML estimator.
+
+### 2.7 Counterfactual design and quantum chemistry validation
+
+The Phase 3 design workflow uses molecular features and estimated treatment effects to explore candidate modifications to organic acceptor molecules.
+
+The resulting candidates were evaluated using xTB 6.6.1 with GFN2-xTB calculations and a fixed conformer seed of 42.
+
+The validation results were:
+
+- ML-predicted HOMO shift MAE: 0.15413 eV.
+- Zero-shift baseline MAE: 0.15362 eV.
+- Candidates within the predefined 0.25 eV shift-error threshold: 8/10 for both approaches.
+- Candidates passing the SAScore filter (SAScore < 4.0): 10/10.
+
+The ML model did not outperform the zero-shift baseline on this ten-candidate validation set. Consequently, the current results do not demonstrate improved predictive performance over simply assuming no change in HOMO energy.
+
+The design workflow should therefore be considered exploratory. The validation results provide a starting point for further development rather than evidence of a validated molecular design system.
+
+## 3. Analysis Scope and Restrictions
+
+The primary causal analysis applies two filters:
+
+```python
+measurement_type == "experiment"
+ewg_count > 0
+```
+
+This restricts causal estimation to **598 experimental molecules** containing at least one EWG group.
+
+Nearly all CEP molecules have zero EWGs under the project's SMARTS-based definition. These molecules contribute to the broader dataset and scaffold diversity but are not included in the primary causal estimation.
+
+The estimand is therefore the average treatment effect (ATE) among EWG-containing experimental organic acceptors. It does not represent the full population of 15,403 molecular records.
+
+Further details on dataset composition and filtering are provided in `results/tables/supplementary_information.csv`, Section S0.
+
+## 4. Methods and Implementation
+
+The project combines cheminformatics, causal inference, machine learning, and quantum chemistry.
+
+| Component | Method or tool |
+|---|---|
+| Molecular processing | RDKit (Python) |
+| EWG identification | SMARTS-based molecular pattern matching |
+| Causal estimation | Double Machine Learning using DoubleML in R |
+| Cross-fitting | Scaffold-grouped five-fold cyclic round-robin assignment |
+| Cluster-robust inference | Sandwich estimator following Cameron and Miller (2015) |
+| Instrumental variable analysis | IV estimation using `nonarom_cc` |
+| Sensitivity analysis | `sensemakr` in R |
+| Causal forest analysis | `grf` in R, 4,000 trees and 288 scaffold clusters |
+| Python causal comparison | EconML |
+| Counterfactual design | Molecular modification and candidate generation |
+| Quantum chemistry validation | xTB 6.6.1, GFN2-xTB |
+
+DML uses random forest nuisance learners with five-fold scaffold-grouped cross-fitting and 20 repetitions. Cyclic round-robin fold assignment ensures that all folds receive observations.
+
+Scaffold cluster-robust standard errors are calculated after estimation using a sandwich estimator. The IV analysis is supplementary because the chemical validity of the exclusion restriction remains uncertain.
+
+Quantum chemistry calculations use a fixed conformer seed to improve reproducibility.
+
+## 5. Repository Structure
+
+The repository is organised into four main stages.
+
+### Phase 1: Dataset construction
+
+`scripts/phase1_data/`
+
+Contains:
+
+- `step1_build_dataset.py`
+- `step2_expand_dataset.py`
+- `fix1_add_columns.py`
+- `fix2_scaffold_split.py`
+- `fix3_acceptor_filter.py`
+- `fix4_bootstrap_leakage.py`
+- `ewg_utils.py` — shared EWG processing module.
+
+### Phase 2: Causal analysis
+
+`scripts/phase2_causal/`
+
+Contains:
+
+- `dml_analysis.R`
+- `iv_analysis.R`
+- `sensitivity_analysis.R`
+- `causal_forest.R`
+- `econml_comparison.py`
+
+### Phase 3: Counterfactual design and validation
+
+`scripts/phase3_design/`
+
+Contains:
+
+- `step1_counterfactual_design.py`
+- `step2_xtb_validation.py`
+
+The xTB validation script uses a fixed conformer seed for reproducibility.
+
+### Results and outputs
+
+`results/figures/`
+
+Contains publication figures at 300 dpi, including:
+
+- `cate_ewg_homo_distribution.png`
+- `cate_ewg_vs_molweight.png`
+
+`results/tables/`
+
+Contains the analysis outputs and supplementary information, including:
+
+- `dml_ewg_corrected.csv`
+- `dml_fold_diagnostics.csv`
+- `dml_cluster_robust.csv`
+
+`results/models/`
+
+Contains the trained causal forest model:
+
+- `causal_forest_ewg_homo.rds` (approximately 5 MB)
+
+### Processed data
+
+`data/processed/`
+
+Contains:
+
+- `master_acceptor_dataset.csv` — the assembled dataset of 15,403 molecular records.
+
+GitHub's browser preview may not display files larger than 1 MB. To access these files, open the file on GitHub and select **View raw**, or clone the repository locally.
+
+## 6. Project Status
+
+<details>
+<summary>Phase 0 — Environment and reproducibility</summary>
+
+**Status: Complete**
+
+- R 4.6.0 and Python 3.10.
+- R dependencies recorded in `renv.lock`.
+- Python dependencies recorded in `requirements.txt` and `environment.yml`.
+
+</details>
+
+<details>
+<summary>Phase 1 — Dataset construction</summary>
+
+**Status: Complete**
+
+- 15,403 assembled molecular records.
+- 599 experimental acceptors after dataset construction and filtering.
+- CEP acceptor filter pass rate: 99.32%.
+- Full-dataset bootstrap leakage gap mean: 0.0194 across 20 seeds.
+- Causal subset leakage analysis completed separately.
+
+</details>
+
+<details>
+<summary>Phase 2 — Causal analysis</summary>
+
+**Status: Complete**
+
+- DML estimates obtained from committed code; not independently reproduced.
+- Analysis run: 19 October 2026.
+- 598 experimental molecules and 288 scaffolds.
+- Five-fold scaffold-grouped cross-fitting, 20 repetitions.
+- HOMO: IID p = 0.042; cluster-robust p = 0.052.
+- LUMO: IID p = 0.049; cluster-robust p = 0.051.
+- Bandgap: no statistically significant effect.
+- Bonferroni-adjusted HOMO and LUMO p-values: approximately 0.13 and 0.15.
+- IV analysis and instrument-validity limitation documented.
+- Sensitivity analysis and CATE maps completed.
+
+</details>
+
+<details>
+<summary>Phase 3 — Counterfactual design and validation</summary>
+
+**Status: Complete — exploratory**
+
+- Counterfactual molecular design workflow implemented.
+- xTB validation completed for ten candidates.
+- ML shift-prediction MAE: 0.15413 eV.
+- Zero-shift baseline MAE: 0.15362 eV.
+- Eight of ten candidates pass the 0.25 eV shift-error threshold under both approaches.
+- All ten retained candidates pass the SAScore < 4.0 filter.
+- ML did not outperform the zero-shift baseline on this validation set.
+
+</details>
+
+<details>
+<summary>Phase 4 — Figures and supplementary material</summary>
+
+**Status: Complete**
+
+- Four publication figures.
+- Seven-section supplementary information.
+- Analysis tables and supporting outputs included in the repository.
+
+</details>
+
+## 7. Data Availability and Reproducibility
+
+Dataset provenance, source information, processing decisions, and data availability details are documented in:
+
+- `DATA_AVAILABILITY.md`
+- `PATHS_NOTICE.md`
+
+The pipeline documentation provides additional details about the processing and analysis stages:
+
+https://github.com/Bsamuel-tech/opv-causal-ml/blob/main/PIPELINE.md
+
+## 8. Reproducing the Analysis
+
+### Restore the R environment
 
 ```r
 renv::restore()
+```
+
+### Run the primary DML analysis
+
+```r
 source("scripts/phase2_causal/dml_analysis.R")
 ```
 
+### Create the Python environment
+
 ```bash
-conda activate causal-mol
 conda env create -f environment.yml
+conda activate causal-mol
+```
+
+### Run the bootstrap leakage analysis
+
+```bash
 python scripts/phase1_data/fix4_bootstrap_leakage.py
 ```
+
+For the complete workflow, follow the instructions in `PIPELINE.md`.
+
+---
+
+## Acknowledgements
+
+This work was conducted at JUNIA ISEN under the supervision of Dr. Kekeli N'KONOU.
