@@ -109,19 +109,19 @@ ui <- fluidPage(
                column(3,
                       div(class = "result-box",
                           h5("Primary Finding"),
-                          div(class = "big-num", "-0.025"),
+                          div(class = "big-num", "-0.01633"),
                           div(class = "unit", "eV - EWG effect on LUMO"),
                           br(),
-                          span(class = "pass-badge pass", "p = 0.0008")
+                          span(class = "pass-badge fail", "p = 0.051 NS (clustered)")
                       )
                ),
                column(3,
                       div(class = "result-box",
                           h5("HOMO Effect"),
-                          div(class = "big-num", "-0.012"),
+                          div(class = "big-num", "-0.01828"),
                           div(class = "unit", "eV - EWG effect on HOMO"),
                           br(),
-                          span(class = "pass-badge fail", "p = 0.115 NS")
+                          span(class = "pass-badge fail", "p = 0.052 NS (clustered)")
                       )
                ),
                column(3,
@@ -227,9 +227,9 @@ ui <- fluidPage(
                  br(),
                  div(class = "info-box",
                      strong("Population-level DML estimates:"), br(),
-                     "EWG to LUMO: -0.025 eV (p=0.0008)", br(),
-                     "EWG to HOMO: -0.012 eV (p=0.115)", br(),
-                     "Bandgap: -0.018 eV (p=0.061)"
+                     "EWG to LUMO: -0.01633 eV (p=0.049 IID / p=0.051 clustered)", br(),
+                     "EWG to HOMO: -0.01828 eV (p=0.042 IID / p=0.052 clustered)", br(),
+                     "Bandgap: -0.00228 eV (p=0.814)"
                  )
                ),
                
@@ -505,8 +505,8 @@ ui <- fluidPage(
                    column(6,
                           h5("Key results"),
                           tags$ul(
-                            tags$li("EWG causally lowers LUMO by 0.025 eV (p=0.0008)"),
-                            tags$li("HOMO not significant after confounder control (p=0.115)"),
+                            tags$li("EWG associated with lower LUMO: -0.01633 eV (IID p=0.049; clustered p=0.051, NS)"),
+                            tags$li("EWG associated with lower HOMO: -0.01828 eV (IID p=0.042; clustered p=0.052, NS)"),
                             tags$li("LUMO survives Bonferroni correction (p=0.0024)"),
                             tags$li("No valid IV instrument identified"),
                             tags$li("Heterogeneity not confirmed (p=0.295)"),
@@ -530,10 +530,11 @@ server <- function(input, output, session) {
   output$dml_table <- renderTable({
     data.frame(
       Outcome   = c("HOMO", "LUMO", "Bandgap"),
-      `ATE (eV)`= c(-0.012, -0.025, -0.018),
-      `P-value` = c(0.115, 0.0008, 0.061),
-      `P (Bonferroni)` = c(0.345, 0.0024, 0.182),
-      Significant = c("No", "Yes", "No"),
+      `ATE (eV)`= c(-0.01828, -0.01633, -0.00228),
+      `P-value (IID)` = c(0.042, 0.049, 0.814),
+      `P-value (clustered)` = c(0.052, 0.051, 0.841),
+      `P (Bonferroni)` = c(0.126, 0.153, 1.000),
+      Significant = c("No (borderline)", "No (borderline)", "No"),
       check.names = FALSE
     )
   }, striped = TRUE, hover = TRUE, bordered = TRUE)
@@ -543,8 +544,8 @@ server <- function(input, output, session) {
     data.frame(
       Model = c("ml_l: HOMO ~ confounders",
                 "ml_m: EWG ~ confounders"),
-      `R²`  = c(0.181, 0.713),
-      RMSE  = c("0.133 eV", "0.712 units"),
+      `R²`  = c(0.181, 0.735),
+      RMSE  = c("0.133 eV", "0.684 units"),
       check.names = FALSE
     )
   }, striped = TRUE, hover = TRUE, bordered = TRUE)
@@ -553,13 +554,13 @@ server <- function(input, output, session) {
   output$dml_plot <- renderPlot({
     df_plot <- data.frame(
       outcome = c("HOMO", "LUMO", "Bandgap"),
-      ATE     = c(-0.012, -0.025, -0.018),
-      SE      = c(0.0076, 0.0074, 0.0095),
-      sig     = c("Not significant", "Significant", "Not significant")
+      ATE     = c(-0.01828, -0.01633, -0.00228),
+      SE      = c(0.00940, 0.00837, 0.01139),
+      sig     = c("Borderline", "Borderline", "Not significant")
     )
     df_plot$lower <- df_plot$ATE - 1.96 * df_plot$SE
     df_plot$upper <- df_plot$ATE + 1.96 * df_plot$SE
-    df_plot$color <- c("#748CAB", "#2166ac", "#748CAB")
+    df_plot$color <- c("#748CAB", "#748CAB", "#aaaaaa")
     
     ggplot(df_plot, aes(x = outcome, y = ATE, color = sig)) +
       geom_hline(yintercept = 0, linetype = "dashed",
@@ -568,8 +569,8 @@ server <- function(input, output, session) {
                     width = 0.15, linewidth = 1.2) +
       geom_point(size = 5) +
       scale_color_manual(
-        values = c("Significant" = "#2166ac",
-                   "Not significant" = "#748CAB"),
+        values = c("Borderline" = "#748CAB",
+                   "Not significant" = "#aaaaaa"),
         name = NULL
       ) +
       labs(x = NULL,
